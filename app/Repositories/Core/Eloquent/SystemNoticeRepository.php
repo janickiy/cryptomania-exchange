@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Repositories\Core\Eloquent;
+
+use App\Models\Core\SystemNotice;
+use App\Repositories\BaseRepository;
+use App\Repositories\Core\Interfaces\SystemNoticeInterface;
+use Carbon\Carbon;
+
+class SystemNoticeRepository extends BaseRepository implements SystemNoticeInterface
+{
+    /**
+     * @var SystemNotice
+     */
+    protected $model;
+
+    /**
+     * @param SystemNotice $model
+     */
+    public function __construct(SystemNotice $model)
+    {
+        $this->model = $model;
+    }
+
+    public function todaysNotifications()
+    {
+        $startDate = Carbon::now();
+        return $this->model->where('status', 1)->where(function ($q) use ($startDate) {
+            $q->where('start_at', '<=', $startDate)
+                ->where('end_at', '>=', $startDate);
+        })->orWhere(function ($q) {
+            $q->whereNull('start_at')
+                ->whereNull('end_at');
+        })->get();
+
+    }
+}

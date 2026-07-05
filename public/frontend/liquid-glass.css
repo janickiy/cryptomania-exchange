@@ -1,0 +1,671 @@
+body.frontend-liquid-glass {
+    --lg-ink: #101514;
+    --lg-ink-strong: #07100e;
+    --lg-text: #eefaf6;
+    --lg-text-muted: rgba(238, 250, 246, .72);
+    --lg-line: rgba(222, 255, 248, .2);
+    --lg-line-strong: rgba(222, 255, 248, .36);
+    --lg-panel: rgba(245, 255, 251, .12);
+    --lg-panel-strong: rgba(245, 255, 251, .18);
+    --lg-panel-dark: rgba(7, 16, 14, .62);
+    --lg-mint: #65dcc7;
+    --lg-amber: #f1b65e;
+    --lg-rose: #e98995;
+    --lg-shadow: 0 24px 70px rgba(0, 0, 0, .28);
+    background:
+        linear-gradient(135deg, rgba(12, 26, 21, .96) 0%, rgba(34, 32, 40, .94) 44%, rgba(48, 36, 30, .92) 100%),
+        url("images/banner.jpg") center top / cover fixed no-repeat;
+    color: var(--lg-text);
+    overflow-x: hidden;
+}
+
+body.frontend-liquid-glass,
+body.frontend-liquid-glass .wrapper,
+body.frontend-liquid-glass .content-wrapper {
+    min-height: 100vh;
+}
+
+body.frontend-liquid-glass .wrapper,
+body.frontend-liquid-glass .content-wrapper {
+    background: transparent !important;
+}
+
+body.frontend-liquid-glass .content {
+    padding: 28px 30px 36px;
+}
+
+body.frontend-liquid-glass .fullwidth {
+    background: transparent !important;
+    color: var(--lg-text);
+}
+
+body.frontend-liquid-glass a {
+    color: #8ff4dd;
+}
+
+body.frontend-liquid-glass a:hover,
+body.frontend-liquid-glass a:focus {
+    color: #ffd38d;
+    text-decoration: none;
+}
+
+body.frontend-liquid-glass .main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1040 !important;
+}
+
+body.frontend-liquid-glass.skin-blue.layout-top-nav .main-header > .navbar,
+body.frontend-liquid-glass .main-header .navbar {
+    min-height: 64px;
+    border: 0;
+    border-bottom: 1px solid var(--lg-line);
+    background: rgba(7, 15, 14, .66) !important;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, .22);
+}
+
+body.frontend-liquid-glass .main-header .navbar::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .02));
+}
+
+body.frontend-liquid-glass .main-header .container-fluid {
+    position: relative;
+}
+
+body.frontend-liquid-glass .main-header .navbar-brand,
+body.frontend-liquid-glass .main-header .navbar-nav > li > a,
+body.frontend-liquid-glass.skin-blue .main-header .navbar .nav > li > a {
+    color: var(--lg-text) !important;
+}
+
+body.frontend-liquid-glass .main-header .navbar-brand {
+    min-height: 64px;
+    padding-top: 22px;
+    font-weight: 700;
+}
+
+body.frontend-liquid-glass .main-header .navbar-nav > li > a {
+    margin: 12px 4px;
+    padding: 10px 14px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    line-height: 20px;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+body.frontend-liquid-glass .main-header .navbar-nav > li.active > a,
+body.frontend-liquid-glass .main-header .navbar-nav > li > a:hover,
+body.frontend-liquid-glass .main-header .navbar-nav > li > a:focus,
+body.frontend-liquid-glass.skin-blue .main-header .navbar .nav > li > a:hover,
+body.frontend-liquid-glass.skin-blue .main-header .navbar .nav > li > a:active,
+body.frontend-liquid-glass.skin-blue .main-header .navbar .nav .open > a {
+    border-color: var(--lg-line-strong);
+    background: rgba(255, 255, 255, .14) !important;
+    color: #fff !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 8px 24px rgba(0, 0, 0, .18);
+}
+
+body.frontend-liquid-glass .main-header .user-menu .user-image {
+    border: 1px solid rgba(222, 255, 248, .42);
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, .18);
+    object-fit: cover;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .22);
+}
+
+body.frontend-liquid-glass .navbar-toggle {
+    margin-top: 15px;
+    border-color: var(--lg-line);
+    background: rgba(255, 255, 255, .12);
+    color: #fff;
+}
+
+body.frontend-liquid-glass .navbar-toggle:hover,
+body.frontend-liquid-glass .navbar-toggle:focus {
+    background: rgba(255, 255, 255, .2);
+}
+
+body.frontend-liquid-glass .navbar-custom-menu > .navbar-nav > li > .dropdown-menu,
+body.frontend-liquid-glass .dropdown-menu {
+    border: 1px solid var(--lg-line);
+    border-radius: 8px;
+    background: rgba(13, 23, 22, .9);
+    box-shadow: var(--lg-shadow);
+}
+
+body.frontend-liquid-glass .dropdown-menu > li > a,
+body.frontend-liquid-glass .notifications-menu > .dropdown-menu > li.header,
+body.frontend-liquid-glass .notifications-menu > .dropdown-menu > li.footer > a {
+    color: var(--lg-text);
+}
+
+body.frontend-liquid-glass .dropdown-menu > li > a:hover,
+body.frontend-liquid-glass .notifications-menu > .dropdown-menu > li.footer > a:hover {
+    background: rgba(255, 255, 255, .12);
+    color: #fff;
+}
+
+body.frontend-liquid-glass .main-footer {
+    border-top: 1px solid var(--lg-line);
+    background: rgba(7, 15, 14, .7) !important;
+    color: var(--lg-text-muted);
+}
+
+body.frontend-liquid-glass .main-footer strong,
+body.frontend-liquid-glass .main-footer a {
+    color: var(--lg-text);
+}
+
+body.frontend-liquid-glass .parallax-window {
+    position: relative;
+    overflow: hidden;
+}
+
+body.frontend-liquid-glass .overlay-dark {
+    background: linear-gradient(115deg, rgba(5, 12, 11, .82), rgba(20, 39, 35, .62) 50%, rgba(65, 45, 34, .58)) !important;
+}
+
+body.frontend-liquid-glass .banner-text {
+    color: #fff;
+    text-align: left;
+    text-shadow: 0 18px 48px rgba(0, 0, 0, .45);
+}
+
+body.frontend-liquid-glass .banner-text p {
+    color: rgba(242, 255, 250, .9);
+}
+
+body.frontend-liquid-glass .banner-text p::after {
+    background: linear-gradient(90deg, rgba(101, 220, 199, .95), rgba(241, 182, 94, .85));
+}
+
+body.frontend-liquid-glass .banner-text h1 {
+    color: #fff;
+}
+
+body.frontend-liquid-glass .banner-bitcoin {
+    filter: drop-shadow(0 24px 60px rgba(0, 0, 0, .42));
+}
+
+body.frontend-liquid-glass .left-pattern,
+body.frontend-liquid-glass .white-bg,
+body.frontend-liquid-glass .black-bg,
+body.frontend-liquid-glass .secondary-bg,
+body.frontend-liquid-glass .primary-bg {
+    background: rgba(8, 17, 15, .28) !important;
+}
+
+body.frontend-liquid-glass .title-center,
+body.frontend-liquid-glass .tilte-left,
+body.frontend-liquid-glass .secondary-title,
+body.frontend-liquid-glass .analysis-title,
+body.frontend-liquid-glass .box-title,
+body.frontend-liquid-glass h1,
+body.frontend-liquid-glass h2,
+body.frontend-liquid-glass h3,
+body.frontend-liquid-glass h4,
+body.frontend-liquid-glass h5,
+body.frontend-liquid-glass h6 {
+    color: var(--lg-text);
+}
+
+body.frontend-liquid-glass p,
+body.frontend-liquid-glass .middark-color,
+body.frontend-liquid-glass .text-muted,
+body.frontend-liquid-glass .trade-analysis div {
+    color: var(--lg-text-muted);
+}
+
+body.frontend-liquid-glass .text-black,
+body.frontend-liquid-glass .text-gray,
+body.frontend-liquid-glass .text-gray-dark {
+    color: var(--lg-text) !important;
+}
+
+body.frontend-liquid-glass .primary-color,
+body.frontend-liquid-glass .text-yellow {
+    color: var(--lg-amber) !important;
+}
+
+body.frontend-liquid-glass .secondary-color,
+body.frontend-liquid-glass .text-aqua,
+body.frontend-liquid-glass .text-green {
+    color: var(--lg-mint) !important;
+}
+
+body.frontend-liquid-glass .text-red {
+    color: var(--lg-rose) !important;
+}
+
+body.frontend-liquid-glass .box,
+body.frontend-liquid-glass .nav-tabs-custom,
+body.frontend-liquid-glass .icon-box,
+body.frontend-liquid-glass .option-box,
+body.frontend-liquid-glass .profile-box-front,
+body.frontend-liquid-glass .trade-analysis,
+body.frontend-liquid-glass .marquee-scroll-box,
+body.frontend-liquid-glass .box.bg-gray-light {
+    border: 1px solid var(--lg-line) !important;
+    border-radius: 8px;
+    background: var(--lg-panel) !important;
+    box-shadow: var(--lg-shadow);
+}
+
+body.frontend-liquid-glass .box,
+body.frontend-liquid-glass .nav-tabs-custom {
+    overflow: hidden;
+}
+
+body.frontend-liquid-glass .box-header,
+body.frontend-liquid-glass .box-footer,
+body.frontend-liquid-glass .nav-tabs-custom > .nav-tabs {
+    border-color: var(--lg-line) !important;
+    background: rgba(255, 255, 255, .06) !important;
+}
+
+body.frontend-liquid-glass .box-body {
+    background: transparent;
+}
+
+body.frontend-liquid-glass .box-header.with-border {
+    border-bottom-color: var(--lg-line) !important;
+}
+
+body.frontend-liquid-glass .box-tools,
+body.frontend-liquid-glass .box-tools span,
+body.frontend-liquid-glass .box-tools small {
+    color: rgba(238, 250, 246, .74) !important;
+}
+
+body.frontend-liquid-glass .post {
+    margin-bottom: 22px;
+    padding: 22px 24px;
+    border: 1px solid var(--lg-line);
+    border-radius: 8px;
+    background: var(--lg-panel);
+    color: var(--lg-text-muted);
+    box-shadow: var(--lg-shadow);
+}
+
+body.frontend-liquid-glass .post .username,
+body.frontend-liquid-glass .post .username a,
+body.frontend-liquid-glass .post h4,
+body.frontend-liquid-glass .post h4 a {
+    color: var(--lg-text) !important;
+}
+
+body.frontend-liquid-glass .post .description,
+body.frontend-liquid-glass .post .user-block .description {
+    color: rgba(238, 250, 246, .68) !important;
+}
+
+body.frontend-liquid-glass .post hr,
+body.frontend-liquid-glass hr {
+    border-top-color: var(--lg-line);
+}
+
+body.frontend-liquid-glass .icon-box,
+body.frontend-liquid-glass .option-box {
+    min-height: 100%;
+    padding: 28px 22px;
+}
+
+body.frontend-liquid-glass .trade-analysis {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 24px 26px 26px;
+}
+
+body.frontend-liquid-glass .trade-analysis .analysis-title {
+    margin-top: 18px;
+    margin-bottom: 14px;
+}
+
+body.frontend-liquid-glass .trade-analysis div {
+    margin-bottom: 22px;
+}
+
+body.frontend-liquid-glass .trade-analysis p {
+    margin-top: 0;
+    line-height: 1.65;
+}
+
+body.frontend-liquid-glass .trading-view-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+body.frontend-liquid-glass .trading-view-list > [class*="col-"] {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+body.frontend-liquid-glass .trading-view-list .trade-analysis p {
+    flex: 1 1 auto;
+}
+
+body.frontend-liquid-glass .footer {
+    padding: 0 8px 30px;
+    background: transparent !important;
+    color: var(--lg-text);
+}
+
+body.frontend-liquid-glass .top-footer {
+    border: 1px solid var(--lg-line);
+    border-radius: 8px;
+    background: rgba(245, 255, 251, .12) !important;
+    box-shadow: var(--lg-shadow);
+}
+
+body.frontend-liquid-glass .top-footer img {
+    opacity: .86;
+    filter: drop-shadow(0 18px 42px rgba(0, 0, 0, .28));
+}
+
+body.frontend-liquid-glass .icon-image,
+body.frontend-liquid-glass .coin-image,
+body.frontend-liquid-glass .profile-box-front img,
+body.frontend-liquid-glass .trade-analysis img {
+    border-radius: 8px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .22);
+}
+
+body.frontend-liquid-glass .marquee-scroll-box {
+    margin: 10px 8px;
+    padding: 14px 16px;
+}
+
+body.frontend-liquid-glass .marquee-scroll-box h4 {
+    color: #fff;
+}
+
+body.frontend-liquid-glass .marquee-container {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+body.frontend-liquid-glass .crypto-button,
+body.frontend-liquid-glass .btn {
+    border-radius: 6px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 10px 24px rgba(0, 0, 0, .18);
+}
+
+body.frontend-liquid-glass .crypto-button,
+body.frontend-liquid-glass .btn-primary,
+body.frontend-liquid-glass .btn-info,
+body.frontend-liquid-glass .btn-success,
+body.frontend-liquid-glass .green.btn-outline {
+    border-color: rgba(169, 255, 238, .44) !important;
+    background: linear-gradient(135deg, rgba(101, 220, 199, .95), rgba(241, 182, 94, .9)) !important;
+    color: #07100e !important;
+}
+
+body.frontend-liquid-glass .btn-warning {
+    border-color: rgba(255, 212, 142, .52) !important;
+    background: rgba(241, 182, 94, .88) !important;
+    color: #241707 !important;
+}
+
+body.frontend-liquid-glass .btn-danger,
+body.frontend-liquid-glass .btn-red {
+    border-color: rgba(255, 185, 194, .52) !important;
+    background: rgba(233, 137, 149, .88) !important;
+    color: #21070a !important;
+}
+
+body.frontend-liquid-glass .btn-default,
+body.frontend-liquid-glass .btn-flat,
+body.frontend-liquid-glass .btn-outline {
+    border-color: var(--lg-line) !important;
+    background: rgba(255, 255, 255, .12) !important;
+    color: var(--lg-text) !important;
+}
+
+body.frontend-liquid-glass .btn:hover,
+body.frontend-liquid-glass .crypto-button:hover,
+body.frontend-liquid-glass .btn:focus,
+body.frontend-liquid-glass .crypto-button:focus {
+    filter: brightness(1.06);
+}
+
+body.frontend-liquid-glass .form-control,
+body.frontend-liquid-glass select,
+body.frontend-liquid-glass textarea,
+body.frontend-liquid-glass .input-group-addon {
+    border-color: var(--lg-line) !important;
+    background: rgba(255, 255, 255, .1) !important;
+    color: var(--lg-text) !important;
+}
+
+body.frontend-liquid-glass .form-control:focus,
+body.frontend-liquid-glass select:focus,
+body.frontend-liquid-glass textarea:focus {
+    border-color: rgba(101, 220, 199, .72) !important;
+    box-shadow: 0 0 0 3px rgba(101, 220, 199, .16);
+}
+
+body.frontend-liquid-glass .form-control::placeholder {
+    color: rgba(238, 250, 246, .5);
+}
+
+body.frontend-liquid-glass label,
+body.frontend-liquid-glass .control-label {
+    color: var(--lg-text);
+}
+
+body.frontend-liquid-glass .nav-tabs-custom > .nav-tabs > li > a {
+    border: 0;
+    color: var(--lg-text-muted);
+}
+
+body.frontend-liquid-glass .nav-tabs-custom > .nav-tabs > li.active > a,
+body.frontend-liquid-glass .nav-tabs-custom > .nav-tabs > li.active > a:hover,
+body.frontend-liquid-glass .nav-tabs-custom > .nav-tabs > li.active > a:focus {
+    border-top-color: var(--lg-mint);
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+}
+
+body.frontend-liquid-glass .nav-tabs-custom > .tab-content {
+    background: transparent;
+}
+
+body.frontend-liquid-glass table,
+body.frontend-liquid-glass .table,
+body.frontend-liquid-glass .dataTable {
+    color: var(--lg-text);
+    background: transparent !important;
+}
+
+body.frontend-liquid-glass .table > thead > tr > th,
+body.frontend-liquid-glass .table > tbody > tr > th,
+body.frontend-liquid-glass .table > tfoot > tr > th,
+body.frontend-liquid-glass table.dataTable thead th,
+body.frontend-liquid-glass table.dataTable thead td {
+    border-color: var(--lg-line) !important;
+    background: rgba(101, 220, 199, .28) !important;
+    color: #f8fffd !important;
+}
+
+body.frontend-liquid-glass .table > tbody > tr > td,
+body.frontend-liquid-glass .table > tfoot > tr > td,
+body.frontend-liquid-glass table.dataTable tbody td {
+    border-color: rgba(222, 255, 248, .12) !important;
+    color: var(--lg-text);
+}
+
+body.frontend-liquid-glass .table-striped > tbody > tr:nth-of-type(odd),
+body.frontend-liquid-glass table.dataTable.display tbody tr.odd,
+body.frontend-liquid-glass table.dataTable.stripe tbody tr.odd {
+    background: rgba(255, 255, 255, .04) !important;
+}
+
+body.frontend-liquid-glass .table-hover > tbody > tr:hover,
+body.frontend-liquid-glass table.dataTable.hover tbody tr:hover,
+body.frontend-liquid-glass table.dataTable.display tbody tr:hover {
+    background: rgba(255, 255, 255, .11) !important;
+}
+
+body.frontend-liquid-glass table.dataTable.no-footer,
+body.frontend-liquid-glass .table-bordered {
+    border-color: var(--lg-line) !important;
+}
+
+body.frontend-liquid-glass .dataTables_wrapper .dataTables_length,
+body.frontend-liquid-glass .dataTables_wrapper .dataTables_filter,
+body.frontend-liquid-glass .dataTables_wrapper .dataTables_info,
+body.frontend-liquid-glass .dataTables_wrapper .dataTables_processing,
+body.frontend-liquid-glass .dataTables_wrapper .dataTables_paginate {
+    color: var(--lg-text-muted) !important;
+}
+
+body.frontend-liquid-glass .dataTables_wrapper .dataTables_paginate .paginate_button,
+body.frontend-liquid-glass .pagination > li > a,
+body.frontend-liquid-glass .pagination > li > span {
+    border-color: var(--lg-line) !important;
+    background: rgba(255, 255, 255, .1) !important;
+    color: var(--lg-text) !important;
+}
+
+body.frontend-liquid-glass .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+body.frontend-liquid-glass .pagination > .active > a,
+body.frontend-liquid-glass .pagination > .active > span {
+    border-color: rgba(101, 220, 199, .6) !important;
+    background: rgba(101, 220, 199, .24) !important;
+    color: #fff !important;
+}
+
+body.frontend-liquid-glass .dataTables_scroll,
+body.frontend-liquid-glass .dataTables_scrollBody,
+body.frontend-liquid-glass .dataTables_scrollHead,
+body.frontend-liquid-glass .dataTables_scrollHeadInner {
+    background: transparent !important;
+}
+
+body.frontend-liquid-glass #fixed-stock-market > div {
+    border: 1px solid var(--lg-line);
+    border-radius: 0 8px 8px 0;
+    background: rgba(9, 18, 16, .88) !important;
+    box-shadow: var(--lg-shadow) !important;
+}
+
+body.frontend-liquid-glass #fixed-stock-market-toggler {
+    border-color: rgba(241, 182, 94, .58) !important;
+    background: rgba(241, 182, 94, .92) !important;
+    color: #1d1306;
+}
+
+body.frontend-liquid-glass .exchange-table tbody tr.selected td {
+    background: rgba(101, 220, 199, .22) !important;
+}
+
+body.frontend-liquid-glass #candlestick_zoom li.disabled a,
+body.frontend-liquid-glass #candlestick li.disabled a {
+    background: rgba(241, 182, 94, .28) !important;
+    color: rgba(255, 255, 255, .75);
+}
+
+body.frontend-liquid-glass .summary-padding-fixer .description-text {
+    color: rgba(238, 250, 246, .76);
+}
+
+body.frontend-liquid-glass .summary-padding-fixer .description-header,
+body.frontend-liquid-glass .summary-padding-fixer .strong,
+body.frontend-liquid-glass .summary-padding-fixer strong,
+body.frontend-liquid-glass .summary-padding-fixer .stock_item,
+body.frontend-liquid-glass .summary-padding-fixer .base_item {
+    color: #fff;
+}
+
+body.frontend-liquid-glass .summary-padding-fixer .border-right {
+    border-right: 1px solid var(--lg-line) !important;
+}
+
+body.frontend-liquid-glass .summary-padding-fixer .exchange-table > div,
+body.frontend-liquid-glass .summary-padding-fixer .exchange-table.text-center {
+    padding: 12px 8px;
+}
+
+body.frontend-liquid-glass #echart {
+    border: 1px solid var(--lg-line);
+    border-radius: 8px;
+    background: rgba(7, 16, 14, .3) !important;
+    overflow: hidden;
+}
+
+body.frontend-liquid-glass .mCS-dark-thick.mCSB_scrollTools .mCSB_draggerRail {
+    background: rgba(255, 255, 255, .12);
+}
+
+body.frontend-liquid-glass .mCS-dark-thick.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar,
+body.frontend-liquid-glass .mCS-dark-thick.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar,
+body.frontend-liquid-glass .mCS-dark-thick.mCSB_scrollTools .mCSB_dragger.mCSB_dragger_onDrag .mCSB_dragger_bar {
+    background: linear-gradient(to bottom, rgba(101, 220, 199, .9), rgba(241, 182, 94, .86)) !important;
+}
+
+@supports ((-webkit-backdrop-filter: blur(14px)) or (backdrop-filter: blur(14px))) {
+    body.frontend-liquid-glass .main-header .navbar,
+    body.frontend-liquid-glass .main-footer,
+    body.frontend-liquid-glass .box,
+    body.frontend-liquid-glass .nav-tabs-custom,
+    body.frontend-liquid-glass .icon-box,
+    body.frontend-liquid-glass .option-box,
+    body.frontend-liquid-glass .profile-box-front,
+    body.frontend-liquid-glass .post,
+    body.frontend-liquid-glass .trade-analysis,
+    body.frontend-liquid-glass .top-footer,
+    body.frontend-liquid-glass .marquee-scroll-box,
+    body.frontend-liquid-glass .dropdown-menu,
+    body.frontend-liquid-glass #fixed-stock-market > div {
+        -webkit-backdrop-filter: blur(18px) saturate(145%);
+        backdrop-filter: blur(18px) saturate(145%);
+    }
+}
+
+@media (max-width: 767px) {
+    body.frontend-liquid-glass .content {
+        padding: 18px 12px 28px;
+    }
+
+    body.frontend-liquid-glass .banner-text {
+        text-align: center;
+    }
+
+    body.frontend-liquid-glass .main-header .navbar-collapse {
+        border-color: var(--lg-line);
+        background: rgba(7, 15, 14, .88);
+    }
+
+    body.frontend-liquid-glass .main-header .navbar-nav > li > a {
+        margin: 6px 0;
+    }
+
+    body.frontend-liquid-glass .content .row {
+        margin-right: -12px;
+        margin-left: -12px;
+    }
+
+    body.frontend-liquid-glass .full-in-small {
+        margin-right: -10px;
+        margin-left: -10px;
+    }
+
+    body.frontend-liquid-glass .fullwidth {
+        margin-right: -12px !important;
+        margin-left: -12px !important;
+        overflow: hidden;
+    }
+
+    body.frontend-liquid-glass .marquee-inner-container {
+        width: 100% !important;
+        max-width: 100%;
+        overflow: hidden;
+    }
+}

@@ -1,0 +1,11 @@
+.DS_Store
+.idea
+node_modules
+vendor
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+docker/mysql/data
+npm-debug.log
+yarn-error.log
