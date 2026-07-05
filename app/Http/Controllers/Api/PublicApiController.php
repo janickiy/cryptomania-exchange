@@ -26,7 +26,7 @@ class PublicApiController extends Controller
      *
      * Действие: валидирует API-запрос, передает команду сервису и возвращает сформированный ответ.
      */
-    public function command(PublicApiRequest $request): mixed
+    public function command(PublicApiRequest $request): JsonResponse|array
     {
         $command = $request->get('command');
 
@@ -38,7 +38,7 @@ class PublicApiController extends Controller
      *
      * Действие: получает рыночные данные по запросу и отдает их в формате API-ответа.
      */
-    public function returnTicker(PublicApiRequest $request): mixed
+    public function returnTicker(PublicApiRequest $request): JsonResponse|array
     {
         $conditions = ['stock_pairs.is_active' => ACTIVE_STATUS_ACTIVE];
         if ($request->has('coinPair')) {

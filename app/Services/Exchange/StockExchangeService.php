@@ -21,6 +21,7 @@ use App\Repositories\User\Trader\Interfaces\StockOrderInterface;
 use App\Repositories\User\Trader\Interfaces\WalletInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class StockExchangeService
@@ -88,7 +89,7 @@ class StockExchangeService
         ];
     }
 
-    public function process(): mixed
+    public function process(): bool
     {
         $this->stockPair = app(StockPairInterface::class)->getFirstStockPairDetailByConditions(['stock_pairs.id' => $this->stockOrder->stock_pair_id]);
         $this->stockItemType = $this->stockPair->stock_item_type;
@@ -230,14 +231,16 @@ class StockExchangeService
             dispatch(new StopLimitStockOrder($this->stockPair->id, $this->exchangePrice));
         }
 
+        return true;
+
     }
 
-    private function getOppositeStockOrders(): mixed
+    private function getOppositeStockOrders(): Collection
     {
         return $this->stockOrderRepository->getOppositeStockOrders($this->stockOrder);
     }
 
-    private function processStockOrderInputs(): mixed
+    private function processStockOrderInputs(): bool
     {
         $minimumTransactionFee = $this->minimumTransactionFee($this->baseItemType);
         $minimumTotal = get_minimum_order_total($minimumTransactionFee);
@@ -283,7 +286,7 @@ class StockExchangeService
      * @param $type
      * @return string
      */
-    private function minimumTransactionFee(mixed $type): mixed
+    private function minimumTransactionFee(mixed $type): string
     {
         return $type == CURRENCY_REAL ? MINIMUM_TRANSACTION_FEE_CURRENCY : MINIMUM_TRANSACTION_FEE_CRYPTO;
     }
@@ -1182,7 +1185,7 @@ class StockExchangeService
         }
     }
 
-    public function updateCoinPair(): mixed
+    public function updateCoinPair(): bool
     {
         $currentTime = $this->date->timestamp;
         $previousTime = $this->date->copy()->subDay()->timestamp;
@@ -1251,7 +1254,7 @@ class StockExchangeService
      * @param $date
      * @return array
      */
-    private function getTimeIntervals(mixed $date): mixed
+    private function getTimeIntervals(mixed $date): array
     {
         $data = [];
         $timeOffset = date_offset_get($date);

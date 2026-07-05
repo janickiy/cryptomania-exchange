@@ -12,7 +12,7 @@ class StockPairRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class StockPairRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         $stockPairRequest = [
             'stock_item_id' => 'required|exists:stock_items,id,is_active,' . ACTIVE_STATUS_ACTIVE,
@@ -38,7 +38,7 @@ class StockPairRequest extends Request
         return $stockPairRequest;
     }
 
-    public function attributes(): mixed
+    public function attributes(): array
     {
         return [
             'stock_item_id' => __('Active status'),

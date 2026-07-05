@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileService
 {
-    public function profile(): mixed
+    public function profile(): array
     {
         $data['user'] = Auth::user()->load('userRoleManagement');
 
@@ -28,7 +28,7 @@ class ProfileService
      * @param PasswordUpdateRequest $request
      * @return array
      */
-    public function updatePassword(PasswordUpdateRequest $request): mixed
+    public function updatePassword(PasswordUpdateRequest $request): array
     {
         $update = ['password' => Hash::make($request->new_password)];
 
@@ -112,7 +112,7 @@ class ProfileService
      * @param UserAvatarRequest $request
      * @return array
      */
-    public function avatarUpload(UserAvatarRequest $request): mixed
+    public function avatarUpload(UserAvatarRequest $request): array
     {
         $uploadedAvatar = app(FileUploadService::class)->upload($request->file('avatar'), config('commonconfig.path_profile_image'), 'avatar', 'user', Auth::id(), 'public', 300, 300);
 
@@ -137,7 +137,7 @@ class ProfileService
      * @param $userId
      * @return array
      */
-    public function userRelatedInfo(mixed $userId): mixed
+    public function userRelatedInfo(mixed $userId): array
     {
         $totalWallets = app(WalletInterface::class)->count(['user_id' => $userId]);
         $totalOpenOrders = app(StockOrderInterface::class)->count(['user_id' => $userId, 'status' => STOCK_ORDER_PENDING]);
@@ -154,7 +154,7 @@ class ProfileService
      * @param $userId
      * @return array
      */
-    public function routesForAdmin(mixed $userId): mixed
+    public function routesForAdmin(mixed $userId): array
     {
         $userRelatedInfo = $this->userRelatedInfo($userId);
 
@@ -174,7 +174,7 @@ class ProfileService
      * @param $userId
      * @return array
      */
-    public function routesForUser(mixed $userId): mixed
+    public function routesForUser(mixed $userId): array
     {
         $userRelatedInfo = $this->userRelatedInfo($userId);
 

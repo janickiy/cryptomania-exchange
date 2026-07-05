@@ -4,6 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Backend\StockItem;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Withdrawal extends Model
 {
@@ -11,17 +12,17 @@ class Withdrawal extends Model
 
     protected $fillable = ['user_id', 'ref_id', 'wallet_id', 'stock_item_id', 'amount', 'network_fee', 'system_fee', 'address', 'txn_id', 'payment_method', 'status'];
 
-    public function stockItem(): mixed
+    public function stockItem(): BelongsTo
     {
         return $this->belongsTo(StockItem::class);
     }
 
-    public function wallet(): mixed
+    public function wallet(): BelongsTo
     {
         return $this->belongsTo(Wallet::class);
     }
 
-    public function user(): mixed
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

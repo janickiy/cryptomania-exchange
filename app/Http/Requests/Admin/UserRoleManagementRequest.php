@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\Request;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 
 class UserRoleManagementRequest extends Request
@@ -12,7 +13,7 @@ class UserRoleManagementRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return true;
     }
@@ -22,7 +23,7 @@ class UserRoleManagementRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         if ($this->route()->getName() == 'user-role-managements.update') {
             return [
@@ -40,7 +41,7 @@ class UserRoleManagementRequest extends Request
         }
     }
 
-    public function messages(): mixed
+    public function messages(): array
     {
         return [
             'role_name.required' => __('The role name field is required.'),
@@ -48,7 +49,7 @@ class UserRoleManagementRequest extends Request
         ];
     }
 
-    public function getValidatorInstance(): mixed
+    public function getValidatorInstance(): Validator
     {
         $validator = parent::getValidatorInstance();
         $validator->after(function () use ($validator) {

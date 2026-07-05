@@ -28,7 +28,7 @@ class BroadcastCancelOrder implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn(): mixed
+    public function broadcastOn(): Channel
     {
         return new Channel(channel_prefix() .'orders.' . $this->stockOrder->stock_pair_id);
     }
@@ -38,7 +38,7 @@ class BroadcastCancelOrder implements ShouldBroadcastNow
      *
      * @return bool
      */
-    public function broadcastWhen(): mixed
+    public function broadcastWhen(): bool
     {
         return $this->stockOrder->category == CATEGORY_EXCHANGE;
     }
@@ -48,7 +48,7 @@ class BroadcastCancelOrder implements ShouldBroadcastNow
      *
      * @return array
      */
-    public function broadcastWith(): mixed
+    public function broadcastWith(): array
     {
 
         return [

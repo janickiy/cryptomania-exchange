@@ -14,7 +14,7 @@ class CommonService
         $code = $this->_code(true);
     }
 
-    private function _code(mixed $decode = false): mixed
+    private function _code(mixed $decode = false): array
     {
         return ['o', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
     }

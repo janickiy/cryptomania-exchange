@@ -15,7 +15,7 @@ class DataListService
      * @return array
      * @throws \Throwable
      */
-    public function dataList(mixed $query, mixed $searchFields, mixed $orderFields = null, mixed $searchOnly = false, mixed $pagination = true, mixed $itemName = 'data', mixed $is_frontend = false): mixed
+    public function dataList(mixed $query, mixed $searchFields, mixed $orderFields = null, mixed $searchOnly = false, mixed $pagination = true, mixed $itemName = 'data', mixed $is_frontend = false): array
     {
         $route = url()->current();
         if (in_array('api', \Request::route()->middleware())) {

@@ -6,6 +6,7 @@ use App\Models\User\Notification;
 use App\Repositories\BaseRepository;
 use App\Repositories\User\Interfaces\NotificationInterface;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class NotificationRepository extends BaseRepository implements NotificationInterface
 {
@@ -23,7 +24,7 @@ class NotificationRepository extends BaseRepository implements NotificationInter
      * @param $userId
      * @return mixed
      */
-    public function getLastFive(mixed $userId): mixed
+    public function getLastFive(mixed $userId): Collection
     {
        return $this->model->where('user_id',$userId)->whereNull('read_at')->orderBy('id','desc')->take(5)->get();
     }
@@ -32,7 +33,7 @@ class NotificationRepository extends BaseRepository implements NotificationInter
      * @param $userId
      * @return mixed
      */
-    public function countUnread(mixed $userId): mixed
+    public function countUnread(mixed $userId): int
     {
         return $this->model->where('user_id',$userId)->whereNull('read_at')->count();
     }
@@ -41,7 +42,7 @@ class NotificationRepository extends BaseRepository implements NotificationInter
      * @param $id
      * @return false
      */
-    public function read(mixed $id): mixed
+    public function read(mixed $id): bool
     {
         $notice = $this->model->where('id', $id)->firstOrFail();
         if (empty($notice->read_at)) {
@@ -55,7 +56,7 @@ class NotificationRepository extends BaseRepository implements NotificationInter
      * @param $id
      * @return false
      */
-    public function unread(mixed $id): mixed
+    public function unread(mixed $id): bool
     {
         $notice = $this->model->where('id', $id)->firstOrFail();
         if (!empty($notice->read_at)) {

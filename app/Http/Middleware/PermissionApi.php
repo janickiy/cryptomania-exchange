@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Symfony\Component\HttpFoundation\Response;
 
 class PermissionApi
 {
@@ -13,7 +14,7 @@ class PermissionApi
      * @param \Closure $next
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next): mixed
+    public function handle(mixed $request, Closure $next): Response
     {
         $permission = has_permission($request->route()->getName(), null, false, true);
         if ($permission === true) {

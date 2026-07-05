@@ -11,6 +11,7 @@ use App\Repositories\User\Interfaces\UserInfoInterface;
 use App\Repositories\User\Interfaces\UserInterface;
 use App\Repositories\User\Trader\Interfaces\WalletInterface;
 use App\Services\User\UserService;
+use App\Models\User\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -26,7 +27,7 @@ class UserManagementService
     ) {
     }
 
-    public function create(UserAccountData $data): mixed
+    public function create(UserAccountData $data): User|false
     {
         return $this->userService->generate($data->toArray());
     }

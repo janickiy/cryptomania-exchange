@@ -10,7 +10,7 @@ class TestRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return true;
     }
@@ -20,7 +20,7 @@ class TestRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         return [
             'first_name'=> 'required'

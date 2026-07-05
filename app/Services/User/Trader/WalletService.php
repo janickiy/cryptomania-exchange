@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class WalletService
 {
@@ -31,9 +32,9 @@ class WalletService
 
     /**
      * @param $userId
-     * @return mixed
+     * @return array
      */
-    public function getWallets(mixed $userId): mixed
+    public function getWallets(mixed $userId): array
     {
         $searchFields = [
             ['stock_items.item_name', __('Wallet Name')],
@@ -53,9 +54,9 @@ class WalletService
 
     /**
      * @param $wallet
-     * @return array|mixed|string|null
+     * @return string
      */
-    public function generateWalletAddress(mixed $wallet): mixed
+    public function generateWalletAddress(mixed $wallet): string
     {
         $stockApiService = null;
 
@@ -82,9 +83,9 @@ class WalletService
     /**
      * @param DepositRequest $request
      * @param $id
-     * @return array|\Illuminate\Http\RedirectResponse
+     * @return array|Response
      */
-    public function storeDeposit(DepositRequest $request, mixed $id): mixed
+    public function storeDeposit(DepositRequest $request, mixed $id): array|Response
     {
         $wallet = $this->walletRepository->getFirstByConditions(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
 
@@ -239,7 +240,7 @@ class WalletService
      * @param Request $request
      * @return array
      */
-    public function completePayment(Request $request): mixed
+    public function completePayment(Request $request): array
     {
         $paymentInfo = session()->get('PaypalPayment');
 
@@ -381,7 +382,7 @@ class WalletService
      * @param $depositInfo
      * @return bool
      */
-    public function _completePayment(mixed $transactionInfo, mixed $depositInfo): mixed
+    public function _completePayment(mixed $transactionInfo, mixed $depositInfo): bool
     {
         $stockItemRepository = app(StockItemInterface::class);
         if (!$stockItem = $stockItemRepository->getFirstById($transactionInfo['stock_item_id'])) {
@@ -506,7 +507,7 @@ class WalletService
      * @param $paymentInfo
      * @return array
      */
-    public function _cancelPayment(mixed $paymentInfo): mixed
+    public function _cancelPayment(mixed $paymentInfo): array
     {
         app(DepositInterface::class)->updateByConditions(['status' => PAYMENT_FAILED], [
             'id' => $paymentInfo['deposit_id'], 'status' => PAYMENT_PENDING]);
@@ -517,7 +518,7 @@ class WalletService
         ];
     }
 
-    public function cancelPayment(): mixed
+    public function cancelPayment(): array
     {
         $paymentInfo = session()->get('PaypalPayment');
         session()->forget('PaypalPayment');
@@ -527,9 +528,9 @@ class WalletService
 
     /**
      * @param $withdrawalId
-     * @return void|null
+     * @return void
      */
-    public function send(mixed $withdrawalId): mixed
+    public function send(mixed $withdrawalId): void
     {
         $withdrawalRepository = app(WithdrawalInterface::class);
         $withdrawal = $withdrawalRepository->getFirstByConditions(['id' => $withdrawalId, 'status' => PAYMENT_PENDING], ['stockItem', 'wallet']);
@@ -613,7 +614,7 @@ class WalletService
 
             $this->reverseWithdraw($withdrawalId, $withdrawal->stockItem->item);
 
-            return null;
+            return;
         }
 
         if (!is_null($txnId)) {
@@ -634,9 +635,9 @@ class WalletService
 
     /**
      * @param $ipnResponse
-     * @return bool|void|null
+     * @return bool|null
      */
-    public function updateTransaction(mixed $ipnResponse): mixed
+    public function updateTransaction(mixed $ipnResponse): ?bool
     {
         if ($ipnResponse['result']['txn_status'] == 'completed') {
             $txnStatus = PAYMENT_COMPLETED;
@@ -832,9 +833,9 @@ class WalletService
      * @param $ipnResponse
      * @param $wallet
      * @param $deposited
-     * @return array|void
+     * @return array
      */
-    public function deposit(mixed $ipnResponse, mixed $wallet, mixed $deposited): mixed
+    public function deposit(mixed $ipnResponse, mixed $wallet, mixed $deposited): array
     {
         if (env('APP_ENV') != 'production' && env('APP_DEBUG') == true) {
             logs()->info('log: IPN payment is completed and deposit status is found as pending.');
@@ -965,13 +966,17 @@ class WalletService
                 SERVICE_RESPONSE_MESSAGE => __('Failed to update deposit status.'),
             ];
         }
+
+        return [
+            SERVICE_RESPONSE_STATUS => SERVICE_RESPONSE_SUCCESS,
+        ];
     }
 
     /**
      * @param $withdrawal
      * @return array
      */
-    public function withdraw(mixed $withdrawal): mixed
+    public function withdraw(mixed $withdrawal): array
     {
         // make transaction
         $date = now();

@@ -11,7 +11,7 @@ class PublicApiRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,7 +21,7 @@ class PublicApiRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         $rules = [
             'command' => "required|in:" . array_to_string(allowed_public_api_command(), ',', false),

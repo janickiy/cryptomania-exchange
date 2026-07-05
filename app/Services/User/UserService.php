@@ -10,13 +10,14 @@ use App\Repositories\User\Interfaces\UserInfoInterface;
 use App\Repositories\User\Interfaces\UserInterface;
 use App\Repositories\User\Interfaces\UserSettingInterface;
 use App\Repositories\User\Trader\Interfaces\WalletInterface;
+use App\Models\User\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function generate(mixed $parameters): mixed
+    public function generate(mixed $parameters): User|false
     {
         $userParams = Arr::only($parameters, ['email', 'username', 'is_email_verified', 'is_financial_active', 'is_accessible_under_maintenance', 'is_active']);
 

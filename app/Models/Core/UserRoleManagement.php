@@ -4,6 +4,7 @@ namespace App\Models\Core;
 
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 
@@ -17,7 +18,7 @@ class UserRoleManagement extends Model implements AuditableInterface
 
     protected $fakeFields = ['role_name', 'route_group'];
 
-    public function getRouteGroupAttribute(mixed $value): mixed
+    public function getRouteGroupAttribute(mixed $value): ?array
     {
         return json_decode($value, true);
     }
@@ -30,7 +31,7 @@ class UserRoleManagement extends Model implements AuditableInterface
         $this->attributes['route_group'] = json_encode($value);
     }
 
-    public function users(): mixed
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }

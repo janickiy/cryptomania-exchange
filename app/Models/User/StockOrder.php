@@ -4,6 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Backend\StockPair;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockOrder extends Model
 {
@@ -39,12 +40,12 @@ class StockOrder extends Model
         'taker_fee',
     ];
 
-    public function stockPair(): mixed
+    public function stockPair(): BelongsTo
     {
         return $this->belongsTo(StockPair::class);
     }
 
-    public function user(): mixed
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

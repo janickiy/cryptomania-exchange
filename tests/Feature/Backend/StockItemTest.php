@@ -3,20 +3,19 @@
 namespace Tests\Feature\Backend;
 
 use App\Models\Backend\StockItem;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class StockItemTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
+
     /**
      * A basic test example.
-     *
-     * @return void
      */
-    public function test_create_stock_item()
+    public function test_create_stock_item(): void
     {
         $payload = [
             'item' => $this->faker->word,
@@ -39,8 +38,6 @@ class StockItemTest extends TestCase
             'wallet_address' => $this->faker->word,
             'network_fee' => 0.01,
         ];
-
-
 
         $stockItem = StockItem::create($payload);
 

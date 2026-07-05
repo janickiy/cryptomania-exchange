@@ -31,9 +31,9 @@ class ReportsService
      * @param null $userId
      * @param null $id
      * @param null $transactionType
-     * @return mixed
+     * @return array
      */
-    public function deposits(mixed $userId = null, mixed $id = null, mixed $transactionType = null): mixed
+    public function deposits(mixed $userId = null, mixed $id = null, mixed $transactionType = null): array
     {
         $searchFields = [
             ['ref_id', __('Reference ID')],
@@ -85,9 +85,9 @@ class ReportsService
      * @param null $userId
      * @param null $id
      * @param null $transactionType
-     * @return mixed
+     * @return array
      */
-    public function withdrawals(mixed $userId = null, mixed $id = null, mixed $transactionType = null): mixed
+    public function withdrawals(mixed $userId = null, mixed $id = null, mixed $transactionType = null): array
     {
         $searchFields = [
             ['ref_id', __('Reference ID')],
@@ -139,9 +139,9 @@ class ReportsService
      * @param null $userId
      * @param null $categoryType
      * @param null $stockPairId
-     * @return mixed
+     * @return array
      */
-    public function trades(mixed $userId = null, mixed $categoryType = null, mixed $stockPairId = null): mixed
+    public function trades(mixed $userId = null, mixed $categoryType = null, mixed $stockPairId = null): array
     {
         $searchFields = [
             ['stock_exchanges.stock_pair_id', __('Market')],
@@ -200,9 +200,9 @@ class ReportsService
      * @param null $userId
      * @param null $categoryType
      * @param null $stockPairId
-     * @return mixed
+     * @return array
      */
-    public function openOrders(mixed $userId = null, mixed $categoryType = null, mixed $stockPairId = null): mixed
+    public function openOrders(mixed $userId = null, mixed $categoryType = null, mixed $stockPairId = null): array
     {
         $searchFields = [
             ['stock_orders.stock_pair_id', __('Market')],
@@ -266,9 +266,9 @@ class ReportsService
 
     /**
      * @param $id
-     * @return mixed
+     * @return array
      */
-    public function referralUsers(mixed $id): mixed
+    public function referralUsers(mixed $id): array
     {
         $searchFields = [
             ['user_infos.first_name', __('First Name')],
@@ -301,9 +301,9 @@ class ReportsService
     /**
      * @param $referrerUserId
      * @param $referralUserId
-     * @return mixed
+     * @return array
      */
-    public function referralEarning(mixed $referrerUserId, mixed $referralUserId): mixed
+    public function referralEarning(mixed $referrerUserId, mixed $referralUserId): array
     {
         $searchFields = [
             ['stock_items.item', __('Stock Item')],

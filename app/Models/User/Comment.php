@@ -3,6 +3,8 @@
 namespace App\Models\User;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Comment extends Model
 {
@@ -12,13 +14,13 @@ class Comment extends Model
 
     protected $fakeFields = ['commentable_id', 'content', 'commentable_type'];
 
-    public function user(): mixed
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
 
-    public function commentable(): mixed
+    public function commentable(): MorphTo
     {
         return $this->morphTo();
     }

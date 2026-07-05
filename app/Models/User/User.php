@@ -3,6 +3,9 @@
 namespace App\Models\User;
 
 use App\Models\Core\UserRoleManagement;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
@@ -29,22 +32,22 @@ class User extends Authenticatable implements AuditableInterface
         'password', 'remember_token',
     ];
 
-    public function userRoleManagement(): mixed
+    public function userRoleManagement(): BelongsTo
     {
         return $this->belongsTo(UserRoleManagement::class);
     }
 
-    public function userInfo(): mixed
+    public function userInfo(): HasOne
     {
         return $this->hasOne(UserInfo::class);
     }
 
-    public function userSetting(): mixed
+    public function userSetting(): HasOne
     {
         return $this->hasOne(UserSetting::class);
     }
 
-    public function wallets(): mixed
+    public function wallets(): HasMany
     {
         return $this->hasMany(Wallet::class);
     }

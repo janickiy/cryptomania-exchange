@@ -11,7 +11,7 @@ class ModuleRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,7 +21,7 @@ class ModuleRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         $id = $this->route('module');
         return [

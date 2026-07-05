@@ -32,7 +32,7 @@ class MakeInterface extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub(): mixed
+    protected function getStub(): string
     {
         return __DIR__ . '/Stubs/interface.plain.stub';
     }
@@ -43,7 +43,7 @@ class MakeInterface extends GeneratorCommand
      * @param  string $rootNamespace
      * @return string
      */
-    protected function getDefaultNamespace(mixed $rootNamespace): mixed
+    protected function getDefaultNamespace(mixed $rootNamespace): string
     {
         return $rootNamespace . '\Repositories';
     }

@@ -12,7 +12,7 @@ class UserSettingRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class UserSettingRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         return [
             'language' => 'required|in:' . array_to_string(language()),

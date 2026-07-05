@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\HttpFoundation\Response;
 
 class MaintenancePermission
 {
@@ -15,7 +16,7 @@ class MaintenancePermission
      * @param \Closure $next
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next): mixed
+    public function handle(mixed $request, Closure $next): Response
     {
         $auth = Auth::check();
         $is_under_maintenance = admin_settings('maintenance_mode');

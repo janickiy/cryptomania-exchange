@@ -5,6 +5,7 @@ namespace App\Repositories\Core\Eloquent;
 use App\Models\Core\UserRoleManagement;
 use App\Repositories\BaseRepository;
 use App\Repositories\Core\Interfaces\UserRoleManagementInterface;
+use Illuminate\Support\Collection;
 
 class UserRoleManagementRepository extends BaseRepository implements UserRoleManagementInterface
 {
@@ -21,12 +22,12 @@ class UserRoleManagementRepository extends BaseRepository implements UserRoleMan
         $this->model = $model;
     }
 
-    public function getUserRoles(): mixed
+    public function getUserRoles(): Collection
     {
         return $this->model->where('is_active', ACTIVE_STATUS_ACTIVE)->pluck('role_name', 'id');
     }
 
-    public function getDefaultRole(): mixed
+    public function getDefaultRole(): UserRoleManagement
     {
         return $this->model->where('id', admin_settings('default_role_to_register'))->firstOrFail();
     }
@@ -36,7 +37,7 @@ class UserRoleManagementRepository extends BaseRepository implements UserRoleMan
      * @return false
      * @throws \Exception
      */
-    public function create(array $parameters): mixed
+    public function create(array $parameters): UserRoleManagement|false
     {
         if ($userRole = $this->model->create($parameters)) {
             cache()->forever("userRoleManagement{$userRole->id}", $userRole->route_group);
@@ -53,7 +54,7 @@ class UserRoleManagementRepository extends BaseRepository implements UserRoleMan
      * @return bool
      * @throws \Exception
      */
-    public function update(array $parameters, int $id, string $attribute = 'id'): mixed
+    public function update(array $parameters, int $id, string $attribute = 'id'): bool
     {
 
         $userRole = $this->getFirstByConditions([$attribute => $id]);
@@ -71,7 +72,7 @@ class UserRoleManagementRepository extends BaseRepository implements UserRoleMan
      * @param int $id
      * @return bool
      */
-    public function deleteById(int $id): mixed
+    public function deleteById(int $id): bool
     {
         $userRoleManagement = $this->getFirstById($id);
 
@@ -81,7 +82,7 @@ class UserRoleManagementRepository extends BaseRepository implements UserRoleMan
         $userCount = $userRoleManagement->users->count();
 
         if ($userCount <= 0) {
-            return $userRoleManagement->delete();
+            return (bool) $userRoleManagement->delete();
         }
 
         return false;
@@ -91,7 +92,7 @@ class UserRoleManagementRepository extends BaseRepository implements UserRoleMan
      * @param int $id
      * @return bool
      */
-    public function isNonDeletableRole(int $id): mixed
+    public function isNonDeletableRole(int $id): bool
     {
         $rolesFromAdminSetting =admin_settings(['default_role_to_register','signupable_user_roles']);
         $defaultRoles = config('commonconfig.fixed_roles');
@@ -107,7 +108,7 @@ class UserRoleManagementRepository extends BaseRepository implements UserRoleMan
      * @param string $attribute
      * @return false|string
      */
-    public function toggleStatusById(int $id, string $attribute ='is_active'): mixed
+    public function toggleStatusById(int $id, string $attribute ='is_active'): string|false
     {
         $userRoleManagement = $this->getFirstById($id);
 

@@ -25,7 +25,7 @@ class AdminSettingService
      * @return array
      * @throws \Exception
      */
-    public function adminUpdate(Request $request, mixed $adminSettingType = null): mixed
+    public function adminUpdate(Request $request, mixed $adminSettingType = null): array
     {
         $input = $request->adminSettings;
         $updatableAttributes = [];
@@ -163,7 +163,7 @@ class AdminSettingService
      * @param $rules
      * @return bool
      */
-    protected function _adminSettingValidation(mixed $key, mixed $val, mixed $rules): mixed
+    protected function _adminSettingValidation(mixed $key, mixed $val, mixed $rules): bool
     {
         if (isset($rules[$key]['data_type'])) {
             if (
@@ -208,7 +208,7 @@ class AdminSettingService
      * @param $image
      * @return bool
      */
-    private function _imageValidation(mixed $image): mixed
+    private function _imageValidation(mixed $image): bool
     {
         if (in_array($image->getMimeType(), ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'])) {
             return true;
@@ -221,7 +221,7 @@ class AdminSettingService
      * @param false $viewOnly
      * @return array
      */
-    public function adminForm(mixed $data = null, mixed $viewOnly = false): mixed
+    public function adminForm(mixed $data = null, mixed $viewOnly = false): array
     {
         $dbData = [];
         $output = '';
@@ -277,28 +277,28 @@ class AdminSettingService
      * @param $value
      * @param $data_array
      * @param $value_data
-     * @return mixed|string
+     * @return string
      */
-    private function _viewOutput(mixed $key, mixed $value, mixed $data_array, mixed $value_data): mixed
+    private function _viewOutput(mixed $key, mixed $value, mixed $data_array, mixed $value_data): string
     {
         if (in_array($value, ['checkbox'])) {
             if (is_json($value_data)) {
                 $value_data = json_decode($value_data, true);
                 $output = implode(', ', array_intersect_key($data_array, array_flip($value_data)));
-                return !empty($output) ? $output : $value_data;
+                return !empty($output) ? $output : implode(', ', $value_data);
             } elseif (is_array($value_data)) {
                 return implode(', ', array_intersect_key($data_array, array_flip($value_data)));
             } elseif (!empty($data_array)) {
-                return isset($data_array[$value_data]) ? $data_array[$value_data] : $value_data;
+                return (string) (isset($data_array[$value_data]) ? $data_array[$value_data] : $value_data);
             } else {
-                return $value_data;
+                return (string) $value_data;
             }
         } elseif (in_array($value, ['image'])) {
             return '<img width="100" src="' . get_image($value_data) . '" />';
         } elseif (!empty($data_array)) {
-            return isset($data_array[$value_data]) ? $data_array[$value_data] : $value_data;
+            return (string) (isset($data_array[$value_data]) ? $data_array[$value_data] : $value_data);
         } else {
-            return $value_data;
+            return (string) $value_data;
         }
     }
 
@@ -312,7 +312,7 @@ class AdminSettingService
      * @param $input_end_tag
      * @return string
      */
-    private function _text(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): mixed
+    private function _text(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): string
     {
         return $input_start_tag . '<input class="' . $input_class . '" type="text" value="' . $value_data . '" name="adminSettings[' . $key . ']" placeholder="' . $place_holder . '">' . $input_end_tag;
     }
@@ -329,7 +329,7 @@ class AdminSettingService
      * @param $input_end_tag
      * @return string
      */
-    private function _image(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): mixed
+    private function _image(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): string
     {
         $output = $input_start_tag . '<input class="' . $input_class . '" type="file" name="adminSettings[' . $key . ']" placeholder="' . $place_holder . '">';
         if (empty($value_data)) {
@@ -350,7 +350,7 @@ class AdminSettingService
      * @param $input_end_tag
      * @return string
      */
-    private function _textarea(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): mixed
+    private function _textarea(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): string
     {
         return $input_start_tag . '<textarea class="' . $input_class . '" name="adminSettings[' . $key . ']" placeholder="' . $place_holder . '">' . $value_data . '</textarea>' . $input_end_tag;
     }
@@ -367,7 +367,7 @@ class AdminSettingService
      * @param $input_end_tag
      * @return string
      */
-    private function _select(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): mixed
+    private function _select(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): string
     {
         $output = $input_start_tag . '<select class="' . $input_class . '" name="adminSettings[' . $key . ']">';
         foreach ($data_array as $datakey => $dataval) {
@@ -389,7 +389,7 @@ class AdminSettingService
      * @param $input_end_tag
      * @return string
      */
-    private function _checkbox(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): mixed
+    private function _checkbox(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): string
     {
         $output = '';
         if (is_json($value_data)) {
@@ -413,7 +413,7 @@ class AdminSettingService
      * @param $input_end_tag
      * @return string
      */
-    private function _radio(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): mixed
+    private function _radio(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): string
     {
         $output = '';
         foreach ($data_array as $datakey => $dataval) {
@@ -434,7 +434,7 @@ class AdminSettingService
      * @param $input_end_tag
      * @return string
      */
-    private function _toggle(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): mixed
+    private function _toggle(mixed $key, mixed $data_array, mixed $input_class, mixed $value_data, mixed $place_holder, mixed $input_start_tag, mixed $input_end_tag): string
     {
         if (count($data_array) != 2) {
             return '';

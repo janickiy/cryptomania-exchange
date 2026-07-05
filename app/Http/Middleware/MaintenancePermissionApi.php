@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class MaintenancePermissionApi
 {
@@ -14,7 +15,7 @@ class MaintenancePermissionApi
      * @param \Closure $next
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next): mixed
+    public function handle(mixed $request, Closure $next): Response
     {
         $auth = Auth::check();
         $is_under_maintenance = admin_settings('maintenance_mode');

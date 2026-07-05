@@ -29,7 +29,7 @@ class ResetPassword extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build(): mixed
+    public function build(): static
     {
         return $this->markdown('email.core.reset_password_link');
     }

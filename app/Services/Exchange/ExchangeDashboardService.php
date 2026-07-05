@@ -2,9 +2,11 @@
 
 namespace App\Services\Exchange;
 
+use App\Models\Backend\StockPair;
 use App\Repositories\User\Admin\Interfaces\StockPairInterface;
 use App\Repositories\User\Trader\Interfaces\StockOrderInterface;
 use App\Repositories\User\Trader\Interfaces\WalletInterface;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 
@@ -12,11 +14,13 @@ class ExchangeDashboardService
 {
     /**
      * @param $pair
-     * @return mixed
+     * @return StockPair|null
      */
-    public function getDefaultStockPair(mixed $pair): mixed
+    public function getDefaultStockPair(mixed $pair): ?StockPair
     {
         $stockPairRepository = app(StockPairInterface::class);
+        $stockPair = null;
+
         if (empty($pair)) {
             $stockPairId = Cookie::get('stockPairID');
 
@@ -46,7 +50,7 @@ class ExchangeDashboardService
      * @param $stockPairID
      * @return array|false
      */
-    public function get24HrPairDetail(mixed $stockPairID): mixed
+    public function get24HrPairDetail(mixed $stockPairID): array|false
     {
         $conditions = [
             'stock_pairs.id' => $stockPairID,
@@ -79,7 +83,7 @@ class ExchangeDashboardService
         return $pair24HrDetail;
     }
 
-    public function getStockMarket(): mixed
+    public function getStockMarket(): Collection
     {
         $conditions = [
             'stock_pairs.is_active' => ACTIVE_STATUS_ACTIVE,
@@ -101,7 +105,7 @@ class ExchangeDashboardService
      * @param int $category
      * @return array
      */
-    public function getOrders(mixed $stockPairID, mixed $lastPrice = null, mixed $exchangeType = EXCHANGE_SELL, mixed $category = CATEGORY_EXCHANGE): mixed
+    public function getOrders(mixed $stockPairID, mixed $lastPrice = null, mixed $exchangeType = EXCHANGE_SELL, mixed $category = CATEGORY_EXCHANGE): array
     {
         $conditions = [
             'stock_pair_id' => $stockPairID,
@@ -132,7 +136,7 @@ class ExchangeDashboardService
      * @param $stockPairId
      * @return array
      */
-    public function getWalletSummary(mixed $stockPairId): mixed
+    public function getWalletSummary(mixed $stockPairId): array
     {
         $walletRepository = app(WalletInterface::class);
 

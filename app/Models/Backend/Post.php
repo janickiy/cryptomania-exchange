@@ -5,6 +5,8 @@ namespace App\Models\Backend;
 use App\Models\User\Comment;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Post extends Model
 {
@@ -14,12 +16,12 @@ class Post extends Model
 
     protected $fakeFields = ['title', 'content', 'featured_image', 'is_published'];
 
-    public function user(): mixed
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function comments(): mixed
+    public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
     }

@@ -4,7 +4,7 @@ namespace App\Services\Api;
 
 abstract class Bitcoind implements CryptoStockApiInterface
 {
-    public function generateAddress(): mixed
+    public function generateAddress(): array
     {
         try {
             $response = $this->bitcoind->getnewaddress("");
@@ -33,7 +33,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
      * @param $txid
      * @return array|string[]
      */
-    public function getTxnInfoByTxnId(mixed $txid): mixed
+    public function getTxnInfoByTxnId(mixed $txid): array
     {
         try {
             $response = $this->bitcoind->gettransaction($txid);
@@ -80,7 +80,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
      * @param $amount
      * @return array|string[]
      */
-    public function sendToAddress(mixed $address, mixed $amount): mixed
+    public function sendToAddress(mixed $address, mixed $amount): array
     {
         try {
 
@@ -119,7 +119,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
      * @param int $block
      * @return false|string
      */
-    public function getEstimatedFee(mixed $block = 6): mixed
+    public function getEstimatedFee(mixed $block = 6): string|false
     {
         try {
             $response = $this->bitcoind->estimatesmartfee($block);
@@ -134,7 +134,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
         }
     }
 
-    public function getBalance(): mixed
+    public function getBalance(): string|int
     {
         try {
             $response = $this->bitcoind->getbalance("*");
@@ -154,7 +154,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
      * @param $server_data
      * @return array|string[]
      */
-    public function validateIPN(mixed $post_data, mixed $server_data): mixed
+    public function validateIPN(mixed $post_data, mixed $server_data): array
     {
         if (!isset($post_data['txn_id'])) {
             return ['error' => __('Invalid bitcoin ipn request.')];

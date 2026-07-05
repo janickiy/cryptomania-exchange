@@ -41,7 +41,7 @@ class CancelStockOrder implements ShouldQueue
      *
      * @return bool
      */
-    public function handle(): mixed
+    public function handle(): ?bool
     {
         $stockOrderRepository = app(StockOrderInterface::class);
 
@@ -168,5 +168,7 @@ class CancelStockOrder implements ShouldQueue
             }
             event(new BroadcastPrivateCancelOrder($stockOrder));
         }
+
+        return true;
     }
 }

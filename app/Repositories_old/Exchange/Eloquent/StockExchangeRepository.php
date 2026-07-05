@@ -5,6 +5,7 @@ namespace App\Repositories\Exchange\Eloquent;
 use App\Models\Backend\StockExchange;
 use App\Repositories\BaseRepository;
 use App\Repositories\Exchange\Interfaces\StockExchangeInterface;
+use Illuminate\Support\Collection;
 
 class StockExchangeRepository extends BaseRepository implements StockExchangeInterface
 {
@@ -26,7 +27,7 @@ class StockExchangeRepository extends BaseRepository implements StockExchangeInt
      * @param int $limit
      * @return mixed
      */
-    public function getLatest(array $conditions, int $limit): mixed
+    public function getLatest(array $conditions, int $limit): Collection
     {
         return $this->model
             ->select(['stock_exchanges.price','stock_exchanges.amount','stock_exchanges.exchange_type', 'stock_exchanges.created_at as date'])
@@ -41,7 +42,7 @@ class StockExchangeRepository extends BaseRepository implements StockExchangeInt
      * @param array $conditions
      * @return mixed
      */
-    public function count(array $conditions): mixed
+    public function count(array $conditions): int
     {
         return $this->model->where($conditions)->count();
     }

@@ -6,6 +6,7 @@ use App\DTO\Admin\StockItemData;
 use App\Repositories\User\Admin\Interfaces\StockItemInterface;
 use App\Repositories\User\Trader\Interfaces\WalletInterface;
 use App\Services\Core\FileUploadService;
+use Illuminate\Database\Eloquent\Model;
 
 class StockItemService
 {
@@ -16,7 +17,7 @@ class StockItemService
     ) {
     }
 
-    public function create(StockItemData $data): mixed
+    public function create(StockItemData $data): Model|false
     {
         return $this->stockItem->createFromDto($this->withUploadedEmoji($data));
     }

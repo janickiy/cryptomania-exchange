@@ -29,7 +29,7 @@ class AccountCreated extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build(): mixed
+    public function build(): static
     {
         return $this->markdown('email.user.account_created')->subject(__('Your account has been created on :company', ['company' => config('app.name')]));
     }

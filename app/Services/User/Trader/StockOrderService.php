@@ -11,6 +11,7 @@ use App\Repositories\User\Trader\Interfaces\StockOrderInterface;
 use App\Repositories\User\Trader\Interfaces\WalletInterface;
 use App\Services\Core\DataListService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -38,7 +39,7 @@ class StockOrderService
      * @param $request
      * @return array
      */
-    public function order(mixed $request): mixed
+    public function order(mixed $request): array
     {
         $user = Auth::user();
 
@@ -163,7 +164,7 @@ class StockOrderService
 
     }
 
-    public function _deductBalanceFromWallet(): mixed
+    public function _deductBalanceFromWallet(): Model|bool
     {
         if ($this->request->exchange_type == EXCHANGE_BUY) {
             $getRelevantWalletId = $this->stockPair->base_item_id;
@@ -183,7 +184,7 @@ class StockOrderService
         return app(WalletInterface::class)->updateByConditions($attributes, $conditions);
     }
 
-    public function _increaseOnOrderOnStockPair(): mixed
+    public function _increaseOnOrderOnStockPair(): Model|bool
     {
         if ($this->request->exchange_type == EXCHANGE_BUY) {
             $attributes['base_item_buy_order_volume'] = DB::raw('base_item_buy_order_volume + ' . bcmul($this->request->price, $this->request->amount));
@@ -196,7 +197,7 @@ class StockOrderService
         return app(StockPairInterface::class)->update($attributes, $this->stockPair->id);
     }
 
-    public function _placeOrder(): mixed
+    public function _placeOrder(): Model|false
     {
         $orderInput = [
             'user_id' => Auth::id(),
@@ -218,9 +219,9 @@ class StockOrderService
     /**
      * @param $stockOrder
      * @param $wallet
-     * @return mixed
+     * @return bool
      */
-    private function insertTransactionHistories(mixed $stockOrder, mixed $wallet): mixed
+    private function insertTransactionHistories(mixed $stockOrder, mixed $wallet): bool
     {
         $amount = $stockOrder->exchange_type == EXCHANGE_BUY ? bcmul($stockOrder->amount, $stockOrder->price) : $stockOrder->amount;
 
@@ -290,7 +291,7 @@ class StockOrderService
      * @param $id
      * @return array
      */
-    public function cancelOrder(mixed $id): mixed
+    public function cancelOrder(mixed $id): array
     {
         dispatch(new CancelStockOrder($id));
 
@@ -334,9 +335,9 @@ class StockOrderService
     /**
      * @param null $categoryType
      * @param null $stockPairId
-     * @return mixed
+     * @return array
      */
-    public function openOrders(mixed $categoryType = null, mixed $stockPairId = null): mixed
+    public function openOrders(mixed $categoryType = null, mixed $stockPairId = null): array
     {
         $searchFields = [
             ['stock_orders.stock_pair_id', __('Market')],

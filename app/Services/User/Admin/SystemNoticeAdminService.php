@@ -4,6 +4,7 @@ namespace App\Services\User\Admin;
 
 use App\DTO\Admin\SystemNoticeData;
 use App\Repositories\Core\Interfaces\SystemNoticeInterface;
+use Illuminate\Database\Eloquent\Model;
 
 class SystemNoticeAdminService
 {
@@ -11,7 +12,7 @@ class SystemNoticeAdminService
     {
     }
 
-    public function create(SystemNoticeData $data): mixed
+    public function create(SystemNoticeData $data): Model|false
     {
         return $this->systemNotice->createFromDto($data);
     }

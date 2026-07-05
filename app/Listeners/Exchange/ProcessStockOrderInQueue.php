@@ -34,7 +34,7 @@ class ProcessStockOrderInQueue implements ShouldQueue
         app(StockExchangeService::class, [$event->order])->process();
     }
 
-    public function shouldQueue(mixed $event): mixed
+    public function shouldQueue(mixed $event): bool
     {
         return (
             $event->order->status == STOCK_ORDER_PENDING &&

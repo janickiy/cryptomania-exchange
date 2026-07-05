@@ -6,6 +6,7 @@ namespace App\Repositories\User\Eloquent;
 use App\Models\User\User;
 use App\Repositories\BaseRepository;
 use App\Repositories\User\Interfaces\UserInterface;
+use Illuminate\Support\Collection;
 
 class UserRepository extends BaseRepository implements UserInterface
 {
@@ -26,7 +27,7 @@ class UserRepository extends BaseRepository implements UserInterface
      * @param array $conditions
      * @return mixed
      */
-    public function getCountByConditions(array $conditions): mixed
+    public function getCountByConditions(array $conditions): int
     {
         return $this->model->where($conditions)->count();
     }
@@ -36,7 +37,7 @@ class UserRepository extends BaseRepository implements UserInterface
      * @param array $conditions
      * @return mixed
      */
-    public function getByUserIds(array $ids, array $conditions = []): mixed
+    public function getByUserIds(array $ids, array $conditions = []): Collection
     {
         $model = $this->model->whereIn('id', $ids);
 

@@ -12,7 +12,7 @@ class StockOrderRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class StockOrderRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         $stockOrder = [
             'exchange_type' => 'required|in:' . array_to_string(exchange_type()),
@@ -39,7 +39,7 @@ class StockOrderRequest extends Request
         return $stockOrder;
     }
 
-    public function messages(): mixed
+    public function messages(): array
     {
         $errorMessage = __('Invalid Request.');
 

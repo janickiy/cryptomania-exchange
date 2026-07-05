@@ -5,6 +5,7 @@ namespace App\Repositories\User\TradeAnalyst\Eloquent;
 use App\Models\Backend\Post;
 use App\Repositories\BaseRepository;
 use App\Repositories\User\TradeAnalyst\Interfaces\PostInterface;
+use Illuminate\Support\Collection;
 
 class PostRepository extends BaseRepository implements PostInterface
 {
@@ -27,7 +28,7 @@ class PostRepository extends BaseRepository implements PostInterface
      * @param array $relations
      * @return mixed
      */
-    public function getLatestByCondition(array $conditions, mixed $limit = null, mixed $relations = []): mixed
+    public function getLatestByCondition(array $conditions, mixed $limit = null, mixed $relations = []): Collection
     {
         if (is_null($limit)) {
             return $this->model->where($conditions)->with($relations)->latest()->get();

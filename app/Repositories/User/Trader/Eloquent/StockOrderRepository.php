@@ -5,6 +5,7 @@ namespace App\Repositories\User\Trader\Eloquent;
 use App\Models\User\StockOrder;
 use App\Repositories\BaseRepository;
 use App\Repositories\User\Trader\Interfaces\StockOrderInterface;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class StockOrderRepository extends BaseRepository implements StockOrderInterface
@@ -26,7 +27,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param StockOrder $stockOrder
      * @return \Illuminate\Support\Collection
      */
-    public function getOppositeStockOrders(StockOrder $stockOrder): mixed
+    public function getOppositeStockOrders(StockOrder $stockOrder): Collection
     {
         $oppositeStockOrderType = $stockOrder->exchange_type == EXCHANGE_BUY ? EXCHANGE_SELL : EXCHANGE_BUY;
         $sort = $stockOrder->exchange_type == EXCHANGE_BUY ? 'asc' : 'desc';
@@ -43,7 +44,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $conditions
      * @return mixed
      */
-    public function getOrders(mixed $conditions): mixed
+    public function getOrders(mixed $conditions): Collection
     {
         $orderBy = $conditions['exchange_type'] == EXCHANGE_BUY ? 'desc' : 'asc';
         return $this->model
@@ -59,7 +60,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $conditions
      * @return mixed
      */
-    public function getMyOpenOrders(mixed $conditions): mixed
+    public function getMyOpenOrders(mixed $conditions): Collection
     {
         return $this->model
             ->where($conditions)
@@ -72,7 +73,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $conditions
      * @return mixed
      */
-    public function getTotalStockOrder(mixed $conditions): mixed
+    public function getTotalStockOrder(mixed $conditions): ?StockOrder
     {
         return $this->model
             ->where($conditions)
@@ -85,7 +86,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $stockPrice
      * @return mixed
      */
-    public function getStopLimitOrders(mixed $conditions, mixed $stockPrice): mixed
+    public function getStopLimitOrders(mixed $conditions, mixed $stockPrice): Collection
     {
         return $this->model->where($conditions)->where(function ($q) use ($stockPrice) {
             $q->where(['exchange_type' => EXCHANGE_BUY, ['stop_limit', '<=', $stockPrice]])
@@ -97,7 +98,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $ids
      * @return mixed
      */
-    public function getStopLimitOrdersByIds(mixed $ids): mixed
+    public function getStopLimitOrdersByIds(mixed $ids): Collection
     {
         return $this->model->whereIn('id', $ids)->where('status', STOCK_ORDER_PENDING)->get();
     }
@@ -106,7 +107,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param array $conditions
      * @return mixed
      */
-    public function count(array $conditions): mixed
+    public function count(array $conditions): int
     {
         return $this->model->where($conditions)->count();
     }

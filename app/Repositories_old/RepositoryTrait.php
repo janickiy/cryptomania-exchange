@@ -10,7 +10,7 @@ trait RepositoryTrait
      * @param null $default
      * @return false|mixed
      */
-    protected function _column_query(mixed $columns, mixed $key = 'sort', mixed $default = null): mixed
+    protected function _column_query(mixed $columns, mixed $key = 'sort', mixed $default = null): string|false
     {
         $data = \Request::get($key);
         if (is_numeric($data) && array_key_exists($data, array_column($columns, 0))) {
@@ -23,7 +23,7 @@ trait RepositoryTrait
      * @param $where
      * @return mixed
      */
-    protected function _where_builder(mixed $where): mixed
+    protected function _where_builder(mixed $where): object
     {
         $model = $this->model;
         $output = $this->_subWhere($model, $where);
@@ -35,7 +35,7 @@ trait RepositoryTrait
      * @param $where
      * @return mixed
      */
-    protected function _subWhere(mixed $model, mixed $where): mixed
+    protected function _subWhere(mixed $model, mixed $where): object
     {
         if (count($where) <= 0) {
             return $model;
@@ -98,7 +98,7 @@ trait RepositoryTrait
      * @param $values
      * @return array|false|int[]|string[]
      */
-    private function _getUpdatableFields(mixed $values): mixed
+    private function _getUpdatableFields(mixed $values): array|false
     {
         $fields = [];
         $conditions = [];
@@ -122,7 +122,7 @@ trait RepositoryTrait
      * @param $relations
      * @return array|false|string[]
      */
-    public function extractToArray(mixed $relations): mixed
+    public function extractToArray(mixed $relations): array
     {
 
         if (is_string($relations)) {

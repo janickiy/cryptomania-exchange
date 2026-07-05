@@ -32,12 +32,12 @@ class BroadcastSettlementOrders implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn(): mixed
+    public function broadcastOn(): Channel
     {
         return new Channel(channel_prefix() .'exchange.'.$this->stockPairId);
     }
 
-    public function broadcastWith(): mixed
+    public function broadcastWith(): array
     {
         return $this->orders;
     }

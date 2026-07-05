@@ -36,7 +36,7 @@ class ReversWithdrawal implements ShouldQueue
      *
      * @return void
      */
-    public function handle(): mixed
+    public function handle(): void
     {
         try {
             $withdrawalRepository = app(WithdrawalInterface::class);
@@ -90,7 +90,7 @@ class ReversWithdrawal implements ShouldQueue
                 'data' => __("Your withdrawal request of :amount :stockItem to :address has been declined.", ['amount' => $withdrawal->amount, 'stockItem' => $withdrawal->stockItem->item, 'address' => $withdrawal->address])
             ]);
 
-            return null;
+            return;
         } catch (\Exception $exception) {
             logs()->error('Failed to decline withdrawal[ id=' . $this->withdrawalId . '] : ' . $exception->getMessage());
         }

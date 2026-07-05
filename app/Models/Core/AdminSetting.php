@@ -17,7 +17,7 @@ class AdminSetting extends Model implements AuditableInterface
         'value',
     ];
 
-    public function getRouteGroupAttribute(mixed $value): mixed
+    public function getRouteGroupAttribute(mixed $value): ?array
     {
         return json_decode($value,true);
     }

@@ -5,6 +5,7 @@ namespace App\Services\User\Admin;
 use App\DTO\Admin\StockPairData;
 use App\Exceptions\JobException;
 use App\Repositories\User\Admin\Interfaces\StockPairInterface;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class StockPairService
@@ -13,7 +14,7 @@ class StockPairService
     {
     }
 
-    public function create(StockPairData $data): mixed
+    public function create(StockPairData $data): Model|false
     {
         return DB::transaction(function () use ($data) {
             if ($data->isDefault === ACTIVE_STATUS_ACTIVE) {

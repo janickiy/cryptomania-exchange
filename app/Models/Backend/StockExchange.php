@@ -4,6 +4,7 @@ namespace App\Models\Backend;
 
 use App\Models\User\StockOrder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockExchange extends Model
 {
@@ -25,7 +26,7 @@ class StockExchange extends Model
         'is_maker',
     ];
 
-    public function stockOrder(): mixed
+    public function stockOrder(): BelongsTo
     {
         return $this->belongsTo(StockOrder::class);
     }

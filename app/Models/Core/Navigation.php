@@ -20,7 +20,8 @@ class Navigation extends Model implements AuditableInterface
      * @param $value
      * @return mixed
      */
-    public function getNavigationItemsAttribute(mixed $value): mixed{
+    public function getNavigationItemsAttribute(mixed $value): ?array
+    {
         return json_decode($value, true);
     }
 
@@ -28,7 +29,8 @@ class Navigation extends Model implements AuditableInterface
      * @param $value
      * @return false|string
      */
-    public function setNavigationItemsAttribute(mixed $value): mixed{
+    public function setNavigationItemsAttribute(mixed $value): string|false
+    {
         return $this->attributes['navigation_items'] =json_encode($value);
     }
 }

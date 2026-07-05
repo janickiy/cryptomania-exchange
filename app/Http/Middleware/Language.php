@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Core\AdminSetting;
 use Closure;
 use Illuminate\Support\Facades\Cache;
+use Symfony\Component\HttpFoundation\Response;
 
 class Language
 {
@@ -17,7 +18,7 @@ class Language
      * @return mixed
      * @throws \Exception
      */
-    public function handle(mixed $request, Closure $next): mixed
+    public function handle(mixed $request, Closure $next): Response
     {
 
         $locale = $request->segment(1);

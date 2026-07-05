@@ -34,13 +34,13 @@ class BroadcastPrivateStockExchange implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn(): mixed
+    public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel(channel_prefix() .'exchange.' . $this->stockPairId . '.' . $this->userId);
     }
 
 
-    public function broadcastWith(): mixed
+    public function broadcastWith(): array
     {
         return $this->stockExchange;
     }

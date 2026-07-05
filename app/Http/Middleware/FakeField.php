@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use Symfony\Component\HttpFoundation\Response;
 
 class FakeField
 {
@@ -15,7 +16,7 @@ class FakeField
      * @param  \Closure $next
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next): mixed
+    public function handle(mixed $request, Closure $next): Response
     {
         $allFields = $this->setFakeFields($request);
         $this->setOriginalFieldInRequest($request, $allFields);
@@ -26,7 +27,7 @@ class FakeField
      * @param $request
      * @return array
      */
-    public function setFakeFields(mixed $request): mixed
+    public function setFakeFields(mixed $request): array
     {
         $models = $this->getModels();
         $base_request_key = $request->get('base_key');
@@ -66,7 +67,7 @@ class FakeField
         return $allFields;
     }
 
-    public function getModels(): mixed
+    public function getModels(): array
     {
         $models = [];
         $modelPath = config('fakefields.model_path');
@@ -92,7 +93,7 @@ class FakeField
      * @return array|mixed
      * @throws \ReflectionException
      */
-    public function accessProtected(mixed $obj, mixed $prop): mixed
+    public function accessProtected(mixed $obj, mixed $prop): array
     {
         $reflection = new ReflectionClass($obj);
         if ($reflection->hasProperty($prop)) {

@@ -29,7 +29,7 @@ class Registered extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build(): mixed
+    public function build(): static
     {
         return $this->markdown('email.user.registered')->subject(__('Account verification link'));
     }

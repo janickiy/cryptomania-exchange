@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationPermission
 {
@@ -13,7 +14,7 @@ class RegistrationPermission
      * @param \Closure $next
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next): mixed
+    public function handle(mixed $request, Closure $next): Response
     {
         if (admin_settings('registration_active_status') != ACTIVE_STATUS_ACTIVE) {
             abort(404, __('Registration is currently disabled.'));

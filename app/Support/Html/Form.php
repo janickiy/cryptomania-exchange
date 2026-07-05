@@ -159,7 +159,7 @@ class Form
         return (string) ($options['url'] ?? $options['action'] ?? url()->current());
     }
 
-    protected static function modelValue(string $name): mixed
+    protected static function modelValue(string $name): string|int|float|bool|array|object|null
     {
         if (static::$model === null) {
             return null;

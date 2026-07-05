@@ -25,6 +25,7 @@ yarn-error.log
 .env
 .DS_Store
 .phpunit.result.cache
+.phpunit.cache/
 info.php
 laravel-echo-server.json
 laravel-echo-server.lock

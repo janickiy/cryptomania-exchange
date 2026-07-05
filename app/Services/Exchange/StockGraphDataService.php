@@ -2,6 +2,7 @@
 
 namespace App\Services\Exchange;
 
+use App\Models\Backend\StockGraphData;
 use App\Repositories\Exchange\Interfaces\StockGraphDataInterface;
 use Carbon\Carbon;
 
@@ -21,9 +22,9 @@ class StockGraphDataService
      * @param $stockPairId
      * @param $latestStockPrice
      * @param $date
-     * @return mixed
+     * @return StockGraphData
      */
-    public function process(mixed $stockPairId, mixed $latestStockPrice, mixed $date): mixed
+    public function process(mixed $stockPairId, mixed $latestStockPrice, mixed $date): StockGraphData
     {
         $currentDate = Carbon::now();
         $startDate = $currentDate->copy()->startOfDay();
@@ -102,7 +103,7 @@ class StockGraphDataService
      * @param Carbon $endDate
      * @return object
      */
-    private function generateGraphDataWithEmptyValue(Carbon $startDate, Carbon $endDate): mixed
+    private function generateGraphDataWithEmptyValue(Carbon $startDate, Carbon $endDate): object
     {
         $stockGraphDataForFiveMinutes = [];
         $stockGraphDataForFifteenMinutes = [];
@@ -162,7 +163,7 @@ class StockGraphDataService
      * @param int $interval
      * @return array
      */
-    public function getGraphData(mixed $stockPairId, mixed $interval = 1440): mixed
+    public function getGraphData(mixed $stockPairId, mixed $interval = 1440): array
     {
         $intervals = chart_data_interval();
 

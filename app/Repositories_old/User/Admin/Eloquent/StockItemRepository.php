@@ -5,6 +5,8 @@ namespace App\Repositories\User\Admin\Eloquent;
 use App\Repositories\User\Admin\Interfaces\StockItemInterface;
 use App\Models\Backend\StockItem;
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class StockItemRepository extends BaseRepository implements StockItemInterface
@@ -23,7 +25,7 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
      * @param null $stockItemType
      * @return mixed
      */
-    public function getActiveList(mixed $stockItemType = null): mixed {
+    public function getActiveList(mixed $stockItemType = null): Collection {
         $conditions = ['is_active' => ACTIVE_STATUS_ACTIVE];
 
         if( !is_null($stockItemType) ) {
@@ -37,7 +39,7 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
      * @param array $conditions
      * @return mixed
      */
-    public function getCountByConditions(array $conditions): mixed
+    public function getCountByConditions(array $conditions): int
     {
         return $this->model->where($conditions)->count();
     }
@@ -46,7 +48,7 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
      * @param $id
      * @return mixed
      */
-    public function getStockPairsById(mixed $id): mixed
+    public function getStockPairsById(mixed $id): Builder
     {
         return $this->model->where('id', $id)
             ->leftJoin('stock_pairs as base', 'base.base_item_id', '=', 'stock_items.id')

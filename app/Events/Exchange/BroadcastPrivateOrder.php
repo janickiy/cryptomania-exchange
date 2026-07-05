@@ -28,7 +28,7 @@ class BroadcastPrivateOrder implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn(): mixed
+    public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel(channel_prefix() .'orders.' . $this->order->stock_pair_id . '.' . $this->order->user_id);
     }
@@ -38,7 +38,7 @@ class BroadcastPrivateOrder implements ShouldBroadcastNow
      *
      * @return bool
      */
-    public function broadcastWhen(): mixed
+    public function broadcastWhen(): bool
     {
         return $this->order->category == CATEGORY_EXCHANGE;
     }
@@ -48,7 +48,7 @@ class BroadcastPrivateOrder implements ShouldBroadcastNow
      *
      * @return array
      */
-    public function broadcastWith(): mixed
+    public function broadcastWith(): array
     {
         return [
             'order_number' => $this->order->id,

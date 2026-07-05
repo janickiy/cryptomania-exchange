@@ -4,7 +4,7 @@ namespace App\Services\User\Admin;
 
 class DashboardService
 {
-    public function getCpuUsages(): mixed
+    public function getCpuUsages(): float
     {
         $free = shell_exec('free');
         $free = (string)trim($free);

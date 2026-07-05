@@ -11,7 +11,7 @@ class PaypalRestApi
         $this->config = config('paypal');
     }
 
-    private function paypalAllowedCurrency(): mixed
+    private function paypalAllowedCurrency(): array
     {
         return ['AUD', 'CAD', 'EUR', 'GBP', 'JPY', 'USD'];
     }
@@ -22,7 +22,7 @@ class PaypalRestApi
      * @param null $relatedTransaction
      * @return array|false
      */
-    public function payment(mixed $amount, mixed $currency, mixed $relatedTransaction = null): mixed
+    public function payment(mixed $amount, mixed $currency, mixed $relatedTransaction = null): array|false
     {
         logs()->warning('PayPal REST SDK was removed during Laravel 13 upgrade; payment() requires migration to the current PayPal API.');
 
@@ -34,7 +34,7 @@ class PaypalRestApi
      * @param $payerId
      * @return object
      */
-    public function getPaymentStatus(mixed $paymentId, mixed $payerId): mixed
+    public function getPaymentStatus(mixed $paymentId, mixed $payerId): object
     {
         return new class($paymentId) {
             public array $transactions;
@@ -73,7 +73,7 @@ class PaypalRestApi
      * @param string $recipientType
      * @return array
      */
-    public function payout(mixed $receiver, mixed $value, mixed $currency = 'USD', mixed $recipientType = 'Email'): mixed
+    public function payout(mixed $receiver, mixed $value, mixed $currency = 'USD', mixed $recipientType = 'Email'): array
     {
         logs()->warning('PayPal REST SDK was removed during Laravel 13 upgrade; payout() requires migration to the current PayPal API.');
 

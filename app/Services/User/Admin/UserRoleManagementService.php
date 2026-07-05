@@ -3,6 +3,7 @@
 namespace App\Services\User\Admin;
 
 use App\DTO\Admin\UserRoleManagementData;
+use App\Models\Core\UserRoleManagement;
 use App\Repositories\Core\Interfaces\UserRoleManagementInterface;
 
 class UserRoleManagementService
@@ -11,7 +12,7 @@ class UserRoleManagementService
     {
     }
 
-    public function create(UserRoleManagementData $data): mixed
+    public function create(UserRoleManagementData $data): UserRoleManagement|false
     {
         return $this->roleManagement->create($data->toArray());
     }

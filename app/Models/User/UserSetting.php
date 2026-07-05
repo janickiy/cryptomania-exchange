@@ -3,6 +3,7 @@
 namespace App\Models\User;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableInterface;
 
@@ -16,7 +17,7 @@ class UserSetting extends Model implements AuditableInterface
 
     protected $fakeFields = ['language', 'timezone', 'is_otp_allowed'];
 
-    public function user(): mixed
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

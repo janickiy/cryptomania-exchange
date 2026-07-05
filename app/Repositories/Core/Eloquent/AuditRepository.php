@@ -10,6 +10,7 @@ namespace App\Repositories\Core\Eloquent;
 
 use App\Repositories\BaseRepository;
 use App\Repositories\Core\Interfaces\AuditInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Models\Audit;
 
@@ -28,7 +29,7 @@ class AuditRepository extends BaseRepository implements AuditInterface
         $this->model = $audit;
     }
 
-    public function paginateWithUserFilters(array $searchFields, array $orderFields): mixed
+    public function paginateWithUserFilters(array $searchFields, array $orderFields): LengthAwarePaginator
     {
         return $this->paginateWithFilters(
             $searchFields,

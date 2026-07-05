@@ -12,7 +12,7 @@ class PasswordResetRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return true;
     }
@@ -22,7 +22,7 @@ class PasswordResetRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         if (!Auth::user()) {
             $validation = [
@@ -38,14 +38,14 @@ class PasswordResetRequest extends Request
         return [];
     }
 
-    public function messages(): mixed
+    public function messages(): array
     {
         return [
             'email.exists' => __('The given email is not registered.')
         ];
     }
 
-    public function attributes(): mixed
+    public function attributes(): array
     {
         return ['g-recaptcha-response' => 'google captcha'];
     }

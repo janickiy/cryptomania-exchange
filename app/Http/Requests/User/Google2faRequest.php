@@ -12,7 +12,7 @@ class Google2faRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class Google2faRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         $rules = [
             'google_app_code' => 'required|numeric',
@@ -36,14 +36,14 @@ class Google2faRequest extends Request
         return $rules;
     }
 
-    public function messages(): mixed
+    public function messages(): array
     {
         return [
             'password.hash_check' => __('Current password is wrong.')
         ];
     }
 
-    public function attributes(): mixed
+    public function attributes(): array
     {
         return [
             'google_app_code' => __('G2FA'),

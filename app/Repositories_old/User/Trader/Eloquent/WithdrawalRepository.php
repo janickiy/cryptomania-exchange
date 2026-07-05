@@ -22,7 +22,7 @@ class WithdrawalRepository extends BaseRepository implements WithdrawalInterface
      * @param array $conditions
      * @return mixed
      */
-     public function getLast24hrWithrawalAmount(array $conditions): mixed
+     public function getLast24hrWithrawalAmount(array $conditions): int|float|string
      {
          return $this->model->where($conditions)->where('created_at', '>=', now()->subDay())->sum('amount');
      }

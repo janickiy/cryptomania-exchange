@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
@@ -15,7 +16,7 @@ class RedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next, mixed $guard = null): mixed
+    public function handle(mixed $request, Closure $next, mixed $guard = null): Response
     {
         if (Auth::guard($guard)->check()) {
             return redirect('/home');

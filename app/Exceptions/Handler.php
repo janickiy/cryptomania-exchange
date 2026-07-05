@@ -7,6 +7,7 @@ use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Str;
 use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -50,7 +51,7 @@ class Handler extends ExceptionHandler
      * @param  \Throwable $exception
      * @return \Illuminate\Http\Response
      */
-    public function render(mixed $request, Throwable $exception): mixed
+    public function render(mixed $request, Throwable $exception): Response
     {
         if ($exception instanceof TokenMismatchException) {
             if ($request->ajax()) {

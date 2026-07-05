@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class GuestPermissionApi
 {
@@ -13,7 +15,7 @@ class GuestPermissionApi
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next): mixed
+    public function handle(mixed $request, Closure $next): Response
     {
         $auth = Auth::user();
         if(!$auth) {

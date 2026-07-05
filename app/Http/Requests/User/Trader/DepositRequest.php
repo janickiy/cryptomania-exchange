@@ -12,7 +12,7 @@ class DepositRequest extends Request
      *
      * @return bool
      */
-    public function authorize(): mixed
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class DepositRequest extends Request
      *
      * @return array
      */
-    public function rules(): mixed
+    public function rules(): array
     {
         return [
             'amount' => 'required|numeric|between:0.01, 99999999999.99',
@@ -30,7 +30,7 @@ class DepositRequest extends Request
         ];
     }
 
-    public function attributes(): mixed
+    public function attributes(): array
     {
         return [
             'accept_policy' => __('The deposit policy checking'),

@@ -3,13 +3,17 @@
 namespace App\Repositories;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 abstract class BaseRepository
 {
     use RepositoryTrait;
 
-    public function getAll(mixed $relations = null, mixed $orders = null): mixed
+    public function getAll(mixed $relations = null, mixed $orders = null): Collection
     {
         $query = $this->model->with($this->extractToArray($relations));
 
@@ -20,7 +24,7 @@ abstract class BaseRepository
         return $query->get();
     }
 
-    public function getByConditions(array $conditions, mixed $relations = null, mixed $orders = null): mixed
+    public function getByConditions(array $conditions, mixed $relations = null, mixed $orders = null): Collection
     {
         $query = $this->model->where($conditions)->with($this->extractToArray($relations));
 
@@ -31,24 +35,24 @@ abstract class BaseRepository
         return $query->get();
     }
 
-    public function findOrFailById(int $id, mixed $relations = null): mixed
+    public function findOrFailById(int $id, mixed $relations = null): Model
     {
         return $this->model->with($this->extractToArray($relations))->findOrFail($id);
     }
 
-    public function findOrFailByConditions(array $conditions, mixed $relations = null): mixed
+    public function findOrFailByConditions(array $conditions, mixed $relations = null): Model
     {
         $instant = $this->model->where($conditions)->with($this->extractToArray($relations))->first();
         abort_if(empty($instant), 404);
         return $instant;
     }
 
-    public function create(array $attributes): mixed
+    public function create(array $attributes): Model|false
     {
         return $this->model->create(array_only($attributes, $this->model->getFillable()));
     }
 
-    public function update(array $attributes, int $id, string $attribute = "id"): mixed
+    public function update(array $attributes, int $id, string $attribute = "id"): Model|bool
     {
         $instance = $this->getFirstByConditions([$attribute => $id]);
 
@@ -59,12 +63,12 @@ abstract class BaseRepository
         return $instance->update(array_only($attributes, $this->model->getFillable())) ? $instance : false;
     }
 
-    public function getFirstByConditions(array $conditions, mixed $relations = null): mixed
+    public function getFirstByConditions(array $conditions, mixed $relations = null): ?Model
     {
         return $this->model->where($conditions)->with($this->extractToArray($relations))->first();
     }
 
-    public function updateByConditions(array $attributes, array $conditions): mixed
+    public function updateByConditions(array $attributes, array $conditions): Model|bool
     {
         $instance = $this->getFirstByConditions($conditions);
 
@@ -75,7 +79,7 @@ abstract class BaseRepository
         return $instance->update(array_only($attributes, $this->model->getFillable())) ? $instance : false;
     }
 
-    public function deleteById(int $id): mixed
+    public function deleteById(int $id): bool
     {
         $instance = $this->getFirstById($id);
 
@@ -91,12 +95,12 @@ abstract class BaseRepository
         return true;
     }
 
-    public function getFirstById(int $id, mixed $relations = null): mixed
+    public function getFirstById(int $id, mixed $relations = null): ?Model
     {
         return $this->model->where('id', $id)->with($this->extractToArray($relations))->first();
     }
 
-    public function deleteByConditions(array $conditions): mixed
+    public function deleteByConditions(array $conditions): bool
     {
         $instance = $this->getFirstByConditions($conditions);
 
@@ -112,7 +116,7 @@ abstract class BaseRepository
         return true;
     }
 
-    public function toggleStatusById(int $id, string $attribute = 'is_active'): mixed
+    public function toggleStatusById(int $id, string $attribute = 'is_active'): Model|false
     {
         $instance = $this->getFirstById($id);
 
@@ -129,7 +133,7 @@ abstract class BaseRepository
         return $instance->update() ? $instance : false;
     }
 
-    public function toggleStatusByConditions(array $conditions, string $attribute = 'is_active'): mixed
+    public function toggleStatusByConditions(array $conditions, string $attribute = 'is_active'): Model|false
     {
         $instance = $this->getFirstByConditions($conditions);
 
@@ -142,12 +146,12 @@ abstract class BaseRepository
         return $instance->update() ? $instance : false;
     }
 
-    public function insert(array $attributes): mixed
+    public function insert(array $attributes): bool
     {
         return $this->model->insert($attributes);
     }
 
-    public function bulkUpdate(array $values): mixed
+    public function bulkUpdate(array $values): int|false
     {
         if (!count($values)) {
             return false;
@@ -221,12 +225,12 @@ abstract class BaseRepository
         return DB::update($sql);
     }
 
-    public function paginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p'): mixed
+    public function paginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p'): LengthAwarePaginator
     {
         return $this->model->paginate($perPage, $columns, $paginationKey);
     }
 
-    public function simplePaginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p',mixed $where=null,mixed $order='desc'): mixed
+    public function simplePaginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p', mixed $where = null, mixed $order = 'desc'): Paginator
     {
         if(!empty($where)){
             $this->model = $this->model->where($where);
@@ -237,7 +241,7 @@ abstract class BaseRepository
         return $this->model->orderBy('id',$order)->simplePaginate($perPage, $columns, $paginationKey);
     }
 
-    public function filters(mixed $searchFields, mixed $orderFields = null, mixed $whereArray = null, mixed $selectData = null, mixed $joinArray = null, mixed $groupBy=null,mixed $paginationKey = 'p', mixed $dateField = 'created_at'): mixed
+    public function filters(mixed $searchFields, mixed $orderFields = null, mixed $whereArray = null, mixed $selectData = null, mixed $joinArray = null, mixed $groupBy = null, mixed $paginationKey = 'p', mixed $dateField = 'created_at'): Collection
     {
         $tableName = $this->model->getTable();
         if (!is_null($joinArray) && is_array($joinArray)) {
@@ -378,7 +382,7 @@ abstract class BaseRepository
         return $data;
     }
 
-    public function paginateWithFilters(mixed $searchFields, mixed $orderFields = null, mixed $whereArray = null, mixed $selectData = null, mixed $joinArray = null, mixed $groupBy=null, mixed $itemPerPage=null, mixed $paginationKey = 'p', mixed $dateField = 'created_at'): mixed
+    public function paginateWithFilters(mixed $searchFields, mixed $orderFields = null, mixed $whereArray = null, mixed $selectData = null, mixed $joinArray = null, mixed $groupBy = null, mixed $itemPerPage = null, mixed $paginationKey = 'p', mixed $dateField = 'created_at'): LengthAwarePaginator
     {
         $tableName = $this->model->getTable();
         if (!is_null($joinArray) && is_array($joinArray)) {

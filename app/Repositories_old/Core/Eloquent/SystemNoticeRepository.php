@@ -6,6 +6,7 @@ use App\Models\Core\SystemNotice;
 use App\Repositories\BaseRepository;
 use App\Repositories\Core\Interfaces\SystemNoticeInterface;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class SystemNoticeRepository extends BaseRepository implements SystemNoticeInterface
 {
@@ -22,7 +23,7 @@ class SystemNoticeRepository extends BaseRepository implements SystemNoticeInter
         $this->model = $model;
     }
 
-    public function todaysNotifications(): mixed
+    public function todaysNotifications(): Collection
     {
         $startDate = Carbon::now();
         return $this->model->where('status', 1)->where(function ($q) use ($startDate) {
