@@ -191,6 +191,52 @@ body.frontend-liquid-glass .banner-bitcoin {
     filter: drop-shadow(0 24px 60px rgba(0, 0, 0, .42));
 }
 
+body.frontend-liquid-glass .home-analysts-section {
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--lg-line);
+    border-bottom: 1px solid var(--lg-line);
+    background:
+        linear-gradient(135deg, rgba(245, 255, 251, .16), rgba(245, 255, 251, .06) 48%, rgba(7, 16, 14, .24)),
+        linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .02)) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .18),
+        inset 0 -1px 0 rgba(255, 255, 255, .08),
+        var(--lg-shadow);
+}
+
+body.frontend-liquid-glass .home-analysts-section::before {
+    position: absolute;
+    inset: 18px;
+    content: "";
+    pointer-events: none;
+    border: 1px solid rgba(222, 255, 248, .12);
+    border-radius: 8px;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, .16), rgba(255, 255, 255, 0) 58%);
+}
+
+body.frontend-liquid-glass .home-analysts-section > .container {
+    position: relative;
+    z-index: 1;
+}
+
+body.frontend-liquid-glass .home-analysts-section .profile-box-front {
+    overflow: hidden;
+    background: rgba(245, 255, 251, .14) !important;
+}
+
+body.frontend-liquid-glass .home-analysts-section .profile-box-front img {
+    border-radius: 8px 8px 0 0;
+}
+
+body.frontend-liquid-glass .home-analysts-section .profile-box-front .primary-bg {
+    background: rgba(245, 255, 251, .18) !important;
+}
+
+body.frontend-liquid-glass .home-analysts-section .profile-box-front .profile-role {
+    background: rgba(7, 16, 14, .58) !important;
+}
+
 body.frontend-liquid-glass .left-pattern,
 body.frontend-liquid-glass .white-bg,
 body.frontend-liquid-glass .black-bg,
@@ -617,6 +663,7 @@ body.frontend-liquid-glass .mCS-dark-thick.mCSB_scrollTools .mCSB_dragger.mCSB_d
     body.frontend-liquid-glass .nav-tabs-custom,
     body.frontend-liquid-glass .icon-box,
     body.frontend-liquid-glass .option-box,
+    body.frontend-liquid-glass .home-analysts-section,
     body.frontend-liquid-glass .profile-box-front,
     body.frontend-liquid-glass .post,
     body.frontend-liquid-glass .trade-analysis,

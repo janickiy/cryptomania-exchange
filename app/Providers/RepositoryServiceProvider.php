@@ -57,7 +57,7 @@ class RepositoryServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->app->bind(AdminSettingInterface::class, AdminSettingRepository::class);
         $this->app->bind(UserRoleManagementInterface::class, UserRoleManagementRepository::class);
@@ -89,7 +89,7 @@ class RepositoryServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }

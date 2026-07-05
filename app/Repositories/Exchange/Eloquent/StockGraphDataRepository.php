@@ -26,7 +26,7 @@ class StockGraphDataRepository extends BaseRepository implements StockGraphDataI
      * @param $attributes
      * @return mixed
      */
-    public function updateOrCreate($conditions, $attributes)
+    public function updateOrCreate(mixed $conditions, mixed $attributes): mixed
     {
         return $this->model->updateOrCreate($conditions, $attributes);
     }

@@ -17,7 +17,7 @@ abstract class Request extends FormRequest
      * @return void
      *
      */
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator): void
     {
         $errors = (new ValidationException($validator))->errors();
         if ($this->ajax()) {

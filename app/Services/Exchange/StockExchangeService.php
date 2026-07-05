@@ -88,7 +88,7 @@ class StockExchangeService
         ];
     }
 
-    public function process()
+    public function process(): mixed
     {
         $this->stockPair = app(StockPairInterface::class)->getFirstStockPairDetailByConditions(['stock_pairs.id' => $this->stockOrder->stock_pair_id]);
         $this->stockItemType = $this->stockPair->stock_item_type;
@@ -232,12 +232,12 @@ class StockExchangeService
 
     }
 
-    private function getOppositeStockOrders()
+    private function getOppositeStockOrders(): mixed
     {
         return $this->stockOrderRepository->getOppositeStockOrders($this->stockOrder);
     }
 
-    private function processStockOrderInputs()
+    private function processStockOrderInputs(): mixed
     {
         $minimumTransactionFee = $this->minimumTransactionFee($this->baseItemType);
         $minimumTotal = get_minimum_order_total($minimumTransactionFee);
@@ -283,7 +283,7 @@ class StockExchangeService
      * @param $type
      * @return string
      */
-    private function minimumTransactionFee($type)
+    private function minimumTransactionFee(mixed $type): mixed
     {
         return $type == CURRENCY_REAL ? MINIMUM_TRANSACTION_FEE_CURRENCY : MINIMUM_TRANSACTION_FEE_CRYPTO;
     }
@@ -292,7 +292,7 @@ class StockExchangeService
      * @param $sellOrderStatus
      * @param $buyOrderStatus
      */
-    private function _stockOrderInputSubProcess($sellOrderStatus, $buyOrderStatus)
+    private function _stockOrderInputSubProcess(mixed $sellOrderStatus, mixed $buyOrderStatus): void
     {
         if ($this->stockOrder->id == $this->sellStockOrder->id) {
             $this->primaryStockAmount = bcadd($this->primaryStockAmount, $this->exchangeAmount);
@@ -321,7 +321,7 @@ class StockExchangeService
     /**
      * @param $stockExchangeGroup
      */
-    private function processStockExchangeInputs($stockExchangeGroup)
+    private function processStockExchangeInputs(mixed $stockExchangeGroup): void
     {
         $adminSettings = admin_settings(['exchange_maker_fee', 'exchange_taker_fee']);
         $makerFeeInPercentage = $adminSettings['exchange_maker_fee'];
@@ -452,7 +452,7 @@ class StockExchangeService
 
     }
 
-    private function processWalletInputs()
+    private function processWalletInputs(): void
     {
         // Buy Order
         $buyerFee = $this->buyStockOrder->created_at > $this->sellStockOrder->created_at ? $this->takerFee : $this->makerFee;
@@ -557,7 +557,7 @@ class StockExchangeService
         }
     }
 
-    private function processReferralEarning()
+    private function processReferralEarning(): void
     {
         $referralPercentage = admin_settings('referral_percentage');
         $buyerReferrer = $this->referrerUsers[$this->buyStockOrder->user_id];
@@ -634,7 +634,7 @@ class StockExchangeService
     /**
      * @param $oppositeStockOrder
      */
-    private function oppositeStockOrderSettlementProcess($oppositeStockOrder)
+    private function oppositeStockOrderSettlementProcess(mixed $oppositeStockOrder): void
     {
         $unprocessedAmount = bcsub(bcsub($oppositeStockOrder->amount, $oppositeStockOrder->exchanged), $this->exchangeAmount);
         $minimumTransactionFee = $this->minimumTransactionFee($this->baseItemType);
@@ -748,7 +748,7 @@ class StockExchangeService
         }
     }
 
-    private function primaryStockOrderSettlementProcess()
+    private function primaryStockOrderSettlementProcess(): void
     {
         $unprocessedAmount = bcsub(bcsub($this->stockOrder->amount, $this->stockOrder->exchanged), $this->primaryStockAmount);
         $minimumTransactionFee = $this->minimumTransactionFee($this->baseItemType);
@@ -917,7 +917,7 @@ class StockExchangeService
         array_push($this->updateStockOrdersInputs, $primaryStockOrder);
     }
 
-    private function processTransactionInputs($stockExchangeGroup)
+    private function processTransactionInputs(mixed $stockExchangeGroup): void
     {
         $stockExchanges = app(StockExchangeInterface::class)->getByConditions(['stock_exchange_group_id' => $stockExchangeGroup->id]);
         $this->stockPairSummary['last_price'] = $this->exchangePrice;
@@ -1160,7 +1160,7 @@ class StockExchangeService
         }
     }
 
-    private function summaryReportDevelopment($stockExchange)
+    private function summaryReportDevelopment(mixed $stockExchange): void
     {
         if ($stockExchange->exchange_type == EXCHANGE_BUY) {
             $this->stockPairSummary['base_item_buy_order_volume'] = bcadd($this->stockPairSummary['base_item_buy_order_volume'], $stockExchange->total);
@@ -1182,7 +1182,7 @@ class StockExchangeService
         }
     }
 
-    public function updateCoinPair()
+    public function updateCoinPair(): mixed
     {
         $currentTime = $this->date->timestamp;
         $previousTime = $this->date->copy()->subDay()->timestamp;
@@ -1251,7 +1251,7 @@ class StockExchangeService
      * @param $date
      * @return array
      */
-    private function getTimeIntervals($date)
+    private function getTimeIntervals(mixed $date): mixed
     {
         $data = [];
         $timeOffset = date_offset_get($date);

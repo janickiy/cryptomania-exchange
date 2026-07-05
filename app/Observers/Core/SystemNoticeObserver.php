@@ -11,7 +11,7 @@ class SystemNoticeObserver
      * @param SystemNotice $systemNotice
      * @throws \Exception
      */
-    public function created(SystemNotice $systemNotice)
+    public function created(SystemNotice $systemNotice): void
     {
         $systemNotices = cache()->get('systemNotices');
         $date = Carbon::now();
@@ -32,7 +32,7 @@ class SystemNoticeObserver
      * @param SystemNotice $systemNoticeUpdate
      * @throws \Exception
      */
-    public function updated(SystemNotice $systemNoticeUpdate)
+    public function updated(SystemNotice $systemNoticeUpdate): void
     {
         $systemNotices = cache()->get('systemNotices');
 

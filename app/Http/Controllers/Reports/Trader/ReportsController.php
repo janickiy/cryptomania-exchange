@@ -4,35 +4,34 @@ namespace App\Http\Controllers\Reports\Trader;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\User\Interfaces\UserInfoInterface;
-use App\Repositories\User\Trader\Interfaces\DepositInterface;
 use App\Repositories\User\Trader\Interfaces\WalletInterface;
-use App\Repositories\User\Trader\Interfaces\WithdrawalInterface;
 use App\Services\User\Admin\ReportsService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
 {
-    private $reportsService;
-    private $depositRepository;
-    private $withdrawalRepository;
-
     /**
-     * @param DepositInterface $deposit
-     * @param WithdrawalInterface $withdrawal
-     * @param ReportsService $reportsService
+     * Назначение: инициализирует контроллер раздела отчетов.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(DepositInterface $deposit, WithdrawalInterface $withdrawal, ReportsService $reportsService)
-    {
-        $this->depositRepository = $deposit;
-        $this->withdrawalRepository = $withdrawal;
-        $this->reportsService = $reportsService;
+    public function __construct(
+        private readonly ReportsService $reportsService,
+        private readonly WalletInterface $wallets,
+        private readonly UserInfoInterface $userInfo,
+    ) {
     }
 
     /**
-     * @param null $paymentTransactionType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает общий отчет по депозитам.
+     *
+     * Действие: получает список депозитов с учетом типа транзакции и возвращает отчетное представление.
      */
-    public function allDeposits($paymentTransactionType = null)
+    public function allDeposits(?string $paymentTransactionType = null): View|Factory|Application
     {
         $data['list'] = $this->reportsService->deposits(Auth::id(), null, $paymentTransactionType);
         $data['title'] = __('Deposits');
@@ -42,13 +41,13 @@ class ReportsController extends Controller
     }
 
     /**
-     * @param $id
-     * @param null $paymentTransactionType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает отчет по депозитам конкретного пользователя.
+     *
+     * Действие: фильтрует депозиты по пользователю и типу транзакции, затем возвращает отчет.
      */
-    public function deposits($id, $paymentTransactionType = null)
+    public function deposits(int|string $id, ?string $paymentTransactionType = null): View|Factory|Application
     {
-        $data['wallet'] = app(WalletInterface::class)->firstOrFail(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
+        $data['wallet'] = $this->wallets->firstOrFail(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
         $data['list'] = $this->reportsService->deposits(Auth::id(), $id, $paymentTransactionType);
         $data['title'] = __('Deposits');
         $data['status'] = $paymentTransactionType;
@@ -57,10 +56,11 @@ class ReportsController extends Controller
     }
 
     /**
-     * @param null $paymentTransactionType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает общий отчет по выводам средств.
+     *
+     * Действие: получает список выводов с учетом типа транзакции и возвращает отчетное представление.
      */
-    public function allWithdrawals($paymentTransactionType = null)
+    public function allWithdrawals(?string $paymentTransactionType = null): View|Factory|Application
     {
         $data['list'] = $this->reportsService->withdrawals(Auth::id(), null, $paymentTransactionType);
         $data['title'] = __('Withdrawals');
@@ -70,13 +70,13 @@ class ReportsController extends Controller
     }
 
     /**
-     * @param $id
-     * @param null $paymentTransactionType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает отчет по выводам конкретного пользователя.
+     *
+     * Действие: фильтрует выводы по пользователю и типу транзакции, затем возвращает отчет.
      */
-    public function withdrawals($id, $paymentTransactionType = null)
+    public function withdrawals(int|string $id, ?string $paymentTransactionType = null): View|Factory|Application
     {
-        $data['wallet'] = app(WalletInterface::class)->firstOrFail(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
+        $data['wallet'] = $this->wallets->firstOrFail(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
         $data['list'] = $this->reportsService->withdrawals(Auth::id(), $id, $paymentTransactionType);
         $data['title'] = __('Withdrawals');
         $data['status'] = $paymentTransactionType;
@@ -85,10 +85,11 @@ class ReportsController extends Controller
     }
 
     /**
-     * @param null $categoryType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает отчет по сделкам.
+     *
+     * Действие: фильтрует торговые операции по пользователю или категории и возвращает отчет.
      */
-    public function trades($categoryType = null)
+    public function trades(?string $categoryType = null): View|Factory|Application
     {
         $data['list'] = $this->reportsService->trades(Auth::id(), $categoryType);
         $data['title'] = __('Trades');
@@ -98,9 +99,11 @@ class ReportsController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает отчет по реферальным пользователям.
+     *
+     * Действие: получает пользователей, приглашенных текущим аккаунтом, и возвращает отчетное представление.
      */
-    public function referralUsers()
+    public function referralUsers(): View|Factory|Application
     {
         $data['list'] = $this->reportsService->referralUsers(Auth::id());
         $data['title'] = __('Trades');
@@ -108,7 +111,12 @@ class ReportsController extends Controller
         return view('frontend.reports.referral_users', $data);
     }
 
-    public function referralEarning()
+    /**
+     * Назначение: показывает отчет по реферальным начислениям.
+     *
+     * Действие: проверяет наличие реферального кода, получает начисления и возвращает отчет или перенаправление.
+     */
+    public function referralEarning(): View|Factory|Application|RedirectResponse
     {
         try {
             $userId = decrypt(request()->get('ref'));
@@ -117,7 +125,7 @@ class ReportsController extends Controller
         }
 
         $data['list'] = $this->reportsService->referralEarning(\auth()->id(), $userId);
-        $data['referralUserInfo'] = app(UserInfoInterface::class)->findOrFailByConditions(['user_id' => $userId]);
+        $data['referralUserInfo'] = $this->userInfo->findOrFailByConditions(['user_id' => $userId]);
         $data['title'] = __('Referral Earning');
 //        dd($data);
         return view('frontend.reports.referral_earning', $data);

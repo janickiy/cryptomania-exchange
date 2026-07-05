@@ -23,7 +23,7 @@ class StockGraphDataService
      * @param $date
      * @return mixed
      */
-    public function process($stockPairId, $latestStockPrice, $date)
+    public function process(mixed $stockPairId, mixed $latestStockPrice, mixed $date): mixed
     {
         $currentDate = Carbon::now();
         $startDate = $currentDate->copy()->startOfDay();
@@ -102,7 +102,7 @@ class StockGraphDataService
      * @param Carbon $endDate
      * @return object
      */
-    private function generateGraphDataWithEmptyValue(Carbon $startDate, Carbon $endDate)
+    private function generateGraphDataWithEmptyValue(Carbon $startDate, Carbon $endDate): mixed
     {
         $stockGraphDataForFiveMinutes = [];
         $stockGraphDataForFifteenMinutes = [];
@@ -162,7 +162,7 @@ class StockGraphDataService
      * @param int $interval
      * @return array
      */
-    public function getGraphData($stockPairId, $interval = 1440)
+    public function getGraphData(mixed $stockPairId, mixed $interval = 1440): mixed
     {
         $intervals = chart_data_interval();
 

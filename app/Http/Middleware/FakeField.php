@@ -15,7 +15,7 @@ class FakeField
      * @param  \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(mixed $request, Closure $next): mixed
     {
         $allFields = $this->setFakeFields($request);
         $this->setOriginalFieldInRequest($request, $allFields);
@@ -26,7 +26,7 @@ class FakeField
      * @param $request
      * @return array
      */
-    public function setFakeFields($request)
+    public function setFakeFields(mixed $request): mixed
     {
         $models = $this->getModels();
         $base_request_key = $request->get('base_key');
@@ -66,7 +66,7 @@ class FakeField
         return $allFields;
     }
 
-    public function getModels()
+    public function getModels(): mixed
     {
         $models = [];
         $modelPath = config('fakefields.model_path');
@@ -92,7 +92,7 @@ class FakeField
      * @return array|mixed
      * @throws \ReflectionException
      */
-    public function accessProtected($obj, $prop)
+    public function accessProtected(mixed $obj, mixed $prop): mixed
     {
         $reflection = new ReflectionClass($obj);
         if ($reflection->hasProperty($prop)) {
@@ -109,7 +109,7 @@ class FakeField
      * @param $request
      * @param $allFields
      */
-    private function setOriginalFieldInRequest($request, $allFields)
+    private function setOriginalFieldInRequest(mixed $request, mixed $allFields): void
     {
         $fakeFields = array_flip($allFields['table_keys']);
         $inputs = $request->all();

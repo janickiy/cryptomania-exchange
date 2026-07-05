@@ -12,13 +12,13 @@ class Comment extends Model
 
     protected $fakeFields = ['commentable_id', 'content', 'commentable_type'];
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class);
     }
 
 
-    public function commentable()
+    public function commentable(): mixed
     {
         return $this->morphTo();
     }

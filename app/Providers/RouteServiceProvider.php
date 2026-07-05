@@ -21,7 +21,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Route::pattern('id', '[0-9]+');
         Route::pattern('admin_setting_type', implode('|', array_keys(config('adminsetting.settings'))));
@@ -37,7 +37,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function map()
+    public function map(): void
     {
         $this->mapApiRoutes();
         $this->mappermissionApiRoutes();
@@ -68,14 +68,14 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/web.php'));
     }*/
 
-    protected function mapWebRoutes()
+    protected function mapWebRoutes(): void
     {
         $filename = $middleware = 'web';
         $prefix = $namespace = null;
         $this->routeMap($filename, $middleware, $prefix, $namespace, 'routes/');
     }
 
-    protected function routeMap($filename, $middleware, $prefix = null, $namespace = null, $path = 'routes/groups/')
+    protected function routeMap(mixed $filename, mixed $middleware, mixed $prefix = null, mixed $namespace = null, mixed $path = 'routes/groups/'): void
     {
         $locale = strtolower($this->app->request->segment(1));
         $language = check_language($locale);
@@ -97,7 +97,7 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path($path . $filename . '.php'));
     }
 
-    protected function mapPermissionRoutes()
+    protected function mapPermissionRoutes(): void
     {
         $filename = 'permission';
         $middleware = ['web', 'auth', '2fa', 'permission'];
@@ -105,7 +105,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
-    protected function mapGuestPermissionRoutes()
+    protected function mapGuestPermissionRoutes(): void
     {
         $filename = 'guest_permission';
         $middleware = ['web', 'guest.permission'];
@@ -113,7 +113,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
-    protected function mapVerificationPermissionRoutes()
+    protected function mapVerificationPermissionRoutes(): void
     {
         $filename = 'verification_permission';
         $middleware = ['web', 'verification.permission'];
@@ -130,7 +130,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function mapApiRoutes()
+    protected function mapApiRoutes(): void
     {
         Route::prefix('api')
             ->middleware('api')
@@ -138,7 +138,7 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/api.php'));
     }
 
-    protected function mappermissionApiRoutes()
+    protected function mappermissionApiRoutes(): void
     {
         $filename = 'permission_api';
         $middleware = ['api', 'auth', 'permission.api'];
@@ -146,7 +146,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
-    protected function mapGuestpermissionApiRoutes()
+    protected function mapGuestpermissionApiRoutes(): void
     {
         $filename = 'guest_permission_api';
         $middleware = ['api', 'guest.permission.api'];
@@ -154,7 +154,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
-    protected function mapVerificationpermissionApiRoutes()
+    protected function mapVerificationpermissionApiRoutes(): void
     {
         $filename = 'verification_permission_api';
         $middleware = ['api', 'verification.permission.api'];
@@ -162,7 +162,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
-    private function exchnageRoute()
+    private function exchnageRoute(): void
     {
         $filename = 'exchange';
         $middleware = ['web'];

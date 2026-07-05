@@ -14,7 +14,7 @@ class StripTags extends TransformsRequest
      * @param mixed $value
      * @return mixed
      */
-    protected function transform($key, $value)
+    protected function transform(mixed $key, mixed $value): mixed
     {
         $stripTags = config('commonconfig.strip_tags');
         if (in_array($key, $stripTags['escape_text'], true)) {

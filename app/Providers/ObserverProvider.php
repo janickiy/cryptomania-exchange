@@ -15,7 +15,7 @@ class ObserverProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         UserInfo::observe(UserInfoObserver::class);
         SystemNotice::observe(SystemNoticeObserver::class);
@@ -26,7 +26,7 @@ class ObserverProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }

@@ -37,7 +37,7 @@ class MakeRepository extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub(): mixed
     {
         if ($this->option('interface') && $this->option('model')) {
             return __DIR__ . '/Stubs/repository.nested.stub';
@@ -55,7 +55,7 @@ class MakeRepository extends GeneratorCommand
      *
      * @return array
      */
-    protected function getOptions()
+    protected function getOptions(): mixed
     {
         return [
             ['interface', 'i', InputOption::VALUE_OPTIONAL, 'Generate a interface for the repository.'],
@@ -69,12 +69,12 @@ class MakeRepository extends GeneratorCommand
      * @param  string $rootNamespace
      * @return string
      */
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace(mixed $rootNamespace): mixed
     {
         return $rootNamespace . '\Repositories';
     }
 
-    protected function buildClass($name)
+    protected function buildClass(mixed $name): mixed
     {
 //        $repositoryNamespace = $this->getNamespace($name);
 
@@ -101,7 +101,7 @@ class MakeRepository extends GeneratorCommand
      * @param  array $replace
      * @return array
      */
-    protected function buildInterfaceReplacements(array $replace)
+    protected function buildInterfaceReplacements(array $replace): mixed
     {
         $interface = $this->parseInterface($this->option('interface'));
         if (!interface_exists($interface)) {
@@ -122,7 +122,7 @@ class MakeRepository extends GeneratorCommand
      * @param $interface
      * @return string
      */
-    protected function parseInterface($interface)
+    protected function parseInterface(mixed $interface): mixed
     {
         if (preg_match( '([^A-Za-z0-9_/\\\\])', $interface)) {
             throw new InvalidArgumentException('Interface name contains invalid characters.');
@@ -144,7 +144,7 @@ class MakeRepository extends GeneratorCommand
      * @param  array $replace
      * @return array
      */
-    protected function buildModelReplacements(array $replace)
+    protected function buildModelReplacements(array $replace): mixed
     {
         $modelClass = $this->parseModel($this->option('model'));
 
@@ -167,7 +167,7 @@ class MakeRepository extends GeneratorCommand
      * @param  string $model
      * @return string
      */
-    protected function parseModel($model)
+    protected function parseModel(mixed $model): mixed
     {
         if (preg_match('([^A-Za-z0-9_/\\\\])', $model)) {
             throw new InvalidArgumentException('Model name contains invalid characters.');

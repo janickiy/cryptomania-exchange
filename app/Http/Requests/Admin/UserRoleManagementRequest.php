@@ -12,7 +12,7 @@ class UserRoleManagementRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -22,7 +22,7 @@ class UserRoleManagementRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         if ($this->route()->getName() == 'user-role-managements.update') {
             return [
@@ -40,7 +40,7 @@ class UserRoleManagementRequest extends Request
         }
     }
 
-    public function messages()
+    public function messages(): mixed
     {
         return [
             'role_name.required' => __('The role name field is required.'),
@@ -48,7 +48,7 @@ class UserRoleManagementRequest extends Request
         ];
     }
 
-    public function getValidatorInstance()
+    public function getValidatorInstance(): mixed
     {
         $validator = parent::getValidatorInstance();
         $validator->after(function () use ($validator) {

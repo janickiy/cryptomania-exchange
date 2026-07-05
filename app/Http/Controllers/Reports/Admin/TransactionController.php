@@ -5,16 +5,30 @@ namespace App\Http\Controllers\Reports\Admin;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\Admin\Interfaces\TransactionInterface;
 use App\Services\Core\DataListService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
     /**
-     * @param $userId
-     * @param null $journalType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: инициализирует контроллер раздела отчетов по транзакциям.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function user($userId, $journalType = null)
+    public function __construct(
+        private readonly TransactionInterface $transactions,
+        private readonly DataListService $dataListService,
+    ) {
+    }
+
+    /**
+     * Назначение: показывает отчет по транзакциям пользователя.
+     *
+     * Действие: формирует данные журнала для выбранного пользователя и возвращает отчетное представление.
+     */
+    public function user(int|string $userId, ?string $journalType = null): View|Factory|Application
     {
 
         $data = $this->generateTransaction($userId, $journalType);
@@ -26,11 +40,11 @@ class TransactionController extends Controller
     }
 
     /**
-     * @param null $userId
-     * @param null $journalType
-     * @return array
+     * Назначение: формирует данные отчета по транзакциям.
+     *
+     * Действие: собирает фильтры, выбирает операции из репозитория и возвращает массив данных для представления.
      */
-    private function generateTransaction($userId = null, $journalType = null)
+    private function generateTransaction(int|string|null $userId = null, ?string $journalType = null): array
     {
         $searchFields = [
             ['first_name', __('First Name')],
@@ -63,18 +77,19 @@ class TransactionController extends Controller
             ['user_infos', 'users.id', '=', 'user_infos.user_id'],
         ];
 
-        $query = app(TransactionInterface::class)->paginateWithFilters($searchFields, $orderFields, $where, $select, $joinArray);
+        $query = $this->transactions->paginateWithFilters($searchFields, $orderFields, $where, $select, $joinArray);
         $select = ['stock_items.item', 'journal', DB::raw('sum(amount) as amount')];
-        $data['summary'] = app(TransactionInterface::class)->filters($searchFields, $orderFields, $where, $select, $joinArray, ['stock_items.item', 'journal']);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['summary'] = $this->transactions->filters($searchFields, $orderFields, $where, $select, $joinArray, ['stock_items.item', 'journal']);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         return $data;
     }
 
     /**
-     * @param null $journalType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает отчет по транзакциям всех пользователей.
+     *
+     * Действие: формирует общий журнал транзакций с учетом типа операции и возвращает отчет.
      */
-    public function allUser($journalType = null)
+    public function allUser(?string $journalType = null): View|Factory|Application
     {
 
         $data = $this->generateTransaction(null, $journalType);

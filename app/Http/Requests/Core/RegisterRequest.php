@@ -11,7 +11,7 @@ class RegisterRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -21,7 +21,7 @@ class RegisterRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         $validation = [
             "first_name" => "required|alpha_space|between:2,255",
@@ -40,7 +40,7 @@ class RegisterRequest extends Request
         return $validation;
     }
 
-    public function attributes()
+    public function attributes(): mixed
     {
         return ['g-recaptcha-response' => 'google captcha'];
     }

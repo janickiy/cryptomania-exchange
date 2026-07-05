@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function generate($parameters)
+    public function generate(mixed $parameters): mixed
     {
         $userParams = Arr::only($parameters, ['email', 'username', 'is_email_verified', 'is_financial_active', 'is_accessible_under_maintenance', 'is_active']);
 

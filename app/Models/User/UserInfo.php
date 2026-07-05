@@ -17,12 +17,12 @@ class UserInfo extends Model implements AuditableInterface
 
     protected $fakeFields = ['user_id','first_name','last_name', 'country_id', 'address', 'phone', 'is_id_verified', 'id_type', 'id_card_front', 'id_card_back'];
 
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): mixed
     {
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class);
     }

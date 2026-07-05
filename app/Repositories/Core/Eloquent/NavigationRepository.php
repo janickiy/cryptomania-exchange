@@ -25,7 +25,7 @@ class NavigationRepository extends BaseRepository implements NavigationInterface
      * @param $slug
      * @return mixed
      */
-    public function getBySlug($slug)
+    public function getBySlug(mixed $slug): mixed
     {
         return $this->model->where('slug', $slug)->first();
     }

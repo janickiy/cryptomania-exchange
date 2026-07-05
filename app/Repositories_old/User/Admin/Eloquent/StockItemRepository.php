@@ -23,7 +23,7 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
      * @param null $stockItemType
      * @return mixed
      */
-    public function getActiveList($stockItemType = null) {
+    public function getActiveList(mixed $stockItemType = null): mixed {
         $conditions = ['is_active' => ACTIVE_STATUS_ACTIVE];
 
         if( !is_null($stockItemType) ) {
@@ -37,7 +37,7 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
      * @param array $conditions
      * @return mixed
      */
-    public function getCountByConditions(array $conditions)
+    public function getCountByConditions(array $conditions): mixed
     {
         return $this->model->where($conditions)->count();
     }
@@ -46,7 +46,7 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
      * @param $id
      * @return mixed
      */
-    public function getStockPairsById($id)
+    public function getStockPairsById(mixed $id): mixed
     {
         return $this->model->where('id', $id)
             ->leftJoin('stock_pairs as base', 'base.base_item_id', '=', 'stock_items.id')

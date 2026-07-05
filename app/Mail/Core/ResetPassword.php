@@ -18,7 +18,7 @@ class ResetPassword extends Mailable implements ShouldQueue
      *
      * @param $user
      */
-    public function __construct($user)
+    public function __construct(mixed $user)
     {
         $this->queue = 'default';
         $this->user = $user;
@@ -29,7 +29,7 @@ class ResetPassword extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build()
+    public function build(): mixed
     {
         return $this->markdown('email.core.reset_password_link');
     }

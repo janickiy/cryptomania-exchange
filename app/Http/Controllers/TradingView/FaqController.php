@@ -5,13 +5,31 @@ namespace App\Http\Controllers\TradingView;
 use App\Models\User\Question;
 use App\Repositories\User\Trader\Interfaces\QuestionInterface;
 use App\Services\Core\DataListService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 
 class FaqController extends Controller
 {
-    public function index()
+    /**
+     * Назначение: инициализирует контроллер раздела часто задаваемых вопросов.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     */
+    public function __construct(
+        private readonly QuestionInterface $questions,
+        private readonly DataListService $dataListService,
+    ) {
+    }
+
+    /**
+     * Назначение: показывает основную страницу или список раздела часто задаваемых вопросов.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     */
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['questions.title', __('Title')],
@@ -30,19 +48,20 @@ class FaqController extends Controller
             ],
         ];
 
-        $query = app(QuestionInterface::class)->paginateWithFilters($searchFields, $orderFields, null, $select, $joinArray, $groupBy, 20);
-        $data['questions'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields, true);
+        $query = $this->questions->paginateWithFilters($searchFields, $orderFields, null, $select, $joinArray, $groupBy, 20);
+        $data['questions'] = $this->dataListService->dataList($query, $searchFields, $orderFields, true);
         $data['title'] = __('Frequently Asked Questions');
         return view('frontend.faq.index', $data);
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает детальную страницу записи в разделе часто задаваемых вопросов.
+     *
+     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
      */
-    public function show($id)
+    public function show(int|string $id): View|Factory|Application
     {
-        $data['question'] = app(QuestionInterface::class)->findOrFailByConditions(['id' => $id]);
+        $data['question'] = $this->questions->findOrFailByConditions(['id' => $id]);
         $data['title'] = __('Question Details');
         return view('frontend.faq.show', $data);
     }

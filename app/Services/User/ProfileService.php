@@ -7,7 +7,9 @@ use App\Http\Requests\User\UserAvatarRequest;
 use App\Repositories\Exchange\Interfaces\StockExchangeInterface;
 use App\Repositories\User\Trader\Interfaces\StockOrderInterface;
 use App\Repositories\User\Interfaces\NotificationInterface;
+use App\Repositories\User\Interfaces\UserInfoInterface;
 use App\Repositories\User\Interfaces\UserInterface;
+use App\Repositories\User\Interfaces\UserSettingInterface;
 use App\Repositories\User\Trader\Interfaces\WalletInterface;
 use App\Services\Core\FileUploadService;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileService
 {
-    public function profile()
+    public function profile(): mixed
     {
         $data['user'] = Auth::user()->load('userRoleManagement');
 
@@ -26,7 +28,7 @@ class ProfileService
      * @param PasswordUpdateRequest $request
      * @return array
      */
-    public function updatePassword(PasswordUpdateRequest $request)
+    public function updatePassword(PasswordUpdateRequest $request): mixed
     {
         $update = ['password' => Hash::make($request->new_password)];
 
@@ -47,10 +49,70 @@ class ProfileService
     }
 
     /**
+     * @param array<string, mixed> $parameters
+     * @return array<string, mixed>
+     */
+    public function updatePersonalInfo(array $parameters): array
+    {
+        if (app(UserInfoInterface::class)->update($parameters, Auth::id(), 'user_id')) {
+            return [
+                SERVICE_RESPONSE_STATUS => true,
+                SERVICE_RESPONSE_MESSAGE => __('Profile has been updated successfully.'),
+            ];
+        }
+
+        return [
+            SERVICE_RESPONSE_STATUS => false,
+            SERVICE_RESPONSE_MESSAGE => __('Failed to update profile.'),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     * @return array<string, mixed>
+     */
+    public function updateSettings(array $parameters): array
+    {
+        if (app(UserSettingInterface::class)->update($parameters, Auth::id(), 'user_id')) {
+            return [
+                SERVICE_RESPONSE_STATUS => true,
+                SERVICE_RESPONSE_MESSAGE => __('User setting has been updated successfully.'),
+            ];
+        }
+
+        return [
+            SERVICE_RESPONSE_STATUS => false,
+            SERVICE_RESPONSE_MESSAGE => __('Failed to update user setting.'),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function generateReferralLink(): array
+    {
+        $user = Auth::user();
+
+        if (empty($user->referral_code)) {
+            app(UserInterface::class)->update(['referral_code' => $user->id . random_string(8)], $user->id);
+
+            return [
+                SERVICE_RESPONSE_STATUS => true,
+                SERVICE_RESPONSE_MESSAGE => __('Referral link has been generated successfully.'),
+            ];
+        }
+
+        return [
+            SERVICE_RESPONSE_STATUS => true,
+            SERVICE_RESPONSE_MESSAGE => null,
+        ];
+    }
+
+    /**
      * @param UserAvatarRequest $request
      * @return array
      */
-    public function avatarUpload(UserAvatarRequest $request)
+    public function avatarUpload(UserAvatarRequest $request): mixed
     {
         $uploadedAvatar = app(FileUploadService::class)->upload($request->file('avatar'), config('commonconfig.path_profile_image'), 'avatar', 'user', Auth::id(), 'public', 300, 300);
 
@@ -75,7 +137,7 @@ class ProfileService
      * @param $userId
      * @return array
      */
-    public function userRelatedInfo($userId)
+    public function userRelatedInfo(mixed $userId): mixed
     {
         $totalWallets = app(WalletInterface::class)->count(['user_id' => $userId]);
         $totalOpenOrders = app(StockOrderInterface::class)->count(['user_id' => $userId, 'status' => STOCK_ORDER_PENDING]);
@@ -92,7 +154,7 @@ class ProfileService
      * @param $userId
      * @return array
      */
-    public function routesForAdmin($userId)
+    public function routesForAdmin(mixed $userId): mixed
     {
         $userRelatedInfo = $this->userRelatedInfo($userId);
 
@@ -112,7 +174,7 @@ class ProfileService
      * @param $userId
      * @return array
      */
-    public function routesForUser($userId)
+    public function routesForUser(mixed $userId): mixed
     {
         $userRelatedInfo = $this->userRelatedInfo($userId);
 

@@ -33,7 +33,7 @@ class ReportsService
      * @param null $transactionType
      * @return mixed
      */
-    public function deposits($userId = null, $id = null, $transactionType = null)
+    public function deposits(mixed $userId = null, mixed $id = null, mixed $transactionType = null): mixed
     {
         $searchFields = [
             ['ref_id', __('Reference ID')],
@@ -87,7 +87,7 @@ class ReportsService
      * @param null $transactionType
      * @return mixed
      */
-    public function withdrawals($userId = null, $id = null, $transactionType = null)
+    public function withdrawals(mixed $userId = null, mixed $id = null, mixed $transactionType = null): mixed
     {
         $searchFields = [
             ['ref_id', __('Reference ID')],
@@ -141,7 +141,7 @@ class ReportsService
      * @param null $stockPairId
      * @return mixed
      */
-    public function trades($userId = null, $categoryType = null, $stockPairId = null)
+    public function trades(mixed $userId = null, mixed $categoryType = null, mixed $stockPairId = null): mixed
     {
         $searchFields = [
             ['stock_exchanges.stock_pair_id', __('Market')],
@@ -202,7 +202,7 @@ class ReportsService
      * @param null $stockPairId
      * @return mixed
      */
-    public function openOrders($userId = null, $categoryType = null, $stockPairId = null)
+    public function openOrders(mixed $userId = null, mixed $categoryType = null, mixed $stockPairId = null): mixed
     {
         $searchFields = [
             ['stock_orders.stock_pair_id', __('Market')],
@@ -268,7 +268,7 @@ class ReportsService
      * @param $id
      * @return mixed
      */
-    public function referralUsers($id)
+    public function referralUsers(mixed $id): mixed
     {
         $searchFields = [
             ['user_infos.first_name', __('First Name')],
@@ -303,7 +303,7 @@ class ReportsService
      * @param $referralUserId
      * @return mixed
      */
-    public function referralEarning($referrerUserId, $referralUserId)
+    public function referralEarning(mixed $referrerUserId, mixed $referralUserId): mixed
     {
         $searchFields = [
             ['stock_items.item', __('Stock Item')],

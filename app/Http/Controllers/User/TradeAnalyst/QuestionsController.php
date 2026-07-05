@@ -7,22 +7,32 @@ use App\Http\Requests\User\Admin\CommentRequest;
 use App\Repositories\User\Interfaces\CommentInterface;
 use App\Repositories\User\Trader\Interfaces\QuestionInterface;
 use App\Services\Core\DataListService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class QuestionsController extends Controller
 {
-    private $questionRepository;
-
     /**
-     * @param QuestionInterface $questionRepository
+     * Назначение: инициализирует контроллер раздела вопросов и ответов.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(QuestionInterface $questionRepository)
-    {
-        $this->questionRepository = $questionRepository;
+    public function __construct(
+        private readonly QuestionInterface $questionRepository,
+        private readonly DataListService $dataListService,
+    ) {
     }
 
-    public function index()
+    /**
+     * Назначение: показывает основную страницу или список раздела вопросов и ответов.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     */
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['questions.title', __('Title')],
@@ -38,17 +48,18 @@ class QuestionsController extends Controller
         $join = ['user_infos', 'user_infos.user_id', '=', 'questions.user_id'];
 
         $query = $this->questionRepository->paginateWithFilters($searchFields, $orderFields, null, $select, $join);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('Questions');
 
         return view('backend.questions.index', $data);
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает форму ответа на вопрос трейдера.
+     *
+     * Действие: загружает вопрос по идентификатору и возвращает представление формы ответа.
      */
-    public function answerForm($id)
+    public function answerForm(int|string $id): View|Factory|Application
     {
         $data['question'] = $this->questionRepository->findOrFailById($id, ['user.userInfo', 'comments.user.userInfo']);
         $data['title'] = __('Edit Question');
@@ -56,12 +67,11 @@ class QuestionsController extends Controller
     }
 
     /**
-     * @param CommentRequest $request
-     * @param $id
-     * @param CommentInterface $comment
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: сохраняет ответ аналитика на вопрос.
+     *
+     * Действие: создает комментарий-ответ, связывает его с вопросом и возвращает результат операции.
      */
-    public function answer(CommentRequest $request, $id, CommentInterface $comment)
+    public function answer(CommentRequest $request, int|string $id, CommentInterface $comment): RedirectResponse
     {
         $question = $this->questionRepository->getFirstById($id);
 
@@ -81,10 +91,11 @@ class QuestionsController extends Controller
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: удаляет запись в разделе вопросов и ответов.
+     *
+     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
      */
-    public function destroy($id)
+    public function destroy(int|string $id): RedirectResponse
     {
         if ($this->questionRepository->deleteById($id)) {
             return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The question has been deleted successfully.'));

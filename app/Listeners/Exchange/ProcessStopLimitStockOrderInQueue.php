@@ -29,12 +29,12 @@ class ProcessStopLimitStockOrderInQueue implements ShouldQueue
      * @param BroadcastOrder $event
      * @return void
      */
-    public function handle(BroadcastOrder $event)
+    public function handle(BroadcastOrder $event): void
     {
         app(StockExchangeService::class, [$event->order])->process();
     }
 
-    public function shouldQueue($event)
+    public function shouldQueue(mixed $event): mixed
     {
         return (
             $event->order->status == STOCK_ORDER_PENDING &&

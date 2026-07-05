@@ -18,7 +18,7 @@ class BroadcastPrivateCancelOrder implements ShouldBroadcastNow
      *
      * @param $order
      */
-    public function __construct($order)
+    public function __construct(mixed $order)
     {
         $this->stockOrder = $order;
     }
@@ -28,7 +28,7 @@ class BroadcastPrivateCancelOrder implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): mixed
     {
         return new PrivateChannel(channel_prefix() .'orders.' . $this->stockOrder->stock_pair_id . '.' . $this->stockOrder->user_id);
     }
@@ -38,7 +38,7 @@ class BroadcastPrivateCancelOrder implements ShouldBroadcastNow
      *
      * @return bool
      */
-    public function broadcastWhen()
+    public function broadcastWhen(): mixed
     {
         return $this->stockOrder->category == CATEGORY_EXCHANGE;
     }
@@ -48,7 +48,7 @@ class BroadcastPrivateCancelOrder implements ShouldBroadcastNow
      *
      * @return array
      */
-    public function broadcastWith()
+    public function broadcastWith(): mixed
     {
         return [
             'order_number' => $this->stockOrder->id,

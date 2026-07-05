@@ -11,7 +11,7 @@ class SystemNoticeRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -21,7 +21,7 @@ class SystemNoticeRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         return [
             'title' => 'required',

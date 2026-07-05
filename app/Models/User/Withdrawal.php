@@ -11,17 +11,17 @@ class Withdrawal extends Model
 
     protected $fillable = ['user_id', 'ref_id', 'wallet_id', 'stock_item_id', 'amount', 'network_fee', 'system_fee', 'address', 'txn_id', 'payment_method', 'status'];
 
-    public function stockItem()
+    public function stockItem(): mixed
     {
         return $this->belongsTo(StockItem::class);
     }
 
-    public function wallet()
+    public function wallet(): mixed
     {
         return $this->belongsTo(Wallet::class);
     }
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class);
     }

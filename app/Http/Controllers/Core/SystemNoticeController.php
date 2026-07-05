@@ -8,25 +8,31 @@ use App\Http\Requests\Admin\SystemNoticeRequest;
 use App\Repositories\Core\Interfaces\SystemNoticeInterface;
 use App\Services\Core\DataListService;
 use App\Services\User\Admin\SystemNoticeAdminService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 
 class SystemNoticeController extends Controller
 {
-    public $systemNotice;
-
     /**
-     * @param SystemNoticeInterface $systemNotice
+     * Назначение: инициализирует контроллер раздела системных уведомлений.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(SystemNoticeInterface $systemNotice)
-    {
-        $this->systemNotice = $systemNotice;
+    public function __construct(
+        private readonly SystemNoticeInterface $systemNotice,
+        private readonly SystemNoticeAdminService $systemNoticeService,
+        private readonly DataListService $dataListService,
+    ) {
     }
 
     /**
-     * Display a listing of the resource.
+     * Назначение: показывает основную страницу или список раздела системных уведомлений.
      *
-     * @return \Illuminate\Http\Response
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
      */
-    public function index()
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['title', __('Title')],
@@ -40,18 +46,18 @@ class SystemNoticeController extends Controller
         ];
 
         $query = $this->systemNotice->paginateWithFilters($searchFields, $orderFields);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('System Notice');
 
         return view('backend.systemNotice.index', $data);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Назначение: показывает форму создания записи в разделе системных уведомлений.
      *
-     * @return \Illuminate\Http\Response
+     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
      */
-    public function create()
+    public function create(): View|Factory|Application
     {
         $data['types'] = array_combine(config('commonconfig.system_notice_types'), array_map('ucfirst', config('commonconfig.system_notice_types')));
         $data['title'] = __('Create Notice');
@@ -60,14 +66,13 @@ class SystemNoticeController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Назначение: создает новую запись в разделе системных уведомлений.
      *
-     * @param SystemNoticeRequest $request
-     * @return \Illuminate\Http\Response
+     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
      */
-    public function store(SystemNoticeRequest $request)
+    public function store(SystemNoticeRequest $request): RedirectResponse
     {
-        if (app(SystemNoticeAdminService::class)->create(SystemNoticeData::fromArray($request->validated()))) {
+        if ($this->systemNoticeService->create(SystemNoticeData::fromArray($request->validated()))) {
             return redirect()->route('system-notices.index')->with(SERVICE_RESPONSE_SUCCESS, __('Notice has been created successfully.'));
         }
 
@@ -75,12 +80,11 @@ class SystemNoticeController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Назначение: показывает форму редактирования записи в разделе системных уведомлений.
      *
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
      */
-    public function edit($id)
+    public function edit(int|string $id): View|Factory|Application
     {
         $data['systemNotice'] = $this->systemNotice->findOrFailById($id);
         $data['types'] = array_combine(config('commonconfig.system_notice_types'), array_map('ucfirst', config('commonconfig.system_notice_types')));
@@ -90,15 +94,13 @@ class SystemNoticeController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Назначение: обновляет запись в разделе системных уведомлений.
      *
-     * @param SystemNoticeRequest $request
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
      */
-    public function update(SystemNoticeRequest $request, $id)
+    public function update(SystemNoticeRequest $request, int|string $id): RedirectResponse
     {
-        if (app(SystemNoticeAdminService::class)->update((int) $id, SystemNoticeData::fromArray($request->validated()))) {
+        if ($this->systemNoticeService->update((int) $id, SystemNoticeData::fromArray($request->validated()))) {
             return redirect()->route('system-notices.index')->with(SERVICE_RESPONSE_SUCCESS, __('System notice has been updated successfully.'));
         }
 
@@ -106,12 +108,13 @@ class SystemNoticeController extends Controller
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: удаляет запись в разделе системных уведомлений.
+     *
+     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
      */
-    public function destroy($id)
+    public function destroy(int|string $id): RedirectResponse
     {
-        if (app(SystemNoticeAdminService::class)->delete((int) $id)) {
+        if ($this->systemNoticeService->delete((int) $id)) {
             return redirect()->route('system-notices.index')->with(SERVICE_RESPONSE_SUCCESS, __('System notice has been deleted successfully.'));
         }
 

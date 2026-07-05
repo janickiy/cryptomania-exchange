@@ -23,7 +23,7 @@ class StopLimitStockOrder implements ShouldQueue
      * @param $stockPairId
      * @param $stockPrice
      */
-    public function __construct($stockPairId, $stockPrice)
+    public function __construct(mixed $stockPairId, mixed $stockPrice)
     {
         $this->queue = 'stop-limit';
         $this->stockPairId = $stockPairId;
@@ -35,7 +35,7 @@ class StopLimitStockOrder implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $conditions = [
             'category' => CATEGORY_EXCHANGE,

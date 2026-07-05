@@ -11,17 +11,17 @@ abstract class BaseRepository implements RepositoryInterface
 {
     use RepositoryTrait;
 
-    public function all()
+    public function all(): mixed
     {
         return $this->getAll();
     }
 
-    public function find(int|string $id)
+    public function find(int|string $id): mixed
     {
         return $this->model->find($id);
     }
 
-    public function getAll($relations = null, $orders = null)
+    public function getAll(mixed $relations = null, mixed $orders = null): mixed
     {
         $query = $this->model->with($this->extractToArray($relations));
 
@@ -32,7 +32,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $query->get();
     }
 
-    public function getByConditions(array $conditions, $relations = null, $orders = null)
+    public function getByConditions(array $conditions, mixed $relations = null, mixed $orders = null): mixed
     {
         $query = $this->model->where($conditions)->with($this->extractToArray($relations));
 
@@ -43,29 +43,29 @@ abstract class BaseRepository implements RepositoryInterface
         return $query->get();
     }
 
-    public function findOrFailById(int $id, $relations = null)
+    public function findOrFailById(int $id, mixed $relations = null): mixed
     {
         return $this->model->with($this->extractToArray($relations))->findOrFail($id);
     }
 
-    public function findOrFailByConditions(array $conditions, $relations = null)
+    public function findOrFailByConditions(array $conditions, mixed $relations = null): mixed
     {
         $instant = $this->model->where($conditions)->with($this->extractToArray($relations))->first();
         abort_if(empty($instant), 404);
         return $instant;
     }
 
-    public function create(array $attributes)
+    public function create(array $attributes): mixed
     {
         return $this->model->create(Arr::only($attributes, $this->model->getFillable()));
     }
 
-    public function createFromDto(DataTransferObject $dto)
+    public function createFromDto(DataTransferObject $dto): mixed
     {
         return $this->create($dto->toArray());
     }
 
-    public function update(array $attributes, int $id, string $attribute = "id")
+    public function update(array $attributes, int $id, string $attribute = "id"): mixed
     {
         $instance = $this->getFirstByConditions([$attribute => $id]);
 
@@ -81,12 +81,12 @@ abstract class BaseRepository implements RepositoryInterface
         return (bool) $this->update($dto->toArray(), (int) $id);
     }
 
-    public function getFirstByConditions(array $conditions, $relations = null)
+    public function getFirstByConditions(array $conditions, mixed $relations = null): mixed
     {
         return $this->model->where($conditions)->with($this->extractToArray($relations))->first();
     }
 
-    public function updateByConditions(array $attributes, array $conditions)
+    public function updateByConditions(array $attributes, array $conditions): mixed
     {
         $instance = $this->getFirstByConditions($conditions);
 
@@ -97,7 +97,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $instance->update(Arr::only($attributes, $this->model->getFillable())) ? $instance : false;
     }
 
-    public function deleteById(int $id)
+    public function deleteById(int $id): mixed
     {
         $instance = $this->getFirstById($id);
 
@@ -118,12 +118,12 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->deleteById((int) $id);
     }
 
-    public function getFirstById(int $id, $relations = null)
+    public function getFirstById(int $id, mixed $relations = null): mixed
     {
         return $this->model->where('id', $id)->with($this->extractToArray($relations))->first();
     }
 
-    public function deleteByConditions(array $conditions)
+    public function deleteByConditions(array $conditions): mixed
     {
         $instance = $this->getFirstByConditions($conditions);
 
@@ -139,7 +139,7 @@ abstract class BaseRepository implements RepositoryInterface
         return true;
     }
 
-    public function toggleStatusById(int $id, string $attribute = 'is_active')
+    public function toggleStatusById(int $id, string $attribute = 'is_active'): mixed
     {
         $instance = $this->getFirstById($id);
 
@@ -156,7 +156,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $instance->update() ? $instance : false;
     }
 
-    public function toggleStatusByConditions(array $conditions, string $attribute = 'is_active')
+    public function toggleStatusByConditions(array $conditions, string $attribute = 'is_active'): mixed
     {
         $instance = $this->getFirstByConditions($conditions);
 
@@ -169,7 +169,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $instance->update() ? $instance : false;
     }
 
-    public function insert(array $attributes)
+    public function insert(array $attributes): mixed
     {
         return $this->model->insert($attributes);
     }
@@ -184,7 +184,7 @@ abstract class BaseRepository implements RepositoryInterface
         $this->model->truncate();
     }
 
-    public function bulkUpdate(array $values)
+    public function bulkUpdate(array $values): mixed
     {
         if (!count($values)) {
             return false;
@@ -258,12 +258,12 @@ abstract class BaseRepository implements RepositoryInterface
         return DB::update($sql);
     }
 
-    public function paginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p')
+    public function paginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p'): mixed
     {
         return $this->model->paginate($perPage, $columns, $paginationKey);
     }
 
-    public function simplePaginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p',$where=null,$order='desc')
+    public function simplePaginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p',mixed $where=null,mixed $order='desc'): mixed
     {
         if(!empty($where)){
             $this->model = $this->model->where($where);
@@ -274,7 +274,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->model->orderBy('id',$order)->simplePaginate($perPage, $columns, $paginationKey);
     }
 
-    public function filters($searchFields, $orderFields = null, $whereArray = null, $selectData = null, $joinArray = null, $groupBy=null,$paginationKey = 'p', $dateField = 'created_at')
+    public function filters(mixed $searchFields, mixed $orderFields = null, mixed $whereArray = null, mixed $selectData = null, mixed $joinArray = null, mixed $groupBy=null,mixed $paginationKey = 'p', mixed $dateField = 'created_at'): mixed
     {
         $tableName = $this->model->getTable();
         if (!is_null($joinArray) && is_array($joinArray)) {
@@ -415,7 +415,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $data;
     }
 
-    public function paginateWithFilters($searchFields, $orderFields = null, $whereArray = null, $selectData = null, $joinArray = null, $groupBy=null, $itemPerPage=null, $paginationKey = 'p', $dateField = 'created_at')
+    public function paginateWithFilters(mixed $searchFields, mixed $orderFields = null, mixed $whereArray = null, mixed $selectData = null, mixed $joinArray = null, mixed $groupBy=null, mixed $itemPerPage=null, mixed $paginationKey = 'p', mixed $dateField = 'created_at'): mixed
     {
         $tableName = $this->model->getTable();
         if (!is_null($joinArray) && is_array($joinArray)) {

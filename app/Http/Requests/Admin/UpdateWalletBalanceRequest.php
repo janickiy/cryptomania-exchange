@@ -11,7 +11,7 @@ class UpdateWalletBalanceRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -21,7 +21,7 @@ class UpdateWalletBalanceRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         return [
             'amount' => 'required|numeric|between:0.00000001,99999999999.99999999'

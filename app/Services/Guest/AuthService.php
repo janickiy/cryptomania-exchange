@@ -29,7 +29,7 @@ class AuthService
      * @param LoginRequest $request
      * @return array
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): mixed
     {
         $field = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
@@ -71,7 +71,7 @@ class AuthService
      * @param PasswordResetRequest $request
      * @return array
      */
-    public function sendPasswordResetMail(PasswordResetRequest $request)
+    public function sendPasswordResetMail(PasswordResetRequest $request): mixed
     {
         $conditions = [
             ['email', $request->email],
@@ -100,7 +100,7 @@ class AuthService
      * @param $id
      * @return array
      */
-    public function resetPassword(Request $request, $id)
+    public function resetPassword(Request $request, mixed $id): mixed
     {
         if (!$request->hasValidSignature()) {
             abort(401, 'Invalid request.');
@@ -119,7 +119,7 @@ class AuthService
      * @param $id
      * @return array
      */
-    public function updatePassword(NewPasswordRequest $request, $id)
+    public function updatePassword(NewPasswordRequest $request, mixed $id): mixed
     {
         if (!$request->hasValidSignature()) {
             return [

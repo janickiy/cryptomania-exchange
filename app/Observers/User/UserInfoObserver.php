@@ -16,7 +16,7 @@ class UserInfoObserver
      * @param UserInfo $userInfo
      * @return void
      */
-    public function created(UserInfo $userInfo)
+    public function created(UserInfo $userInfo): void
     {
         if ($userInfo->user->created_by_admin) {
             Mail::to($userInfo->user->email)->send(new AccountCreated($userInfo));

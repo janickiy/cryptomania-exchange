@@ -12,7 +12,7 @@ class CommentRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class CommentRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         return [
             'content' => 'required'

@@ -15,7 +15,7 @@ class MaintenancePermission
      * @param \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(mixed $request, Closure $next): mixed
     {
         $auth = Auth::check();
         $is_under_maintenance = admin_settings('maintenance_mode');

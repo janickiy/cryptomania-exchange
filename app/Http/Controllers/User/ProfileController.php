@@ -4,28 +4,33 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\PasswordUpdateRequest;
+use App\Http\Requests\User\UserAvatarRequest;
 use App\Http\Requests\User\UserRequest;
 use App\Http\Requests\User\UserSettingRequest;
-use App\Http\Requests\User\UserAvatarRequest;
-use App\Repositories\User\Interfaces\UserInfoInterface;
-use App\Repositories\User\Interfaces\UserInterface;
-use App\Repositories\User\Interfaces\UserSettingInterface;
 use App\Services\User\ProfileService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    private $service;
-
     /**
-     * @param ProfileService $service
+     * Назначение: инициализирует контроллер раздела профиля пользователя.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(ProfileService $service)
+    public function __construct(private readonly ProfileService $service)
     {
-        $this->service = $service;
     }
 
-    public function index()
+    /**
+     * Назначение: показывает основную страницу или список раздела профиля пользователя.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     */
+    public function index(): View|Factory|Application
     {
         $data = $this->service->profile();
         $data['title'] = __('Profile');
@@ -33,7 +38,12 @@ class ProfileController extends Controller
         return view('backend.profile.index', $data);
     }
 
-    public function edit()
+    /**
+     * Назначение: показывает форму редактирования записи в разделе профиля пользователя.
+     *
+     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
+     */
+    public function edit(): View|Factory|Application
     {
         $data = $this->service->profile();
         $data['title'] = __('Edit Profile');
@@ -42,22 +52,24 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param UserRequest $request
-     * @param UserInfoInterface $userInfo
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: обновляет запись в разделе профиля пользователя.
+     *
+     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
      */
-    public function update(UserRequest $request, UserInfoInterface $userInfo)
+    public function update(UserRequest $request): RedirectResponse
     {
-        $parameters = $request->only(['first_name', 'last_name', 'address']);
+        $response = $this->service->updatePersonalInfo($request->only(['first_name', 'last_name', 'address']));
+        $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
-        if ($userInfo->update($parameters, Auth::id(), 'user_id')) {
-            return redirect()->route('profile.edit')->with(SERVICE_RESPONSE_SUCCESS, __('Profile has been updated successfully.'));
-        }
-
-        return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to update profile.'));
+        return redirect()->route('profile.edit')->with($status, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 
-    public function changePassword()
+    /**
+     * Назначение: показывает форму смены пароля.
+     *
+     * Действие: загружает данные профиля и возвращает представление формы смены пароля.
+     */
+    public function changePassword(): View|Factory|Application
     {
         $data = $this->service->profile();
         $data['title'] = __('Change Password');
@@ -66,10 +78,11 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param PasswordUpdateRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: обновляет пароль пользователя.
+     *
+     * Действие: принимает валидированный пароль, передает его в сервис и возвращает результат операции.
      */
-    public function updatePassword(PasswordUpdateRequest $request)
+    public function updatePassword(PasswordUpdateRequest $request): RedirectResponse
     {
         $response = $this->service->updatePassword($request);
         $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
@@ -77,7 +90,12 @@ class ProfileController extends Controller
         return redirect()->back()->with($status, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 
-    public function setting()
+    /**
+     * Назначение: показывает настройки профиля пользователя.
+     *
+     * Действие: получает данные профиля и возвращает страницу текущих настроек.
+     */
+    public function setting(): View|Factory|Application
     {
         $data = $this->service->profile();
         $data['title'] = __('Setting');
@@ -85,7 +103,12 @@ class ProfileController extends Controller
         return view('backend.profile.setting', $data);
     }
 
-    public function settingEdit()
+    /**
+     * Назначение: показывает форму редактирования настроек профиля.
+     *
+     * Действие: получает данные профиля и возвращает форму изменения языка и часового пояса.
+     */
+    public function settingEdit(): View|Factory|Application
     {
         $data = $this->service->profile();
         $data['title'] = __('Edit Setting');
@@ -94,25 +117,27 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param UserSettingRequest $request
-     * @param UserSettingInterface $userSetting
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: обновляет настройки профиля пользователя.
+     *
+     * Действие: принимает валидированные настройки, передает их в сервис профиля и возвращает результат.
      */
-    public function settingUpdate(UserSettingRequest $request, UserSettingInterface $userSetting)
+    public function settingUpdate(UserSettingRequest $request): RedirectResponse
     {
-        $parameters = [
+        $response = $this->service->updateSettings([
             'language' => $request->get('language', config('app.locale')),
             'timezone' => $request->get('timezone', config('app.timezone')),
-        ];
+        ]);
+        $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
-        if ($userSetting->update($parameters, Auth::id(), 'user_id')) {
-            return redirect()->route('profile.setting.edit')->with(SERVICE_RESPONSE_SUCCESS, __('User setting has been updated successfully.'));
-        }
-
-        return redirect()->back()->withInput()->with(SERVICE_RESPONSE_SUCCESS, __('User setting has been updated successfully.'));
+        return redirect()->route('profile.setting.edit')->with($status, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 
-    public function avatarEdit()
+    /**
+     * Назначение: показывает форму изменения аватара.
+     *
+     * Действие: получает данные профиля и возвращает форму загрузки нового изображения.
+     */
+    public function avatarEdit(): View|Factory|Application
     {
         $data = $this->service->profile();
         $data['title'] = __('Change Avatar');
@@ -121,10 +146,11 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param UserAvatarRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: обновляет аватар пользователя.
+     *
+     * Действие: принимает валидированный файл изображения, передает его в сервис профиля и возвращает результат загрузки.
      */
-    public function avatarUpdate(UserAvatarRequest $request)
+    public function avatarUpdate(UserAvatarRequest $request): RedirectResponse
     {
         $response = $this->service->avatarUpload($request);
         $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
@@ -132,20 +158,30 @@ class ProfileController extends Controller
         return redirect()->back()->with($status, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 
-    public function referral()
+    /**
+     * Назначение: показывает реферальную страницу пользователя.
+     *
+     * Действие: возвращает представление с текущим пользователем и его реферальными данными.
+     */
+    public function referral(): View|Factory|Application
     {
-        $data['title'] = __('Referral');
-        $data['user'] = Auth::user();
-        return view('backend.profile.referral', $data);
+        return view('backend.profile.referral', [
+            'title' => __('Referral'),
+            'user' => Auth::user(),
+        ]);
     }
 
-    public function generateReferralLink()
+    /**
+     * Назначение: создает или обновляет реферальную ссылку пользователя.
+     *
+     * Действие: вызывает сервис профиля и возвращает flash-сообщение с результатом генерации.
+     */
+    public function generateReferralLink(): RedirectResponse
     {
-        $user = Auth::user();
-        if (empty($user->referral_code)) {
-            $attributes = ['referral_code' => $user->id . random_string(8)];
-            app(UserInterface::class)->update($attributes, $user->id);
-            return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('Referral link has been generated successfully.'));
+        $response = $this->service->generateReferralLink();
+
+        if (!empty($response[SERVICE_RESPONSE_MESSAGE])) {
+            return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, $response[SERVICE_RESPONSE_MESSAGE]);
         }
 
         return redirect()->back();

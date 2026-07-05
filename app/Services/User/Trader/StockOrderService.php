@@ -38,7 +38,7 @@ class StockOrderService
      * @param $request
      * @return array
      */
-    public function order($request)
+    public function order(mixed $request): mixed
     {
         $user = Auth::user();
 
@@ -149,7 +149,7 @@ class StockOrderService
      * @param $request
      * @param $stockPair
      */
-    public function setPropertiesValue($request, $stockPair)
+    public function setPropertiesValue(mixed $request, mixed $stockPair): void
     {
         $this->minimumTransactionFee = $stockPair->base_item_type == CURRENCY_REAL ? MINIMUM_TRANSACTION_FEE_CURRENCY : MINIMUM_TRANSACTION_FEE_CRYPTO;
 
@@ -163,7 +163,7 @@ class StockOrderService
 
     }
 
-    public function _deductBalanceFromWallet()
+    public function _deductBalanceFromWallet(): mixed
     {
         if ($this->request->exchange_type == EXCHANGE_BUY) {
             $getRelevantWalletId = $this->stockPair->base_item_id;
@@ -183,7 +183,7 @@ class StockOrderService
         return app(WalletInterface::class)->updateByConditions($attributes, $conditions);
     }
 
-    public function _increaseOnOrderOnStockPair()
+    public function _increaseOnOrderOnStockPair(): mixed
     {
         if ($this->request->exchange_type == EXCHANGE_BUY) {
             $attributes['base_item_buy_order_volume'] = DB::raw('base_item_buy_order_volume + ' . bcmul($this->request->price, $this->request->amount));
@@ -196,7 +196,7 @@ class StockOrderService
         return app(StockPairInterface::class)->update($attributes, $this->stockPair->id);
     }
 
-    public function _placeOrder()
+    public function _placeOrder(): mixed
     {
         $orderInput = [
             'user_id' => Auth::id(),
@@ -220,7 +220,7 @@ class StockOrderService
      * @param $wallet
      * @return mixed
      */
-    private function insertTransactionHistories($stockOrder, $wallet)
+    private function insertTransactionHistories(mixed $stockOrder, mixed $wallet): mixed
     {
         $amount = $stockOrder->exchange_type == EXCHANGE_BUY ? bcmul($stockOrder->amount, $stockOrder->price) : $stockOrder->amount;
 
@@ -281,7 +281,7 @@ class StockOrderService
     /**
      * @param null $stockPair
      */
-    public function setStockPair($stockPair): void
+    public function setStockPair(mixed $stockPair): void
     {
         $this->stockPair = $stockPair;
     }
@@ -290,7 +290,7 @@ class StockOrderService
      * @param $id
      * @return array
      */
-    public function cancelOrder($id)
+    public function cancelOrder(mixed $id): mixed
     {
         dispatch(new CancelStockOrder($id));
 
@@ -301,11 +301,42 @@ class StockOrderService
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function cancelAuthenticatedOrder(int|string $id): array
+    {
+        $stockOrder = $this->stockOrder->getFirstById((int) $id);
+
+        if (empty($stockOrder)) {
+            return [
+                SERVICE_RESPONSE_STATUS => false,
+                SERVICE_RESPONSE_MESSAGE => __('Order not found.'),
+            ];
+        }
+
+        if (Auth::id() != $stockOrder->user_id) {
+            return [
+                SERVICE_RESPONSE_STATUS => false,
+                SERVICE_RESPONSE_MESSAGE => __('You are not authorize to do this action.'),
+            ];
+        }
+
+        if ($stockOrder->status >= STOCK_ORDER_COMPLETED) {
+            return [
+                SERVICE_RESPONSE_STATUS => false,
+                SERVICE_RESPONSE_MESSAGE => __('This order cannot be deleted.'),
+            ];
+        }
+
+        return $this->cancelOrder((int) $id);
+    }
+
+    /**
      * @param null $categoryType
      * @param null $stockPairId
      * @return mixed
      */
-    public function openOrders($categoryType = null, $stockPairId = null)
+    public function openOrders(mixed $categoryType = null, mixed $stockPairId = null): mixed
     {
         $searchFields = [
             ['stock_orders.stock_pair_id', __('Market')],

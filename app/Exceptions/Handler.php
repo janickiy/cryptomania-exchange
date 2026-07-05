@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
      * @param  \Throwable $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Throwable $exception)
+    public function render(mixed $request, Throwable $exception): mixed
     {
         if ($exception instanceof TokenMismatchException) {
             if ($request->ajax()) {

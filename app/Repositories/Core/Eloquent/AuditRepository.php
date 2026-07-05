@@ -28,7 +28,7 @@ class AuditRepository extends BaseRepository implements AuditInterface
         $this->model = $audit;
     }
 
-    public function paginateWithUserFilters(array $searchFields, array $orderFields)
+    public function paginateWithUserFilters(array $searchFields, array $orderFields): mixed
     {
         return $this->paginateWithFilters(
             $searchFields,

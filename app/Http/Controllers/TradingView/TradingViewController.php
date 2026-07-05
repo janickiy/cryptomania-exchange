@@ -8,12 +8,33 @@ use App\Models\Backend\Post;
 use App\Repositories\User\Interfaces\CommentInterface;
 use App\Repositories\User\TradeAnalyst\Interfaces\PostInterface;
 use App\Services\Core\DataListService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TradingViewController extends Controller
 {
-    public function index()
+    /**
+     * Назначение: инициализирует контроллер раздела торговых обзоров.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     */
+    public function __construct(
+        private readonly PostInterface $posts,
+        private readonly CommentInterface $comments,
+        private readonly DataListService $dataListService,
+    ) {
+    }
+
+    /**
+     * Назначение: показывает основную страницу или список раздела торговых обзоров.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     */
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['posts.title', __('Title')],
@@ -36,31 +57,32 @@ class TradingViewController extends Controller
             ],
         ];
 
-        $query = app(PostInterface::class)->paginateWithFilters($searchFields, $orderFields, $where, $select, $joinArray, $groupBy, 6);
-        $data['posts'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $query = $this->posts->paginateWithFilters($searchFields, $orderFields, $where, $select, $joinArray, $groupBy, 6);
+        $data['posts'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('Trading Views');
         return view('frontend.trade_analysis.lists', $data);
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает детальную страницу записи в разделе торговых обзоров.
+     *
+     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
      */
-    public function show($id)
+    public function show(int|string $id): View|Factory|Application
     {
-        $data['post'] = app(PostInterface::class)->findOrFailByConditions(['id' => $id, 'is_published' => ACTIVE_STATUS_ACTIVE]);
+        $data['post'] = $this->posts->findOrFailByConditions(['id' => $id, 'is_published' => ACTIVE_STATUS_ACTIVE]);
         $data['title'] = __('Trading View');
         return view('frontend.trade_analysis.show', $data);
     }
 
     /**
-     * @param CommentRequest $request
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: сохраняет комментарий к торговому обзору.
+     *
+     * Действие: принимает валидированный текст комментария, связывает его с публикацией и возвращает пользователя назад.
      */
-    public function comment(CommentRequest $request, $id)
+    public function comment(CommentRequest $request, int|string $id): RedirectResponse
     {
-        $post = app(PostInterface::class)->getFirstById($id);
+        $post = $this->posts->getFirstById((int) $id);
 
         if (empty($post)) {
             return redirect()->back()->withInput()->with(SERVICE_RESPONSE_ERROR, __('Post could not found.'));
@@ -70,7 +92,7 @@ class TradingViewController extends Controller
         $attributes['user_id'] = Auth::id();
 
 
-        if (app(CommentInterface::class)->save($attributes, $post)) {
+        if ($this->comments->save($attributes, $post)) {
             return redirect()->route('trading-views.show', $post->id)->with(SERVICE_RESPONSE_SUCCESS, __('Comment has been submitted successfully.'));
         }
 

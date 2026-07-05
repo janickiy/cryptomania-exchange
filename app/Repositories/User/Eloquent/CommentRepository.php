@@ -23,7 +23,7 @@ class CommentRepository extends BaseRepository implements CommentInterface
      * @param $commentable
      * @return mixed
      */
-    public function save($attribute, $commentable)
+    public function save(mixed $attribute, mixed $commentable): mixed
      {
          return $commentable->comments()->create($attribute);
      }

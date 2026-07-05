@@ -11,7 +11,7 @@ class SystemTaskRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -21,7 +21,7 @@ class SystemTaskRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         return [
             "module_id" => 'required|numeric',

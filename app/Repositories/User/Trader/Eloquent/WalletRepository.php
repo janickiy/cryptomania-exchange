@@ -26,7 +26,7 @@ class WalletRepository extends BaseRepository implements WalletInterface
      * @param int $id
      * @return mixed
      */
-    public function findStockItem(int $id)
+    public function findStockItem(int $id): mixed
     {
         return $this->model->where('stock_item_id', $id)->first();
     }
@@ -35,7 +35,7 @@ class WalletRepository extends BaseRepository implements WalletInterface
      * @param array $parameters
      * @return mixed
      */
-    public function insert(array $parameters)
+    public function insert(array $parameters): mixed
     {
         return $this->model->insert($parameters);
     }
@@ -44,7 +44,7 @@ class WalletRepository extends BaseRepository implements WalletInterface
      * @param $userID
      * @return mixed
      */
-    public function createUnavailableWallet($userID)
+    public function createUnavailableWallet(mixed $userID): mixed
     {
         $date = now();
         $activeStockItems = app(StockItemInterface::class)->getActiveList();
@@ -68,16 +68,16 @@ class WalletRepository extends BaseRepository implements WalletInterface
      * @param array $conditions
      * @return mixed
      */
-    public function firstOrFail(array $conditions)
+    public function firstOrFail(array $conditions, mixed $relations = null): mixed
     {
-        return $this->model->where($conditions)->firstOrFail();
+        return $this->model->where($conditions)->with($this->extractToArray($relations))->firstOrFail();
     }
 
     /**
      * @param array $conditions
      * @return mixed
      */
-    public function count(array $conditions)
+    public function count(array $conditions): mixed
     {
         return $this->model->where($conditions)->count();
     }
@@ -87,7 +87,7 @@ class WalletRepository extends BaseRepository implements WalletInterface
      * @param array $conditions
      * @return mixed
      */
-    public function updateAllByConditions(array $attributes, array $conditions)
+    public function updateAllByConditions(array $attributes, array $conditions): mixed
     {
         return $this->model->where($conditions)->update($attributes);
     }
@@ -97,7 +97,7 @@ class WalletRepository extends BaseRepository implements WalletInterface
      * @param $amount
      * @return bool
      */
-    public function updateWalletBalance($conditions, $amount)
+    public function updateWalletBalance(mixed $conditions, mixed $amount): mixed
     {
         try {
             DB::beginTransaction();

@@ -24,7 +24,7 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
      * @param array|null $conditions
      * @return bool
      */
-    public function updateRows(array $attributes, array $conditions = null)
+    public function updateRows(array $attributes, array $conditions = null): mixed
     {
         $model = is_null($conditions) ? $this->model : $this->model->where($conditions);
 
@@ -35,7 +35,7 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
      * @param $conditions
      * @return mixed
      */
-    public function getFirstStockPairDetailByConditions($conditions)
+    public function getFirstStockPairDetailByConditions(mixed $conditions): mixed
     {
         $stockPair = $this->getStockPair($conditions)->first();
         $date = Carbon::now()->subDay()->timestamp;
@@ -49,7 +49,7 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
      * @param $conditions
      * @return mixed
      */
-    public function getStockPair($conditions)
+    public function getStockPair(mixed $conditions): mixed
     {
         return $this->model->where($conditions)
             ->leftJoin('stock_items as base_item', 'base_item.id', '=', 'stock_pairs.base_item_id')
@@ -91,7 +91,7 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
      * @param $stockPair
      * @param $date
      */
-    private function generateExchangeSummary(& $stockPair, $date)
+    private function generateExchangeSummary(mixed & $stockPair, mixed $date): void
     {
         $exchange24 = json_decode($stockPair->exchange_24, true);
 
@@ -127,7 +127,7 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
      * @param $conditions
      * @return mixed
      */
-    public function getAllStockPairDetailByConditions($conditions)
+    public function getAllStockPairDetailByConditions(mixed $conditions): mixed
     {
         $stockPairs = $this->getStockPair($conditions)->get();
         $date = Carbon::now()->subDay()->timestamp;
@@ -144,7 +144,7 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
      * @param $baseItem
      * @return mixed
      */
-    function getByPair($stockItem, $baseItem)
+    function getByPair(mixed $stockItem, mixed $baseItem): mixed
     {
         $select = ['stock_pairs.*'];
         $where = [
@@ -161,7 +161,7 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
      * @param $conditions
      * @return array
      */
-    function getAllStockPairForApiByConditions($conditions)
+    function getAllStockPairForApiByConditions(mixed $conditions): mixed
     {
         $stockPairs = $this->getStockPair($conditions)->get();
 

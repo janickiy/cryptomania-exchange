@@ -26,7 +26,7 @@ class UserRepository extends BaseRepository implements UserInterface
      * @param array $conditions
      * @return mixed
      */
-    public function getCountByConditions(array $conditions)
+    public function getCountByConditions(array $conditions): mixed
     {
         return $this->model->where($conditions)->count();
     }
@@ -36,7 +36,7 @@ class UserRepository extends BaseRepository implements UserInterface
      * @param array $conditions
      * @return mixed
      */
-    public function getByUserIds(array $ids, array $conditions = [])
+    public function getByUserIds(array $ids, array $conditions = []): mixed
     {
         $model = $this->model->whereIn('id', $ids);
 

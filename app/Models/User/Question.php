@@ -12,12 +12,12 @@ class Question extends Model
 
     protected $fakeFields = ['title', 'content'];
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function comments(): mixed
     {
         return $this->morphMany(Comment::class, 'commentable');
     }

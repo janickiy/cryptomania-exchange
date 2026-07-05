@@ -17,7 +17,7 @@ class UserRoleManagement extends Model implements AuditableInterface
 
     protected $fakeFields = ['role_name', 'route_group'];
 
-    public function getRouteGroupAttribute($value)
+    public function getRouteGroupAttribute(mixed $value): mixed
     {
         return json_decode($value, true);
     }
@@ -25,12 +25,12 @@ class UserRoleManagement extends Model implements AuditableInterface
     /**
      * @param $value
      */
-    public function setRouteGroupAttribute($value)
+    public function setRouteGroupAttribute(mixed $value): void
     {
         $this->attributes['route_group'] = json_encode($value);
     }
 
-    public function users()
+    public function users(): mixed
     {
         return $this->hasMany(User::class);
     }

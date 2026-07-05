@@ -12,7 +12,7 @@ class PasswordUpdateRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class PasswordUpdateRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         return [
             'password' => 'required|hash_check:' . Auth::user()->password,
@@ -30,7 +30,7 @@ class PasswordUpdateRequest extends Request
         ];
     }
 
-    public function messages()
+    public function messages(): mixed
     {
         return [
             'password.hash_check' => __('Current password is wrong.')

@@ -18,7 +18,7 @@ class BroadcastStockPairSummary implements ShouldBroadcastNow
      *
      * @param $payloadData
      */
-    public function __construct($payloadData)
+    public function __construct(mixed $payloadData)
     {
         $this->payloadData = $payloadData;
     }
@@ -28,12 +28,12 @@ class BroadcastStockPairSummary implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): mixed
     {
         return new Channel(channel_prefix() .'exchange');
     }
 
-    public function broadcastWith()
+    public function broadcastWith(): mixed
     {
         return $this->payloadData;
     }

@@ -23,7 +23,7 @@ class DepositRepository extends BaseRepository implements DepositInterface
      * @param array $conditions
      * @return mixed
      */
-    public function updateOrCreate(array $attributes, array $conditions)
+    public function updateOrCreate(array $attributes, array $conditions): mixed
     {
         return $this->model->updateOrCreate($conditions, $attributes);
     }
@@ -32,7 +32,7 @@ class DepositRepository extends BaseRepository implements DepositInterface
      * @param array $attributes
      * @return mixed
      */
-    public function firstOrCreate(array $attributes)
+    public function firstOrCreate(array $attributes): mixed
     {
         return $this->model->firstOrCreate($attributes);
     }
@@ -42,7 +42,7 @@ class DepositRepository extends BaseRepository implements DepositInterface
      * @param null $relations
      * @return mixed
      */
-    public function firstOrFail(array $conditions, $relations = null)
+    public function firstOrFail(array $conditions, mixed $relations = null): mixed
     {
         return $this->model->where($conditions)->with($this->extractToArray($relations))->firstOrFail();
     }

@@ -17,7 +17,7 @@ class Language
      * @return mixed
      * @throws \Exception
      */
-    public function handle($request, Closure $next)
+    public function handle(mixed $request, Closure $next): mixed
     {
 
         $locale = $request->segment(1);

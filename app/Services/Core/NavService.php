@@ -26,7 +26,7 @@ class NavService
      * @param string $template
      * @return string
      */
-    public function navigationSingle($navPlace, $template = 'default_nav')
+    public function navigationSingle(mixed $navPlace, mixed $template = 'default_nav'): mixed
     {
         $navData = $this->navigation->getBySlug($navPlace);
         if ($navData) {
@@ -46,7 +46,7 @@ class NavService
      * @param $navTemplate
      * @return array
      */
-    protected function _template_builder($navTemplate)
+    protected function _template_builder(mixed $navTemplate): mixed
     {
         $all_features = [
             'navigation_item_beginning_wrapper_start' => '',
@@ -82,7 +82,7 @@ class NavService
      * @param $navTemplate
      * @return string
      */
-    protected function _navigationBuilder($navData, $navTemplate)
+    protected function _navigationBuilder(mixed $navData, mixed $navTemplate): mixed
     {
         $allRoutes = \Route::getRoutes()->getRoutesByMethod()['GET'];
         $allPermission = config('permissionRoutes.all_accessible_routes');
@@ -128,7 +128,7 @@ class NavService
      * @param null $activeClass
      * @return array|mixed|string|string[]
      */
-    protected function _tagBuilder($startingWrapper, $dbClass = null, $activeClass = null)
+    protected function _tagBuilder(mixed $startingWrapper, mixed $dbClass = null, mixed $activeClass = null): mixed
     {
         if ($startingWrapper == null) {
             return '';
@@ -158,7 +158,7 @@ class NavService
      * @param int $megaMenu
      * @return string
      */
-    protected function _navigationInside($dbData, $allAvailableRoutes, $navTemplate, $arrayColumn, $parentId = 0, $level = 1, $megaMenu = 0)
+    protected function _navigationInside(mixed $dbData, mixed $allAvailableRoutes, mixed $navTemplate, mixed $arrayColumn, mixed $parentId = 0, mixed $level = 1, mixed $megaMenu = 0): mixed
     {
         $result = '';
         if ($level == 2 && $megaMenu == 1 && $navTemplate['mega_menu_wrapper_start'] != null) {
@@ -215,7 +215,7 @@ class NavService
      * @param $megaMenu
      * @return string
      */
-    protected function _listItemStartBuilder($data, $navTemplate, $level, $megaMenu)
+    protected function _listItemStartBuilder(mixed $data, mixed $navTemplate, mixed $level, mixed $megaMenu): mixed
     {
         $beginningPart = '';
         $endingPart = '';
@@ -306,7 +306,7 @@ class NavService
      * @param $navTemplate
      * @return array
      */
-    protected function _linkBuilder($dbData, $navTemplate)
+    protected function _linkBuilder(mixed $dbData, mixed $navTemplate): mixed
     {
         $path = $navTemplate['navigation_item_no_link_text'];
         if ($dbData['route'] != '') {
@@ -352,7 +352,7 @@ class NavService
      * @param $slug
      * @return array
      */
-    public function backendMenuBuilder($slug)
+    public function backendMenuBuilder(mixed $slug): mixed
     {
         $data['navigationPlaces'] = config('navigation.registered_place');
         $data['slug'] = empty($slug) ? $data['navigationPlaces'][0] : $slug;
@@ -375,7 +375,7 @@ class NavService
      * @return mixed|string|null
      * @throws \Throwable
      */
-    protected function backendInnerMenu($dbData, $parentId = 0, $result = NULL)
+    protected function backendInnerMenu(mixed $dbData, mixed $parentId = 0, mixed $result = NULL): mixed
     {
         foreach ($dbData as $row) {
             $count = 0;
@@ -408,7 +408,7 @@ class NavService
      * @param $slug
      * @return array
      */
-    public function backendMenuSave(Request $request, $slug)
+    public function backendMenuSave(Request $request, mixed $slug): mixed
     {
         if (!in_array($slug, config('navigation.registered_place'))) {
             return [

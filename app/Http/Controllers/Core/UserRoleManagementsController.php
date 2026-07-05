@@ -8,23 +8,32 @@ use App\Http\Requests\Admin\UserRoleManagementRequest;
 use App\Repositories\Core\Interfaces\UserRoleManagementInterface;
 use App\Services\Core\DataListService;
 use App\Services\User\Admin\UserRoleManagementService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 
 
 class UserRoleManagementsController extends Controller
 {
-    public $roleManagement;
-
-    public function __construct(UserRoleManagementInterface $roleManagement)
-    {
-        $this->roleManagement = $roleManagement;
+    /**
+     * Назначение: инициализирует контроллер раздела ролей и прав доступа.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     */
+    public function __construct(
+        private readonly UserRoleManagementInterface $roleManagement,
+        private readonly UserRoleManagementService $roleManagementService,
+        private readonly DataListService $dataListService,
+    ) {
     }
 
     /**
-     * Display a listing of the resource.
+     * Назначение: показывает основную страницу или список раздела ролей и прав доступа.
      *
-     * @return \Illuminate\Http\Response
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
      */
-    public function index()
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['role_name', __('Role Name')],
@@ -35,7 +44,7 @@ class UserRoleManagementsController extends Controller
         ];
 
         $query = $this->roleManagement->paginateWithFilters($searchFields, $orderFields);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('Role Management');
         $data['defaultRoles'] = config('commonconfig.fixed_roles');
         if (!is_array($data['defaultRoles'])) {
@@ -45,7 +54,12 @@ class UserRoleManagementsController extends Controller
         return view('backend.userRoleManagements.index', $data);
     }
 
-    public function create()
+    /**
+     * Назначение: показывает форму создания записи в разделе ролей и прав доступа.
+     *
+     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     */
+    public function create(): View|Factory|Application
     {
         $data['routes'] = config('permissionRoutes.configurable_routes');
         $data['title'] = __('Create User Role');
@@ -54,13 +68,13 @@ class UserRoleManagementsController extends Controller
     }
 
     /**
-     * @param UserRoleManagementRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Exception
+     * Назначение: создает новую запись в разделе ролей и прав доступа.
+     *
+     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
      */
-    public function store(UserRoleManagementRequest $request)
+    public function store(UserRoleManagementRequest $request): RedirectResponse
     {
-        if ($userRoleManagement = app(UserRoleManagementService::class)->create(UserRoleManagementData::fromArray($request->validated()))) {
+        if ($userRoleManagement = $this->roleManagementService->create(UserRoleManagementData::fromArray($request->validated()))) {
             cache()->forever("userRoleManagement" . $userRoleManagement->id, $userRoleManagement->route_group);
             return redirect()->route('user-role-managements.edit', $userRoleManagement->id)->with(SERVICE_RESPONSE_SUCCESS, __('User role has been created successfully.'));
         }
@@ -69,12 +83,11 @@ class UserRoleManagementsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Назначение: показывает форму редактирования записи в разделе ролей и прав доступа.
      *
-     * @param $id
-     * @return \Illuminate\Http\Response
+     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
      */
-    public function edit($id)
+    public function edit(int|string $id): View|Factory|Application
     {
         $data['routes'] = config('permissionRoutes.configurable_routes');
         $data['userRoleManagement'] = $this->roleManagement->findOrFailById($id);
@@ -84,15 +97,13 @@ class UserRoleManagementsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Назначение: обновляет запись в разделе ролей и прав доступа.
      *
-     * @param UserRoleManagementRequest $request
-     * @param $id
-     * @return \Illuminate\Http\Response
+     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
      */
-    public function update(UserRoleManagementRequest $request, $id)
+    public function update(UserRoleManagementRequest $request, int|string $id): RedirectResponse
     {
-        if (app(UserRoleManagementService::class)->update((int) $id, UserRoleManagementData::fromArray($request->validated()))) {
+        if ($this->roleManagementService->update((int) $id, UserRoleManagementData::fromArray($request->validated()))) {
             return redirect()->route('user-role-managements.edit', $id)->with(SERVICE_RESPONSE_SUCCESS, __('User role has been updated successfully.'));
         }
 
@@ -100,10 +111,11 @@ class UserRoleManagementsController extends Controller
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: удаляет запись в разделе ролей и прав доступа.
+     *
+     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
      */
-    public function destroy($id)
+    public function destroy(int|string $id): RedirectResponse
     {
         if ($this->roleManagement->deleteById($id)) {
             return redirect()->route('user-role-managements.index')->with(SERVICE_RESPONSE_SUCCESS, __('User role has been deleted successfully.'));
@@ -113,10 +125,11 @@ class UserRoleManagementsController extends Controller
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: изменяет статус записи в разделе ролей и прав доступа.
+     *
+     * Действие: переключает статус через сервисный слой и возвращает результат операции.
      */
-    public function changeStatus($id)
+    public function changeStatus(int|string $id): RedirectResponse
     {
         if ($updatedState = $this->roleManagement->toggleStatusById($id)) {
             return redirect()->route('user-role-managements.index')->with(SERVICE_RESPONSE_SUCCESS, __('User role has been :state successfully', ['state' => $updatedState]));

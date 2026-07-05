@@ -19,7 +19,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
     private $ch;
     private $currency;
 
-    public function __construct($currency)
+    public function __construct(mixed $currency)
     {
         $configuration = config('coinpayment');
         $this->privateKey = $configuration['private_key'];
@@ -31,7 +31,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
         $this->currency = $currency;
     }
 
-    private function is_setup()
+    private function is_setup(): mixed
     {
         return !empty($this->privateKey) && !empty($this->publicKey) && !empty($this->merchantID) && !empty($this->ipnSecret) && !empty($this->ipnUrl);
     }
@@ -41,7 +41,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
      * @param array $req
      * @return mixed|string[]
      */
-    private function api_call($cmd, $req = array())
+    private function api_call(mixed $cmd, mixed $req = array()): mixed
     {
         if (!$this->is_setup()) {
             return array('error' => 'You have not called the Setup function with your private and public keys!');
@@ -88,7 +88,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
         }
     }
 
-    public function generateAddress()
+    public function generateAddress(): mixed
     {
         $req = array(
             'currency' => $this->currency,
@@ -101,7 +101,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
     /**
      * @param $address
      */
-    public function getTxnInfoByAddress($address)
+    public function getTxnInfoByAddress(mixed $address): void
     {
         //
     }
@@ -110,7 +110,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
      * @param $txid
      * @return mixed|string[]
      */
-    public function getTxnInfoByTxnId($txid)
+    public function getTxnInfoByTxnId(mixed $txid): mixed
     {
         return $this->api_call('get_tx_info', array('txid' => $txid));
     }
@@ -119,7 +119,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
      * @param int $limit
      * @return mixed|string[]
      */
-    public function getTxnList($limit = 25)
+    public function getTxnList(mixed $limit = 25): mixed
     {
         return $this->api_call('get_tx_ids', array('limit' => $limit));
     }
@@ -129,7 +129,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
      * @param $amount
      * @return array|mixed|string[]
      */
-    public function sendToAddress($address, $amount)
+    public function sendToAddress(mixed $address, mixed $amount): mixed
     {
         $req = array(
             'amount' => $amount,
@@ -159,7 +159,7 @@ class CoinPaymentApi implements CryptoStockApiInterface
      * @param $server_data
      * @return array
      */
-    public function validateIPN($post_data, $server_data)
+    public function validateIPN(mixed $post_data, mixed $server_data): mixed
     {
         try {
             if (!isset($post_data['ipn_mode'], $post_data['merchant'], $post_data['status'], $post_data['status_text'])) {

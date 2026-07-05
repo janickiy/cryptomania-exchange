@@ -10,7 +10,12 @@ use App\Services\Api\BitcoinApi;
 
 class TestController extends Controller
 {
-    public function test()
+    /**
+     * Назначение: выполняет тестовый endpoint.
+     *
+     * Действие: запускает временную проверочную логику без возврата пользовательского представления.
+     */
+    public function test(): void
     {
 
     }

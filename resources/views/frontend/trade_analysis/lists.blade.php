@@ -15,7 +15,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="row dc-clear">
+                    <div class="row dc-clear trading-view-list">
                         @foreach($posts['query'] as $post)
                         <div class="col-sm-4">
                             <div class="trade-analysis">

@@ -13,12 +13,12 @@ class PermissionProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->loadAdminSettings();
     }
 
-    private function loadAdminSettings()
+    private function loadAdminSettings(): void
     {
         $adminSettings = admin_settings();
         if (empty($adminSettings)) {
@@ -42,7 +42,7 @@ class PermissionProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }

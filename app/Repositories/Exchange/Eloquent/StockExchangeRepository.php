@@ -26,7 +26,7 @@ class StockExchangeRepository extends BaseRepository implements StockExchangeInt
      * @param int $limit
      * @return mixed
      */
-    public function getLatest(array $conditions, int $limit)
+    public function getLatest(array $conditions, int $limit): mixed
     {
         return $this->model
             ->select(['stock_exchanges.price','stock_exchanges.amount','stock_exchanges.exchange_type', 'stock_exchanges.created_at as date'])
@@ -41,7 +41,7 @@ class StockExchangeRepository extends BaseRepository implements StockExchangeInt
      * @param array $conditions
      * @return mixed
      */
-    public function count(array $conditions)
+    public function count(array $conditions): mixed
     {
         return $this->model->where($conditions)->count();
     }

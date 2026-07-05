@@ -16,7 +16,7 @@ class UserSetting extends Model implements AuditableInterface
 
     protected $fakeFields = ['language', 'timezone', 'is_otp_allowed'];
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class);
     }

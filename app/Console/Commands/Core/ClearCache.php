@@ -40,7 +40,7 @@ class ClearCache extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         if (!is_null($this->option('only'))) {
             $only = explode(',',$this->option('only'));

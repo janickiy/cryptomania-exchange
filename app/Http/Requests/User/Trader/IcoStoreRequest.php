@@ -12,7 +12,7 @@ class IcoStoreRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class IcoStoreRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         $minIcoAmountBuy = admin_settings('min_ico_amount_buy');
 
@@ -32,7 +32,7 @@ class IcoStoreRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): mixed
     {
         $errorMessage = __('Invalid Request.');
 

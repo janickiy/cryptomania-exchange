@@ -22,7 +22,7 @@ class StockItemWithdrawal implements ShouldQueue
      *
      * @param $withdrawalId
      */
-    public function __construct($withdrawalId)
+    public function __construct(mixed $withdrawalId)
     {
         $this->queue = 'withdrawal';
         $this->withdrawalId = $withdrawalId;
@@ -33,7 +33,7 @@ class StockItemWithdrawal implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         app(WalletService::class)->send($this->withdrawalId);
     }

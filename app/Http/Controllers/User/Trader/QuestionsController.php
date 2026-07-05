@@ -3,26 +3,35 @@
 namespace App\Http\Controllers\User\Trader;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\Admin\CommentRequest;
 use App\Http\Requests\User\TradeAnalyst\QuestionRequest;
 use App\Repositories\User\Trader\Interfaces\QuestionInterface;
 use App\Services\Core\DataListService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class QuestionsController extends Controller
 {
-    private $questionRepository;
-
     /**
-     * @param QuestionInterface $questionRepository
+     * Назначение: инициализирует контроллер раздела вопросов и ответов.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(QuestionInterface $questionRepository)
-    {
-        $this->questionRepository = $questionRepository;
+    public function __construct(
+        private readonly QuestionInterface $questionRepository,
+        private readonly DataListService $dataListService,
+    ) {
     }
 
-    public function index()
+    /**
+     * Назначение: показывает основную страницу или список раздела вопросов и ответов.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     */
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['questions.title', __('Title')],
@@ -39,23 +48,29 @@ class QuestionsController extends Controller
         $join = ['user_infos', 'user_infos.user_id', '=', 'questions.user_id'];
 
         $query = $this->questionRepository->paginateWithFilters($searchFields, $orderFields, $conditions, $select, $join);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('Questions');
 
         return view('backend.questions.index', $data);
     }
 
-    public function create()
+    /**
+     * Назначение: показывает форму создания записи в разделе вопросов и ответов.
+     *
+     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     */
+    public function create(): View|Factory|Application
     {
         $data['title'] = __('Create Question');
         return view('backend.questions.create', $data);
     }
 
     /**
-     * @param QuestionRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: создает новую запись в разделе вопросов и ответов.
+     *
+     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
      */
-    public function store(QuestionRequest $request)
+    public function store(QuestionRequest $request): RedirectResponse
     {
         $attributes = $request->only(['title', 'content']);
         $attributes['user_id'] = Auth::id();

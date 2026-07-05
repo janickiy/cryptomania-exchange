@@ -14,12 +14,12 @@ class Post extends Model
 
     protected $fakeFields = ['title', 'content', 'featured_image', 'is_published'];
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function comments(): mixed
     {
         return $this->morphMany(Comment::class, 'commentable');
     }

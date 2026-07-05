@@ -11,10 +11,20 @@ use Illuminate\Http\Request;
 class IpnController extends Controller
 {
     /**
-     * @param Request $request
-     * @return null
+     * Назначение: инициализирует контроллер раздела платежных IPN-уведомлений.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function ipn(Request $request)
+    public function __construct(private readonly WalletService $walletService)
+    {
+    }
+
+    /**
+     * Назначение: обрабатывает IPN-уведомление CoinPayments.
+     *
+     * Действие: передает тело callback-запроса в сервис кошельков и завершает обработку без вывода страницы.
+     */
+    public function ipn(Request $request): void
     {
         $ipnRequest = $request->all();
 
@@ -25,45 +35,45 @@ class IpnController extends Controller
         if (empty($ipnRequest) || !isset($ipnRequest['currency'])) {
             logs()->error('log: Invalid coinpayment IPN request.');
 
-            return null;
+            return;
         }
 
         $coinpayment = new CoinPaymentApi($ipnRequest['currency']);
         $ipnResponse = $coinpayment->validateIPN($ipnRequest, $request->server());
 
         if ($ipnResponse['error'] == 'ok') {
-            app(WalletService::class)->updateTransaction($ipnResponse);
+            $this->walletService->updateTransaction($ipnResponse);
 
-            return null;
+            return;
         } else {
             logs()->error($ipnResponse['error']);
 
-            return null;
+            return;
         }
     }
 
     /**
-     * @param Request $request
-     * @param $currency
-     * @return void|null
+     * Назначение: обрабатывает Bitcoin IPN-уведомление.
+     *
+     * Действие: передает валюту и данные callback-запроса в сервис кошельков для проверки транзакции.
      */
-    public function bitcoinIpn(Request $request, $currency)
+    public function bitcoinIpn(Request $request, string $currency): void
     {
         try {
             $bitcoin = new BitcoinApi($currency);
             $ipnResponse = $bitcoin->validateIPN($request->all(), $request->server());
 
             if ($ipnResponse['error'] == 'ok') {
-                app(WalletService::class)->updateTransaction($ipnResponse);
+                $this->walletService->updateTransaction($ipnResponse);
             } else {
                 logs()->error($ipnResponse['error']);
 
-                return null;
+                return;
             }
         } catch (\Exception $exception) {
             logs()->error($exception->getMessage());
 
-            return null;
+            return;
         }
     }
 }

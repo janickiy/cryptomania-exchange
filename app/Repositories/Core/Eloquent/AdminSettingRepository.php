@@ -26,7 +26,7 @@ class AdminSettingRepository extends BaseRepository implements AdminSettingInter
      * @param $slug
      * @return mixed
      */
-    public function getBySlug($slug)
+    public function getBySlug(mixed $slug): mixed
     {
         return $this->model->where('slug')->firstOrFail();
     }
@@ -35,7 +35,7 @@ class AdminSettingRepository extends BaseRepository implements AdminSettingInter
      * @param $slugs
      * @return mixed
      */
-    public function getBySlugs($slugs)
+    public function getBySlugs(mixed $slugs): mixed
     {
         return $this->model->whereIn('slug',$slugs)->pluck('value', 'slug')->toArray();
     }

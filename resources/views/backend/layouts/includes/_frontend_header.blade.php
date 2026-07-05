@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/style.css') }}">
 
     @yield('after-style')
-    <link rel="stylesheet" href="{{ asset('frontend/liquid-glass.css') }}?v=20260705-avatar">
+    <link rel="stylesheet" href="{{ asset('frontend/liquid-glass.css') }}?v=20260705-analysts-glass">
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>

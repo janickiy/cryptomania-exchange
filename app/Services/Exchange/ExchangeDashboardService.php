@@ -14,7 +14,7 @@ class ExchangeDashboardService
      * @param $pair
      * @return mixed
      */
-    public function getDefaultStockPair($pair)
+    public function getDefaultStockPair(mixed $pair): mixed
     {
         $stockPairRepository = app(StockPairInterface::class);
         if (empty($pair)) {
@@ -46,7 +46,7 @@ class ExchangeDashboardService
      * @param $stockPairID
      * @return array|false
      */
-    public function get24HrPairDetail($stockPairID)
+    public function get24HrPairDetail(mixed $stockPairID): mixed
     {
         $conditions = [
             'stock_pairs.id' => $stockPairID,
@@ -79,7 +79,7 @@ class ExchangeDashboardService
         return $pair24HrDetail;
     }
 
-    public function getStockMarket()
+    public function getStockMarket(): mixed
     {
         $conditions = [
             'stock_pairs.is_active' => ACTIVE_STATUS_ACTIVE,
@@ -101,7 +101,7 @@ class ExchangeDashboardService
      * @param int $category
      * @return array
      */
-    public function getOrders($stockPairID, $lastPrice = null, $exchangeType = EXCHANGE_SELL, $category = CATEGORY_EXCHANGE)
+    public function getOrders(mixed $stockPairID, mixed $lastPrice = null, mixed $exchangeType = EXCHANGE_SELL, mixed $category = CATEGORY_EXCHANGE): mixed
     {
         $conditions = [
             'stock_pair_id' => $stockPairID,
@@ -132,7 +132,7 @@ class ExchangeDashboardService
      * @param $stockPairId
      * @return array
      */
-    public function getWalletSummary($stockPairId)
+    public function getWalletSummary(mixed $stockPairId): mixed
     {
         $walletRepository = app(WalletInterface::class);
 

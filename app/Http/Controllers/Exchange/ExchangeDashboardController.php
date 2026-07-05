@@ -7,27 +7,35 @@ use App\Repositories\Exchange\Interfaces\StockExchangeInterface;
 use App\Repositories\User\Trader\Interfaces\StockOrderInterface;
 use App\Services\Exchange\ExchangeDashboardService;
 use App\Services\Exchange\StockGraphDataService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 
 class ExchangeDashboardController extends Controller
 {
-    public $exchangeService;
-
     /**
-     * @param ExchangeDashboardService $exchangeService
+     * Назначение: инициализирует контроллер раздела биржевой панели.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(ExchangeDashboardService $exchangeService)
-    {
-        $this->exchangeService = $exchangeService;
+    public function __construct(
+        private readonly ExchangeDashboardService $exchangeService,
+        private readonly StockGraphDataService $stockGraphDataService,
+        private readonly StockOrderInterface $stockOrders,
+        private readonly StockExchangeInterface $stockExchanges,
+    ) {
     }
 
     /**
-     * @param null $pair
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает основную страницу или список раздела биржевой панели.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
      */
-    public function index($pair = null)
+    public function index(?string $pair = null): View|Factory|Application
     {
         $data['title'] = __('Exchange');
         $data['stockPair'] = $this->exchangeService->getDefaultStockPair($pair);
@@ -52,17 +60,23 @@ class ExchangeDashboardController extends Controller
     }
 
     /**
-     * @param $stockPairID
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает 24-часовую сводку по торговой паре.
+     *
+     * Действие: запрашивает статистику пары через сервис биржи и отдает JSON-ответ.
      */
-    public function get24HrPairDetail($stockPairID)
+    public function get24HrPairDetail(int|string $stockPairID): JsonResponse
     {
         $response = $this->exchangeService->get24HrPairDetail($stockPairID);
 
         return response()->json($response);
     }
 
-    public function getStockMarket()
+    /**
+     * Назначение: возвращает список доступных рынков.
+     *
+     * Действие: получает торговые рынки, группирует базовые активы и отдает JSON-ответ.
+     */
+    public function getStockMarket(): JsonResponse
     {
         $stockMarkets = $this->exchangeService->getStockMarket();
         $baseItems = [];
@@ -78,10 +92,11 @@ class ExchangeDashboardController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает стакан ордеров для торговой пары.
+     *
+     * Действие: читает параметры пары и цены из запроса, получает ордера через сервис и отдает JSON.
      */
-    public function getOrders(Request $request)
+    public function getOrders(Request $request): JsonResponse
     {
         $response = $this->exchangeService->getOrders($request->stock_pair_id, $request->last_price, $request->exchange_type, $request->exchange_category);
 
@@ -90,36 +105,39 @@ class ExchangeDashboardController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает данные графика торговой пары.
+     *
+     * Действие: получает график по паре и интервалу, сохраняет настройки в cookie и отдает JSON.
      */
-    public function getChartData(Request $request)
+    public function getChartData(Request $request): JsonResponse
     {
-        $chartData = app(StockGraphDataService::class)->getGraphData($request->stock_pair_id, $request->interval);
+        $chartData = $this->stockGraphDataService->getGraphData($request->stock_pair_id, $request->interval);
 //        $chartData = json_decode(file_get_contents(asset('dummy-chart-data.json')), true);
         return response()->json($chartData)->cookie('stockPairID', $request->stock_pair_id)->cookie('chartInterval', $request->interval);
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает открытые ордера текущего пользователя.
+     *
+     * Действие: фильтрует ордера по авторизованному пользователю и торговой паре, затем отдает JSON.
      */
-    public function getMyOpenOrders(Request $request)
+    public function getMyOpenOrders(Request $request): JsonResponse
     {
         $conditions = [
             'user_id' => Auth::id(),
             'stock_pair_id' => $request->stock_pair_id,
             ['status', '<', STOCK_ORDER_COMPLETED]
         ];
-        $myOpenOrders = app(StockOrderInterface::class)->getMyOpenOrders($conditions);
+        $myOpenOrders = $this->stockOrders->getMyOpenOrders($conditions);
         return response()->json($myOpenOrders);
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает историю сделок торговой пары.
+     *
+     * Действие: формирует условия выборки по паре и категории, получает сделки и отдает JSON.
      */
-    public function getTradeHistories(Request $request)
+    public function getTradeHistories(Request $request): JsonResponse
     {
         $conditions = [
             'stock_exchanges.stock_pair_id' => $request->stock_pair_id,
@@ -127,15 +145,16 @@ class ExchangeDashboardController extends Controller
             'stock_exchanges.is_maker' => 1
         ];
 
-        $tradeHistories = app(StockExchangeInterface::class)->getLatest($conditions, TRADE_HISTORY_PER_PAGE);
+        $tradeHistories = $this->stockExchanges->getLatest($conditions, TRADE_HISTORY_PER_PAGE);
         return response()->json($tradeHistories);
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает сделки текущего пользователя.
+     *
+     * Действие: фильтрует сделки по авторизованному пользователю и торговой паре, затем отдает JSON.
      */
-    public function getMyTrade(Request $request)
+    public function getMyTrade(Request $request): JsonResponse
     {
         $conditions = [
             'stock_exchanges.stock_pair_id' => $request->stock_pair_id,
@@ -143,15 +162,16 @@ class ExchangeDashboardController extends Controller
             'stock_exchanges.user_id' => Auth::id()
         ];
 
-        $tradeHistories = app(StockExchangeInterface::class)->getLatest($conditions, TRADE_HISTORY_PER_PAGE);
+        $tradeHistories = $this->stockExchanges->getLatest($conditions, TRADE_HISTORY_PER_PAGE);
         return response()->json($tradeHistories);
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает краткую сводку кошелька для торговой пары.
+     *
+     * Действие: получает балансы пользователя по выбранной паре и отдает JSON.
      */
-    public function getWalletSummary(Request $request)
+    public function getWalletSummary(Request $request): JsonResponse
     {
         $walletSummary = $this->exchangeService->getWalletSummary($request->stock_pair_id);
         return response()->json($walletSummary);

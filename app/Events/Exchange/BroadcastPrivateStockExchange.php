@@ -22,7 +22,7 @@ class BroadcastPrivateStockExchange implements ShouldBroadcastNow
      * @param $userId
      * @param $stockExchange
      */
-    public function __construct($stockPairId, $userId, $stockExchange)
+    public function __construct(mixed $stockPairId, mixed $userId, mixed $stockExchange)
     {
         $this->stockPairId = $stockPairId;
         $this->userId = $userId;
@@ -34,13 +34,13 @@ class BroadcastPrivateStockExchange implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): mixed
     {
         return new PrivateChannel(channel_prefix() .'exchange.' . $this->stockPairId . '.' . $this->userId);
     }
 
 
-    public function broadcastWith()
+    public function broadcastWith(): mixed
     {
         return $this->stockExchange;
     }

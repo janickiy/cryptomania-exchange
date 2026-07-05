@@ -7,20 +7,34 @@ use App\Http\Requests\User\TradeAnalyst\PostRequest;
 use App\Repositories\User\TradeAnalyst\Interfaces\PostInterface;
 use App\Services\Core\DataListService;
 use App\Services\Core\FileUploadService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
 {
-    private $postRepository;
-
-    public function __construct(PostInterface $postRepository)
-    {
-        $this->postRepository = $postRepository;
+    /**
+     * Назначение: инициализирует контроллер раздела торговых публикаций аналитика.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     */
+    public function __construct(
+        private readonly PostInterface $postRepository,
+        private readonly DataListService $dataListService,
+        private readonly FileUploadService $fileUploadService,
+    ) {
     }
 
-    public function index()
+    /**
+     * Назначение: показывает основную страницу или список раздела торговых публикаций аналитика.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     */
+    public function index(): View|Factory|Application
     {
         $conditions = [
             'posts.user_id' => Auth::id(),
@@ -42,29 +56,35 @@ class PostsController extends Controller
         $join = ['user_infos', 'user_infos.user_id', '=', 'posts.user_id'];
 
         $query = $this->postRepository->paginateWithFilters($searchFields, $orderFields, $conditions, $select, $join);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('Posts');
 
         return view('backend.posts.index', $data);
     }
 
-    public function create()
+    /**
+     * Назначение: показывает форму создания записи в разделе торговых публикаций аналитика.
+     *
+     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     */
+    public function create(): View|Factory|Application
     {
         $data['title'] = __('Create Post');
         return view('backend.posts.create', $data);
     }
 
     /**
-     * @param PostRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: создает новую запись в разделе торговых публикаций аналитика.
+     *
+     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
      */
-    public function store(PostRequest $request)
+    public function store(PostRequest $request): RedirectResponse
     {
         $attributes = $request->only(['title', 'content', 'is_published']);
         $attributes['user_id'] = Auth::id();
 
         $path = config('commonconfig.path_post');
-        $attributes['featured_image'] = app(FileUploadService::class)->upload($request->featured_image, $path, now()->timestamp, Auth::id(), '', null, $width = 400, $height = 400);
+        $attributes['featured_image'] = $this->fileUploadService->upload($request->featured_image, $path, now()->timestamp, Auth::id(), '', null, $width = 400, $height = 400);
 
         if (!$attributes['featured_image']) {
             return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to upload featured image'));
@@ -79,10 +99,11 @@ class PostsController extends Controller
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает форму редактирования записи в разделе торговых публикаций аналитика.
+     *
+     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
      */
-    public function edit($id)
+    public function edit(int|string $id): View|Factory|Application
     {
         $conditions = [
             'id' => $id,
@@ -97,11 +118,11 @@ class PostsController extends Controller
     }
 
     /**
-     * @param PostRequest $request
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: обновляет запись в разделе торговых публикаций аналитика.
+     *
+     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
      */
-    public function update(PostRequest $request, $id)
+    public function update(PostRequest $request, int|string $id): RedirectResponse
     {
         $conditions = [
             'id' => $id,
@@ -119,7 +140,7 @@ class PostsController extends Controller
         if ($request->hasFile('featured_image')) {
             $path = config('commonconfig.path_post');
             $fileName = pathinfo($post->featured_image, PATHINFO_FILENAME);
-            $attributes['featured_image'] = app(FileUploadService::class)->upload($request->featured_image, $path, $fileName, '', '', null, $width = 400, $height = 400);
+            $attributes['featured_image'] = $this->fileUploadService->upload($request->featured_image, $path, $fileName, '', '', null, $width = 400, $height = 400);
 
             if (!$attributes['featured_image']) {
                 return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to upload featured image'));
@@ -134,10 +155,11 @@ class PostsController extends Controller
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: удаляет запись в разделе торговых публикаций аналитика.
+     *
+     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
      */
-    public function destroy($id)
+    public function destroy(int|string $id): RedirectResponse
     {
         $conditions = [
             'id' => $id,
@@ -155,10 +177,11 @@ class PostsController extends Controller
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: переключает активность записи в разделе торговых публикаций аналитика.
+     *
+     * Действие: меняет статус активности через сервис или репозиторий и возвращает сообщение о результате.
      */
-    public function toggleActiveStatus($id)
+    public function toggleActiveStatus(int|string $id): RedirectResponse
     {
         if ($updatedInstance = $this->postRepository->toggleStatusById($id, 'is_published')) {
             return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The post publish status has been changed successfully.'));

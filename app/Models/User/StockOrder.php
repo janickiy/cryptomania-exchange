@@ -39,12 +39,12 @@ class StockOrder extends Model
         'taker_fee',
     ];
 
-    public function stockPair()
+    public function stockPair(): mixed
     {
         return $this->belongsTo(StockPair::class);
     }
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class);
     }

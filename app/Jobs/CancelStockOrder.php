@@ -30,7 +30,7 @@ class CancelStockOrder implements ShouldQueue
      *
      * @param $stockOrderId
      */
-    public function __construct($stockOrderId)
+    public function __construct(mixed $stockOrderId)
     {
         $this->queue = 'cancel';
         $this->stockOrderId = $stockOrderId;
@@ -41,7 +41,7 @@ class CancelStockOrder implements ShouldQueue
      *
      * @return bool
      */
-    public function handle()
+    public function handle(): mixed
     {
         $stockOrderRepository = app(StockOrderInterface::class);
 

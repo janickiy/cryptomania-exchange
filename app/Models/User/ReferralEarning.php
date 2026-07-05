@@ -11,17 +11,17 @@ class ReferralEarning extends Model
 
     protected $guarded = ['id'];
 
-    public function referrerUser()
+    public function referrerUser(): mixed
     {
         return $this->belongsTo(User::class, 'referrer_user_id');
     }
 
-    public function referralUser()
+    public function referralUser(): mixed
     {
         return $this->belongsTo(User::class, 'referral_user_id');
     }
 
-    public function stockItem()
+    public function stockItem(): mixed
     {
         return $this->belongsTo(StockItem::class);
     }

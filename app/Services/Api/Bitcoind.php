@@ -4,7 +4,7 @@ namespace App\Services\Api;
 
 abstract class Bitcoind implements CryptoStockApiInterface
 {
-    public function generateAddress()
+    public function generateAddress(): mixed
     {
         try {
             $response = $this->bitcoind->getnewaddress("");
@@ -24,7 +24,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
         }
     }
 
-    public function getTxnInfoByAddress($address)
+    public function getTxnInfoByAddress(mixed $address): void
     {
         //
     }
@@ -33,7 +33,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
      * @param $txid
      * @return array|string[]
      */
-    public function getTxnInfoByTxnId($txid)
+    public function getTxnInfoByTxnId(mixed $txid): mixed
     {
         try {
             $response = $this->bitcoind->gettransaction($txid);
@@ -70,7 +70,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
         }
     }
 
-    public function getTxnList($limit = 25)
+    public function getTxnList(mixed $limit = 25): void
     {
         //
     }
@@ -80,7 +80,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
      * @param $amount
      * @return array|string[]
      */
-    public function sendToAddress($address, $amount)
+    public function sendToAddress(mixed $address, mixed $amount): mixed
     {
         try {
 
@@ -119,7 +119,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
      * @param int $block
      * @return false|string
      */
-    public function getEstimatedFee($block = 6)
+    public function getEstimatedFee(mixed $block = 6): mixed
     {
         try {
             $response = $this->bitcoind->estimatesmartfee($block);
@@ -134,7 +134,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
         }
     }
 
-    public function getBalance()
+    public function getBalance(): mixed
     {
         try {
             $response = $this->bitcoind->getbalance("*");
@@ -154,7 +154,7 @@ abstract class Bitcoind implements CryptoStockApiInterface
      * @param $server_data
      * @return array|string[]
      */
-    public function validateIPN($post_data, $server_data)
+    public function validateIPN(mixed $post_data, mixed $server_data): mixed
     {
         if (!isset($post_data['txn_id'])) {
             return ['error' => __('Invalid bitcoin ipn request.')];

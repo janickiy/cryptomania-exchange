@@ -33,7 +33,7 @@ class MakeService extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub(): mixed
     {
         return __DIR__ . '/Stubs/service.plain.stub';
     }
@@ -44,7 +44,7 @@ class MakeService extends GeneratorCommand
      * @param  string $rootNamespace
      * @return string
      */
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace(mixed $rootNamespace): mixed
     {
         return $rootNamespace . '\Services';
     }

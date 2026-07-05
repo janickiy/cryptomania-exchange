@@ -29,22 +29,22 @@ class User extends Authenticatable implements AuditableInterface
         'password', 'remember_token',
     ];
 
-    public function userRoleManagement()
+    public function userRoleManagement(): mixed
     {
         return $this->belongsTo(UserRoleManagement::class);
     }
 
-    public function userInfo()
+    public function userInfo(): mixed
     {
         return $this->hasOne(UserInfo::class);
     }
 
-    public function userSetting()
+    public function userSetting(): mixed
     {
         return $this->hasOne(UserSetting::class);
     }
 
-    public function wallets()
+    public function wallets(): mixed
     {
         return $this->hasMany(Wallet::class);
     }

@@ -11,7 +11,7 @@ class LoginRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -21,7 +21,7 @@ class LoginRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         $validation = [
             'username' => 'required|between:1,255',
@@ -36,7 +36,7 @@ class LoginRequest extends Request
         return $validation;
     }
 
-    public function attributes()
+    public function attributes(): mixed
     {
         return ['g-recaptcha-response' => 'google captcha'];
     }

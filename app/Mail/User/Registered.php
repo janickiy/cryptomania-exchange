@@ -18,7 +18,7 @@ class Registered extends Mailable implements ShouldQueue
      *
      * @param $userInfo
      */
-    public function __construct($userInfo)
+    public function __construct(mixed $userInfo)
     {
         $this->queue = 'default';
         $this->userInfo = $userInfo;
@@ -29,7 +29,7 @@ class Registered extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build()
+    public function build(): mixed
     {
         return $this->markdown('email.user.registered')->subject(__('Account verification link'));
     }

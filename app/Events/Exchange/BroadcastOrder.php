@@ -19,7 +19,7 @@ class BroadcastOrder implements ShouldBroadcastNow
      *
      * @param $order
      */
-    public function __construct($order)
+    public function __construct(mixed $order)
     {
         $this->order = $order;
     }
@@ -29,7 +29,7 @@ class BroadcastOrder implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): mixed
     {
         return new Channel(channel_prefix() .'orders.' . $this->order->stock_pair_id);
     }
@@ -39,7 +39,7 @@ class BroadcastOrder implements ShouldBroadcastNow
      *
      * @return bool
      */
-    public function broadcastWhen()
+    public function broadcastWhen(): mixed
     {
         return ($this->order->status == STOCK_ORDER_PENDING && $this->order->category == CATEGORY_EXCHANGE);
     }
@@ -49,7 +49,7 @@ class BroadcastOrder implements ShouldBroadcastNow
      *
      * @return array
      */
-    public function broadcastWith()
+    public function broadcastWith(): mixed
     {
 
         return [

@@ -13,7 +13,7 @@ class Permission
      * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(mixed $request, Closure $next): mixed
     {
         $permission = has_permission($request->route()->getName(), null, false);
         if ($permission === true) {

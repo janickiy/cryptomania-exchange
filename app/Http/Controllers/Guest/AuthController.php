@@ -9,24 +9,33 @@ use App\Http\Requests\Core\PasswordResetRequest;
 use App\Http\Requests\Core\RegisterRequest;
 use App\Services\Guest\AuthService;
 use App\Services\User\UserService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
 class AuthController extends Controller
 {
-    protected $service;
-
     /**
-     * AuthController constructor.
-     * @param AuthService $service
+     * Назначение: инициализирует контроллер раздела аутентификации и регистрации.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(AuthService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private readonly AuthService $service,
+        private readonly UserService $userService,
+    ) {
     }
 
-    public function loginForm()
+    /**
+     * Назначение: показывает форму входа пользователя.
+     *
+     * Действие: возвращает представление страницы авторизации.
+     */
+    public function loginForm(): View|Factory|Application
     {
         return view('backend.login');
     }
@@ -36,10 +45,11 @@ class AuthController extends Controller
      */
 
     /**
-     * @param LoginRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: авторизует пользователя.
+     *
+     * Действие: проверяет учетные данные через сервис аутентификации и перенаправляет пользователя по результату входа.
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): RedirectResponse
     {
         $response = $this->service->login($request);
 
@@ -51,12 +61,11 @@ class AuthController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-08-13 5:12 PM
-     * @description:
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: завершает пользовательскую сессию.
+     *
+     * Действие: выходит из аккаунта, очищает сессию и перенаправляет пользователя на допустимый маршрут.
      */
-    public function logout()
+    public function logout(): RedirectResponse
     {
         $redirectRoute = app('router')->getRoutes()->match(app('request')->create(session('_previous')['url']))->getName();
 
@@ -69,20 +78,26 @@ class AuthController extends Controller
         return redirect()->route($redirectRoute)->with(SERVICE_RESPONSE_SUCCESS, __('You have been logged out successfully.'));
     }
 
-    public function register()
+    /**
+     * Назначение: показывает форму регистрации пользователя.
+     *
+     * Действие: возвращает представление страницы регистрации.
+     */
+    public function register(): View|Factory|Application
     {
         return view('backend.register');
     }
 
     /**
-     * @param RegisterRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: регистрирует нового пользователя.
+     *
+     * Действие: принимает валидированные регистрационные данные, создает аккаунт и возвращает сообщение о результате.
      */
-    public function storeUser(RegisterRequest $request)
+    public function storeUser(RegisterRequest $request): RedirectResponse
     {
         $parameters = $request->only(['first_name', 'last_name', 'email', 'username', 'password', 'referral_code']);
 
-        if (app(UserService::class)->generate($parameters)) {
+        if ($this->userService->generate($parameters)) {
             return redirect()->route('login')->with(SERVICE_RESPONSE_SUCCESS, __('Registration successful. Please check your email to verify your account.'));
         }
 
@@ -90,24 +105,21 @@ class AuthController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-08-13 5:13 PM
-     * @description:
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Назначение: показывает форму восстановления пароля.
+     *
+     * Действие: возвращает представление для ввода email и запуска сброса пароля.
      */
-    public function forgetPassword()
+    public function forgetPassword(): View|Factory|Application
     {
         return view('backend.forget_password');
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-08-13 5:13 PM
-     * @description:
-     * @param PasswordResetRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: отправляет письмо для восстановления пароля.
+     *
+     * Действие: передает валидированный email в сервис сброса пароля и возвращает flash-сообщение.
      */
-    public function sendPasswordResetMail(PasswordResetRequest $request)
+    public function sendPasswordResetMail(PasswordResetRequest $request): RedirectResponse
     {
         $response = $this->service->sendPasswordResetMail($request);
         $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
@@ -116,14 +128,11 @@ class AuthController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-08-13 5:13 PM
-     * @description:
-     * @param Request $request
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Назначение: показывает форму установки нового пароля.
+     *
+     * Действие: проверяет токен сброса, получает данные из сервиса и возвращает форму нового пароля.
      */
-    public function resetPassword(Request $request, $id)
+    public function resetPassword(Request $request, int|string $id): View|Factory|Application
     {
         $data = $this->service->resetPassword($request, $id);
 
@@ -131,14 +140,11 @@ class AuthController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-08-13 5:13 PM
-     * @description:
-     * @param NewPasswordRequest $request
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: обновляет пароль пользователя.
+     *
+     * Действие: принимает валидированный пароль, передает его в сервис и возвращает результат операции.
      */
-    public function updatePassword(NewPasswordRequest $request, $id)
+    public function updatePassword(NewPasswordRequest $request, int|string $id): RedirectResponse
     {
         $response = $this->service->updatePassword($request, $id);
         $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;

@@ -15,7 +15,7 @@ class BitcoinApi extends Bitcoind
     /***
      * @param $currency
      */
-    public function __construct($currency)
+    public function __construct(mixed $currency)
     {
         $this->currency = $currency;
         $configuration = config(strtolower($currency));

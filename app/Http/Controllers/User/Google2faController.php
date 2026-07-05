@@ -6,16 +6,35 @@ use App\Http\Requests\User\Google2faRequest;
 use App\Repositories\User\Interfaces\UserInterface;
 use App\Services\User\ProfileService;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
 
 class Google2faController extends Controller
 {
+    /**
+     * Назначение: инициализирует контроллер раздела двухфакторной аутентификации.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     */
+    public function __construct(
+        private readonly ProfileService $profileService,
+        private readonly UserInterface $users,
+    ) {
+    }
 
-    public function create()
+    /**
+     * Назначение: показывает форму создания записи в разделе двухфакторной аутентификации.
+     *
+     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     */
+    public function create(): View|Factory|Application
     {
-        $data = app(ProfileService::class)->profile();
+        $data = $this->profileService->profile();
         $data['title'] = __('Google Two Factor Authentication');
 
         if (empty(Auth::user()->google2fa_secret)) {
@@ -29,17 +48,17 @@ class Google2faController extends Controller
 
 
     /**
-     * @param Google2faRequest $request
-     * @param $googleCode
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: создает новую запись в разделе двухфакторной аутентификации.
+     *
+     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
      */
-    public function store(Google2faRequest $request, $googleCode)
+    public function store(Google2faRequest $request, string $googleCode): RedirectResponse
     {
         $google2fa = new Google2FA();
 
         try {
             if ($google2fa->verifyKey($googleCode, $request->google_app_code)) {
-                if (app(UserInterface::class)->update(['google2fa_secret' => $googleCode], Auth::id())) {
+                if ($this->users->update(['google2fa_secret' => $googleCode], Auth::id())) {
 
                     $authenticator = app(Authenticator::class)->boot($request);
                     $authenticator->login();
@@ -56,10 +75,11 @@ class Google2faController extends Controller
     }
 
     /**
-     * @param Google2faRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: подтверждает действие или код пользователя.
+     *
+     * Действие: передает данные запроса в сервис проверки и возвращает перенаправление по результату.
      */
-    public function verify(Google2faRequest $request)
+    public function verify(Google2faRequest $request): RedirectResponse
     {
         $google2fa = new Google2FA();
 
@@ -73,23 +93,23 @@ class Google2faController extends Controller
 
             return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to verify google authentication.'));
         } catch (\Exception $exception) {
-            dd($exception->getMessage());
             return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to verify google authentication.'));
         }
     }
 
 
     /**
-     * @param Google2faRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: удаляет запись в разделе двухфакторной аутентификации.
+     *
+     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
      */
-    public function destroy(Google2faRequest $request)
+    public function destroy(Google2faRequest $request): RedirectResponse
     {
         $google2fa = new Google2FA();
 
         try {
             if ($google2fa->verifyKey(Auth::user()->google2fa_secret, $request->google_app_code)) {
-                if (app(UserInterface::class)->update(['google2fa_secret' => null], Auth::id())) {
+                if ($this->users->update(['google2fa_secret' => null], Auth::id())) {
                     return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('Google Authentication has been disabled successfully.'));
                 }
             }

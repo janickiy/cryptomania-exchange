@@ -12,7 +12,7 @@ class UserRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -22,7 +22,7 @@ class UserRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         $rules = [
             "first_name" => "required|alpha_space|between:2,255",
@@ -48,7 +48,7 @@ class UserRequest extends Request
         return $rules;
     }
 
-    public function attributes()
+    public function attributes(): mixed
     {
         return [
             'user_role_management_id' => __('User Role'),

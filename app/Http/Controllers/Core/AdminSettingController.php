@@ -5,24 +5,28 @@ namespace App\Http\Controllers\Core;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AdminSettingRequest;
 use App\Services\Core\AdminSettingService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 
 class AdminSettingController extends Controller
 {
-    public $adminSettingService;
-
     /**
-     * @param AdminSettingService $adminSettingService
+     * Назначение: инициализирует контроллер раздела административных настроек.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(AdminSettingService $adminSettingService)
+    public function __construct(private readonly AdminSettingService $adminSettingService)
     {
-        $this->adminSettingService = $adminSettingService;
     }
 
     /**
-     * @param string $adminSettingType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает основную страницу или список раздела административных настроек.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
      */
-    public function index($adminSettingType = 'general')
+    public function index(string $adminSettingType = 'general'): View|Factory|Application
     {
         $data['settings'] = $this->adminSettingService->adminForm($adminSettingType, true);
         $data['adminSettingType'] = $adminSettingType;
@@ -32,10 +36,11 @@ class AdminSettingController extends Controller
     }
 
     /**
-     * @param $adminSettingType
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
+     * Назначение: показывает форму редактирования записи в разделе административных настроек.
+     *
+     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
      */
-    public function edit($adminSettingType)
+    public function edit(string $adminSettingType): View|Factory|Application
     {
         $data['settings'] = $this->adminSettingService->adminForm($adminSettingType);
         $data['adminSettingType'] = $adminSettingType;
@@ -45,11 +50,11 @@ class AdminSettingController extends Controller
     }
 
     /**
-     * @param AdminSettingRequest $request
-     * @param $adminSettingType
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: обновляет запись в разделе административных настроек.
+     *
+     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
      */
-    public function update(AdminSettingRequest $request, $adminSettingType)
+    public function update(AdminSettingRequest $request, string $adminSettingType): RedirectResponse
     {
         $response = $this->adminSettingService->adminUpdate($request, $adminSettingType);
         $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;

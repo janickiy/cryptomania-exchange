@@ -9,27 +9,32 @@ use App\Repositories\User\Admin\Interfaces\StockPairInterface;
 use App\Services\Core\DataListService;
 use App\Http\Controllers\Controller;
 use App\Services\User\Admin\StockPairService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 
 class StockPairController extends Controller
 {
-    public $stockPair;
-
     /**
-     * StockPairController constructor.
-     * @param StockPairInterface $stockPair
+     * Назначение: инициализирует контроллер раздела торговых пар.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(StockPairInterface $stockPair)
-    {
-        $this->stockPair = $stockPair;
+    public function __construct(
+        private readonly StockPairInterface $stockPair,
+        private readonly StockItemInterface $stockItems,
+        private readonly StockPairService $stockPairService,
+        private readonly DataListService $dataListService,
+    ) {
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-18 3:57 PM
-     * @description:
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Назначение: показывает основную страницу или список раздела торговых пар.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
      */
-    public function index()
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['stock_items.item', __('Exchangeable Item')],
@@ -62,37 +67,34 @@ class StockPairController extends Controller
             'stock_pairs.created_at'
         ];
         $query = $this->stockPair->paginateWithFilters($searchFields, $orderFields, null, $select, $joinArray);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('Stock Pairs');
 
         return view('backend.stockPairs.index', $data);
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-18 5:45 PM
-     * @description:
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Назначение: показывает форму создания записи в разделе торговых пар.
+     *
+     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
      */
-    public function create()
+    public function create(): View|Factory|Application
     {
-        $data['stockItems'] = app(StockItemInterface::class)->getActiveList()->pluck('item', 'id')->toArray();
+        $data['stockItems'] = $this->stockItems->getActiveList()->pluck('item', 'id')->toArray();
         $data['title'] = __('Create Stock Pair');
 
         return view('backend.stockPairs.create', $data);
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-18 5:45 PM
-     * @description:
-     * @param StockPairRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: создает новую запись в разделе торговых пар.
+     *
+     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
      */
-    public function store(StockPairRequest $request)
+    public function store(StockPairRequest $request): RedirectResponse
     {
         try {
-            $created = app(StockPairService::class)->create(StockPairData::fromArray($request->validated()));
+            $created = $this->stockPairService->create(StockPairData::fromArray($request->validated()));
 
             return redirect()->route('admin.stock-pairs.show', $created->id)->with(SERVICE_RESPONSE_SUCCESS, __('The stock pair has been created successfully.'));
         } catch (\Exception $exception) {
@@ -105,13 +107,11 @@ class StockPairController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-29 12:45 PM
-     * @description:
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Назначение: показывает детальную страницу записи в разделе торговых пар.
+     *
+     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
      */
-    public function show($id)
+    public function show(int|string $id): View|Factory|Application
     {
         $data['title'] = __('Stock Pair');
         $data['stockPair'] = $this->stockPair->getFirstStockPairDetailByConditions(['stock_pairs.id' => $id]);
@@ -120,15 +120,13 @@ class StockPairController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-20 11:42 PM
-     * @description:
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Назначение: показывает форму редактирования записи в разделе торговых пар.
+     *
+     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
      */
-    public function edit($id)
+    public function edit(int|string $id): View|Factory|Application
     {
-        $data['stockItems'] = app(StockItemInterface::class)->getActiveList()->pluck('item', 'id')->toArray();
+        $data['stockItems'] = $this->stockItems->getActiveList()->pluck('item', 'id')->toArray();
         $data['title'] = __('Edit Stock Pair');
         $data['stockPair'] = $this->stockPair->findOrFailById($id);
 
@@ -136,16 +134,13 @@ class StockPairController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-20 11:36 PM
-     * @description:
-     * @param StockPairRequest $request
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: обновляет запись в разделе торговых пар.
+     *
+     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
      */
-    public function update(StockPairRequest $request, $id)
+    public function update(StockPairRequest $request, int|string $id): RedirectResponse
     {
-        if (app(StockPairService::class)->update((int) $id, StockPairData::fromArray($request->validated()))) {
+        if ($this->stockPairService->update((int) $id, StockPairData::fromArray($request->validated()))) {
             return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The stock pair has been updated successfully.'));
         }
 
@@ -153,16 +148,14 @@ class StockPairController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-20 11:20 PM
-     * @description:
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: удаляет запись в разделе торговых пар.
+     *
+     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
      */
-    public function destroy($id)
+    public function destroy(int|string $id): RedirectResponse
     {
         try {
-            if (app(StockPairService::class)->delete((int) $id)) {
+            if ($this->stockPairService->delete((int) $id)) {
                 return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The stock pair has been deleted successfully.'));
             }
 
@@ -173,30 +166,26 @@ class StockPairController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-20 11:20 PM
-     * @description:
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: переключает активность записи в разделе торговых пар.
+     *
+     * Действие: меняет статус активности через сервис или репозиторий и возвращает сообщение о результате.
      */
-    public function toggleActiveStatus($id)
+    public function toggleActiveStatus(int|string $id): RedirectResponse
     {
-        $response = app(StockPairService::class)->toggleActiveStatus((int) $id);
+        $response = $this->stockPairService->toggleActiveStatus((int) $id);
 
         return redirect()->back()->with($response);
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-29 1:20 PM
-     * @description:
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: назначает запись значением по умолчанию в разделе торговых пар.
+     *
+     * Действие: снимает предыдущий default-статус, устанавливает новый и возвращает результат операции.
      */
-    public function makeStatusDefault($id)
+    public function makeStatusDefault(int|string $id): RedirectResponse
     {
         try {
-            app(StockPairService::class)->makeDefault((int) $id);
+            $this->stockPairService->makeDefault((int) $id);
         } catch (\Exception $exception) {
             logs()->error("Make default stock pair: " . $exception->getMessage());
             return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to make default.'));

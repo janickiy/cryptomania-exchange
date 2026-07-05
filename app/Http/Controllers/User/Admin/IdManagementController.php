@@ -6,25 +6,31 @@ use App\Repositories\User\Interfaces\NotificationInterface;
 use App\Repositories\User\Interfaces\UserInfoInterface;
 use App\Http\Controllers\Controller;
 use App\Services\Core\DataListService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 
 class IdManagementController extends Controller
 {
-    public $userInfo;
-
     /**
-     * IdManagementController constructor.
-     * @param UserInfoInterface $user
+     * Назначение: инициализирует контроллер раздела администрирования документов пользователей.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(UserInfoInterface $user)
-    {
-        $this->userInfo = $user;
+    public function __construct(
+        private readonly UserInfoInterface $userInfo,
+        private readonly NotificationInterface $notifications,
+        private readonly DataListService $dataListService,
+    ) {
     }
 
     /**
-     * @description:
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Назначение: показывает основную страницу или список раздела администрирования документов пользователей.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
      */
-    public function index()
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['email', __('Email')],
@@ -38,18 +44,18 @@ class IdManagementController extends Controller
 
         $select = ['users.id as id', 'email', 'id_type', 'is_id_verified'];
         $query = $this->userInfo->paginateWithFilters($searchFields, $orderFields, ['is_id_verified', '!=', ID_STATUS_UNVERIFIED], $select, $joinArray);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('ID Management');
 
         return view('backend.idManagement.index', $data);
     }
 
     /**
-     * @description:
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * Назначение: показывает детальную страницу записи в разделе администрирования документов пользователей.
+     *
+     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
      */
-    public function show($id)
+    public function show(int|string $id): View|Factory|Application
     {
         $where = ['user_id'=> $id, ['is_id_verified', '!=', ID_STATUS_UNVERIFIED]];
         $data['user'] = $this->userInfo->findOrFailByConditions($where, ['user']);
@@ -59,11 +65,11 @@ class IdManagementController extends Controller
     }
 
     /**
-     * @description:
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: подтверждает запись в разделе администрирования документов пользователей.
+     *
+     * Действие: передает идентификатор в сервис проверки, меняет статус записи и возвращает результат.
      */
-    public function approve($id) {
+    public function approve(int|string $id): RedirectResponse {
         try {
             $conditions = ['user_id'=> $id, 'is_id_verified' => ID_STATUS_PENDING];
             $attributes = ['is_id_verified' => ID_STATUS_VERIFIED];
@@ -73,7 +79,7 @@ class IdManagementController extends Controller
             }
 
             $notification = ['user_id' => $id, 'data' => __("Your ID verification request has been approved.")];
-            app(NotificationInterface::class)->create($notification);
+            $this->notifications->create($notification);
 
             return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The ID has been approved successfully.'));
         }
@@ -83,13 +89,11 @@ class IdManagementController extends Controller
     }
 
     /**
-     * @developer: M.G. Rabbi
-     * @date: 2018-10-23 5:37 PM
-     * @description:
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * Назначение: отклоняет запись в разделе администрирования документов пользователей.
+     *
+     * Действие: передает идентификатор в сервис проверки, меняет статус записи и возвращает результат.
      */
-    public function decline($id)
+    public function decline(int|string $id): RedirectResponse
     {
         try {
             $attributes = [
@@ -106,7 +110,7 @@ class IdManagementController extends Controller
             }
 
             $notification = ['user_id' => $id, 'data' => __("Your ID verification request has been declined.")];
-            app(NotificationInterface::class)->create($notification);
+            $this->notifications->create($notification);
 
             return redirect()->route('admin.id-management.index')->with(SERVICE_RESPONSE_SUCCESS, __('The ID has been declined successfully.'));
         }

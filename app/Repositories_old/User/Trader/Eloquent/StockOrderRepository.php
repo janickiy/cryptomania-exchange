@@ -26,7 +26,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param StockOrder $stockOrder
      * @return \Illuminate\Support\Collection
      */
-    public function getOppositeStockOrders(StockOrder $stockOrder)
+    public function getOppositeStockOrders(StockOrder $stockOrder): mixed
     {
         $oppositeStockOrderType = $stockOrder->exchange_type == EXCHANGE_BUY ? EXCHANGE_SELL : EXCHANGE_BUY;
         $sort = $stockOrder->exchange_type == EXCHANGE_BUY ? 'asc' : 'desc';
@@ -43,7 +43,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $conditions
      * @return mixed
      */
-    public function getOrders($conditions)
+    public function getOrders(mixed $conditions): mixed
     {
         $orderBy = $conditions['exchange_type'] == EXCHANGE_BUY ? 'desc' : 'asc';
         return $this->model
@@ -59,7 +59,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $conditions
      * @return mixed
      */
-    public function getMyOpenOrders($conditions)
+    public function getMyOpenOrders(mixed $conditions): mixed
     {
         return $this->model
             ->where($conditions)
@@ -72,7 +72,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $conditions
      * @return mixed
      */
-    public function getTotalStockOrder($conditions)
+    public function getTotalStockOrder(mixed $conditions): mixed
     {
         return $this->model
             ->where($conditions)
@@ -85,7 +85,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $stockPrice
      * @return mixed
      */
-    public function getStopLimitOrders($conditions, $stockPrice)
+    public function getStopLimitOrders(mixed $conditions, mixed $stockPrice): mixed
     {
         return $this->model->where($conditions)->where(function ($q) use ($stockPrice) {
             $q->where(['exchange_type' => EXCHANGE_BUY, ['stop_limit', '<=', $stockPrice]])
@@ -97,7 +97,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param $ids
      * @return mixed
      */
-    public function getStopLimitOrdersByIds($ids)
+    public function getStopLimitOrdersByIds(mixed $ids): mixed
     {
         return $this->model->whereIn('id', $ids)->where('status', STOCK_ORDER_PENDING)->get();
     }
@@ -106,7 +106,7 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
      * @param array $conditions
      * @return mixed
      */
-    public function count(array $conditions)
+    public function count(array $conditions): mixed
     {
         return $this->model->where($conditions)->count();
     }

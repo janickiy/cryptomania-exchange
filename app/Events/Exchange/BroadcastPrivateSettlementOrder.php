@@ -22,7 +22,7 @@ class BroadcastPrivateSettlementOrder implements ShouldBroadcastNow
      * @param $userId
      * @param $orders
      */
-    public function __construct($stockPairId, $userId, $orders)
+    public function __construct(mixed $stockPairId, mixed $userId, mixed $orders)
     {
         $this->stockPairId = $stockPairId;
         $this->userId = $userId;
@@ -34,7 +34,7 @@ class BroadcastPrivateSettlementOrder implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): mixed
     {
         return new PrivateChannel(channel_prefix() .'exchange.' . $this->stockPairId . '.' . $this->userId);
     }
@@ -44,7 +44,7 @@ class BroadcastPrivateSettlementOrder implements ShouldBroadcastNow
      *
      * @return array
      */
-    public function broadcastWith()
+    public function broadcastWith(): mixed
     {
         return $this->orders;
     }

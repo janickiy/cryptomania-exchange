@@ -11,7 +11,7 @@ class UserStatusRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -21,7 +21,7 @@ class UserStatusRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         return [
             'is_email_verified' => 'required|in:' . array_to_string(email_status()),
@@ -37,7 +37,7 @@ class UserStatusRequest extends Request
      * @description:
      * @return array
      */
-    public function attributes()
+    public function attributes(): mixed
     {
         return [
             'is_email_verified' => __('Email Status'),

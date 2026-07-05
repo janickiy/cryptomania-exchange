@@ -303,7 +303,7 @@
                 </div>
             </div>
         </div>
-        <div style="background:#fff;">
+        <div class="home-analysts-section">
             <div class="container">
                 <div class="row section-space">
                     <div class="col-md-12">

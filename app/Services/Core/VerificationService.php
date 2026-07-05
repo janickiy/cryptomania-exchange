@@ -16,7 +16,7 @@ class VerificationService
      * @param Request $request
      * @return array
      */
-    public function verifyUserEmail(Request $request)
+    public function verifyUserEmail(Request $request): mixed
     {
         if (!$request->hasValidSignature() || (Auth::check() && Auth::id() != $request->user_id)) {
             return [
@@ -48,7 +48,7 @@ class VerificationService
      * @param PasswordResetRequest $request
      * @return array
      */
-    public function sendVerificationLink(PasswordResetRequest $request)
+    public function sendVerificationLink(PasswordResetRequest $request): mixed
     {
         if (Auth::user()) {
             if (Auth::user()->is_email_verified == EMAIL_VERIFICATION_STATUS_INACTIVE) {
@@ -80,7 +80,7 @@ class VerificationService
      * @param $user
      * @return mixed
      */
-    public function _sendEmailVerificationLink($user)
+    public function _sendEmailVerificationLink(mixed $user): mixed
     {
         return Mail::to($user->email)->send(new Registered($user->userInfo));
     }

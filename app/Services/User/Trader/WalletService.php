@@ -2,8 +2,10 @@
 
 namespace App\Services\User\Trader;
 
+use App\DTO\Wallet\WithdrawalData;
 use App\Exceptions\JobException;
 use App\Http\Requests\User\Trader\DepositRequest;
+use App\Jobs\StockItemWithdrawal;
 use App\Repositories\User\Admin\Interfaces\StockItemInterface;
 use App\Repositories\User\Admin\Interfaces\TransactionInterface;
 use App\Repositories\User\Interfaces\NotificationInterface;
@@ -31,7 +33,7 @@ class WalletService
      * @param $userId
      * @return mixed
      */
-    public function getWallets($userId)
+    public function getWallets(mixed $userId): mixed
     {
         $searchFields = [
             ['stock_items.item_name', __('Wallet Name')],
@@ -53,7 +55,7 @@ class WalletService
      * @param $wallet
      * @return array|mixed|string|null
      */
-    public function generateWalletAddress($wallet)
+    public function generateWalletAddress(mixed $wallet): mixed
     {
         $stockApiService = null;
 
@@ -82,7 +84,7 @@ class WalletService
      * @param $id
      * @return array|\Illuminate\Http\RedirectResponse
      */
-    public function storeDeposit(DepositRequest $request, $id)
+    public function storeDeposit(DepositRequest $request, mixed $id): mixed
     {
         $wallet = $this->walletRepository->getFirstByConditions(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
 
@@ -152,10 +154,92 @@ class WalletService
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function storeWithdrawal(WithdrawalData $data, int|string $id): array
+    {
+        $wallet = $this->walletRepository->getFirstByConditions(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
+
+        if (empty($wallet) || !in_array($wallet->stockItem->item_type, config('commonconfig.currency_transferable'))) {
+            return $this->response(false, __('Invalid request.'));
+        }
+
+        if ($wallet->stockItem->withdrawal_status != ACTIVE_STATUS_ACTIVE) {
+            return $this->response(false, __('Withdrawal is currently disabled.'));
+        }
+
+        if ($wallet->primary_balance < $data->amount) {
+            return $this->response(false, __("You don't have enough balance."));
+        }
+
+        if ($data->amount < $wallet->stockItem->minimum_withdrawal_amount) {
+            return $this->response(false, __('Minimum withdrawal amount :amount :stockItem', [
+                'amount' => $wallet->stockItem->minimum_withdrawal_amount,
+                'stockItem' => $wallet->stockItem->item,
+            ]));
+        }
+
+        $last24hrWithrawalAmount = app(WithdrawalInterface::class)->getLast24hrWithrawalAmount([
+            'wallet_id' => $wallet->id,
+            'user_id' => Auth::id(),
+        ]);
+
+        if (bcadd($last24hrWithrawalAmount, $data->amount) > $wallet->stockItem->daily_withdrawal_limit) {
+            return $this->response(false, __('Daily withdraw limit is already exceeded.'));
+        }
+
+        $systemFee = bcdiv(bcmul($data->amount, $wallet->stockItem->withdrawal_fee), '100');
+        $attributes = ['primary_balance' => DB::raw('primary_balance - ' . $data->amount)];
+        $conditions = ['id' => $wallet->id, 'user_id' => Auth::id()];
+
+        try {
+            DB::beginTransaction();
+
+            if (!$this->walletRepository->updateByConditions($attributes, $conditions)) {
+                throw new \Exception(__('Failed to withdraw the amount. Please try again.'));
+            }
+
+            $withdrawal = app(WithdrawalInterface::class)->create([
+                'user_id' => Auth::id(),
+                'ref_id' => (string) Str::uuid(),
+                'wallet_id' => $wallet->id,
+                'stock_item_id' => $wallet->stock_item_id,
+                'amount' => $data->amount,
+                'system_fee' => $systemFee,
+                'address' => $data->address,
+                'status' => admin_settings('auto_withdrawal_process') != ACTIVE_STATUS_ACTIVE ? PAYMENT_REVIEWING : PAYMENT_PENDING,
+                'payment_method' => $wallet->stockItem->api_service,
+            ]);
+
+            app(TransactionInterface::class)->insert($this->withdrawalTransactionParameters($wallet, $withdrawal, $systemFee));
+
+            app(NotificationInterface::class)->create([
+                'user_id' => Auth::id(),
+                'data' => $this->withdrawalNotificationMessage($wallet, $withdrawal),
+            ]);
+
+            $message = __("Your withdrawal request has been placed for reviewing. You will be notified when it's transfered.");
+
+            if (admin_settings('auto_withdrawal_process') == ACTIVE_STATUS_ACTIVE) {
+                $message = __('Your withdrawal request has been placed successfully.');
+                dispatch(new StockItemWithdrawal($withdrawal->id));
+            }
+
+            DB::commit();
+
+            return $this->response(true, $message, ['wallet_id' => $wallet->id]);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            return $this->response(false, __('Failed to withdraw the amount. Please try again.'));
+        }
+    }
+
+    /**
      * @param Request $request
      * @return array
      */
-    public function completePayment(Request $request)
+    public function completePayment(Request $request): mixed
     {
         $paymentInfo = session()->get('PaypalPayment');
 
@@ -209,11 +293,95 @@ class WalletService
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function withdrawalTransactionParameters(mixed $wallet, mixed $withdrawal, string $systemFee): array
+    {
+        $date = now();
+
+        return [
+            [
+                'user_id' => Auth::id(),
+                'stock_item_id' => $withdrawal->stock_item_id,
+                'model_name' => get_class($wallet),
+                'model_id' => $wallet->id,
+                'transaction_type' => TRANSACTION_TYPE_DEBIT,
+                'amount' => bcmul($withdrawal->amount, '-1'),
+                'journal' => DECREASED_FROM_WALLET_ON_WITHDRAWAL_REQUEST,
+                'updated_at' => $date,
+                'created_at' => $date,
+            ],
+            [
+                'user_id' => Auth::id(),
+                'stock_item_id' => $withdrawal->stock_item_id,
+                'model_name' => get_class($withdrawal),
+                'model_id' => $withdrawal->id,
+                'transaction_type' => TRANSACTION_TYPE_CREDIT,
+                'amount' => $withdrawal->amount,
+                'journal' => INCREASED_TO_WITHDRAWAL_ON_WITHDRAWAL_REQUEST,
+                'updated_at' => $date,
+                'created_at' => $date,
+            ],
+            [
+                'user_id' => Auth::id(),
+                'stock_item_id' => $withdrawal->stock_item_id,
+                'model_name' => get_class($withdrawal),
+                'model_id' => $withdrawal->id,
+                'transaction_type' => TRANSACTION_TYPE_DEBIT,
+                'amount' => bcmul($systemFee, '-1'),
+                'journal' => DECREASED_FROM_WITHDRAWAL_AS_WITHDRAWAL_FEE_ON_WITHDRAWAL_CONFIRMATION,
+                'updated_at' => $date,
+                'created_at' => $date,
+            ],
+            [
+                'user_id' => Auth::id(),
+                'stock_item_id' => $withdrawal->stock_item_id,
+                'model_name' => null,
+                'model_id' => null,
+                'transaction_type' => TRANSACTION_TYPE_CREDIT,
+                'amount' => $systemFee,
+                'journal' => INCREASED_TO_SYSTEM_ON_AS_WITHDRAWAL_FEE_WITHDRAWAL_CONFIRMATION,
+                'updated_at' => $date,
+                'created_at' => $date,
+            ],
+        ];
+    }
+
+    private function withdrawalNotificationMessage(mixed $wallet, mixed $withdrawal): string
+    {
+        if (admin_settings('auto_withdrawal_process') == ACTIVE_STATUS_ACTIVE) {
+            return __('Your request for withdrawal :amount :stockItem to :address is now pending.', [
+                'amount' => $withdrawal->amount,
+                'stockItem' => $wallet->stockItem->item,
+                'address' => $withdrawal->address,
+            ]);
+        }
+
+        return __("Your request for withdrawal :amount :stockItem to :address is now reviewing by system. You will be notified when it's transfered.", [
+            'amount' => $withdrawal->amount,
+            'stockItem' => $wallet->stockItem->item,
+            'address' => $withdrawal->address,
+        ]);
+    }
+
+    /**
+     * @param array<string, mixed> $extra
+     * @return array<string, mixed>
+     */
+    private function response(bool $status, string $message, array $extra = []): array
+    {
+        return $extra + [
+            SERVICE_RESPONSE_STATUS => $status,
+            SERVICE_RESPONSE_MESSAGE => $message,
+        ];
+    }
+
+    /**
      * @param $transactionInfo
      * @param $depositInfo
      * @return bool
      */
-    public function _completePayment($transactionInfo, $depositInfo)
+    public function _completePayment(mixed $transactionInfo, mixed $depositInfo): mixed
     {
         $stockItemRepository = app(StockItemInterface::class);
         if (!$stockItem = $stockItemRepository->getFirstById($transactionInfo['stock_item_id'])) {
@@ -338,7 +506,7 @@ class WalletService
      * @param $paymentInfo
      * @return array
      */
-    public function _cancelPayment($paymentInfo)
+    public function _cancelPayment(mixed $paymentInfo): mixed
     {
         app(DepositInterface::class)->updateByConditions(['status' => PAYMENT_FAILED], [
             'id' => $paymentInfo['deposit_id'], 'status' => PAYMENT_PENDING]);
@@ -349,7 +517,7 @@ class WalletService
         ];
     }
 
-    public function cancelPayment()
+    public function cancelPayment(): mixed
     {
         $paymentInfo = session()->get('PaypalPayment');
         session()->forget('PaypalPayment');
@@ -361,7 +529,7 @@ class WalletService
      * @param $withdrawalId
      * @return void|null
      */
-    public function send($withdrawalId)
+    public function send(mixed $withdrawalId): mixed
     {
         $withdrawalRepository = app(WithdrawalInterface::class);
         $withdrawal = $withdrawalRepository->getFirstByConditions(['id' => $withdrawalId, 'status' => PAYMENT_PENDING], ['stockItem', 'wallet']);
@@ -468,7 +636,7 @@ class WalletService
      * @param $ipnResponse
      * @return bool|void|null
      */
-    public function updateTransaction($ipnResponse)
+    public function updateTransaction(mixed $ipnResponse): mixed
     {
         if ($ipnResponse['result']['txn_status'] == 'completed') {
             $txnStatus = PAYMENT_COMPLETED;
@@ -666,7 +834,7 @@ class WalletService
      * @param $deposited
      * @return array|void
      */
-    public function deposit($ipnResponse, $wallet, $deposited)
+    public function deposit(mixed $ipnResponse, mixed $wallet, mixed $deposited): mixed
     {
         if (env('APP_ENV') != 'production' && env('APP_DEBUG') == true) {
             logs()->info('log: IPN payment is completed and deposit status is found as pending.');
@@ -803,7 +971,7 @@ class WalletService
      * @param $withdrawal
      * @return array
      */
-    public function withdraw($withdrawal)
+    public function withdraw(mixed $withdrawal): mixed
     {
         // make transaction
         $date = now();
@@ -856,7 +1024,7 @@ class WalletService
      * @param $withdrawalId
      * @param $stockItem
      */
-    public function reverseWithdraw($withdrawalId, $stockItem)
+    public function reverseWithdraw(mixed $withdrawalId, mixed $stockItem): void
     {
         // update withdrawal status.
         $attributes = ['id' => $withdrawalId, 'status' => PAYMENT_FAILED];

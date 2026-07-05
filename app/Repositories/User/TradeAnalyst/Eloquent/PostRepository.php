@@ -27,7 +27,7 @@ class PostRepository extends BaseRepository implements PostInterface
      * @param array $relations
      * @return mixed
      */
-    public function getLatestByCondition(array $conditions, $limit = null, $relations = [])
+    public function getLatestByCondition(array $conditions, mixed $limit = null, mixed $relations = []): mixed
     {
         if (is_null($limit)) {
             return $this->model->where($conditions)->with($relations)->latest()->get();

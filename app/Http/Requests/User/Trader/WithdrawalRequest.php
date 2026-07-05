@@ -12,7 +12,7 @@ class WithdrawalRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return Auth::check();
     }
@@ -22,7 +22,7 @@ class WithdrawalRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         $request = [
             'amount' => 'required|numeric|between:0.00000001, 99999999999.99999999',
@@ -43,14 +43,14 @@ class WithdrawalRequest extends Request
         return $request;
     }
 
-    public function messages()
+    public function messages(): mixed
     {
         return [
             'stock_item_type' => __('Invalid withdrawal request.'),
         ];
     }
 
-    public function attributes()
+    public function attributes(): mixed
     {
         return [
             'accept_policy' => __('The withdrawal policy checking'),

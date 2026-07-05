@@ -1,58 +1,131 @@
-## Cryptomania - Kickstarter
+# Cryptomania Exchange
 
+Cryptomania Exchange is a Laravel-based cryptocurrency exchange project with a public frontend, trader workflows, reports, wallet operations, ICO purchase flow, and an administrative panel.
 
-#### Introduction
+## Stack
 
-Cryptomania is built with laravel with required core functionalities for almost all projects. Visit the official website [Cryptomania](http://cryptomania.codemen.org)
+- PHP 8.4
+- Laravel 13
+- Apache 2
+- MySQL 8.4
+- Composer 2
+- AdminLTE 4 for the administrative panel
+- Blade, jQuery, DataTables, Bootstrap-based legacy frontend assets
 
-#### Technology used in Development Environment
+## Architecture
 
-* Php 7.2+
-* MySql 5.7+
-* Laravel 5.6+
-* Cache Driver File
+The project follows a layered structure:
 
-#### Server Requirements
+- `app/Http/Controllers` - thin HTTP layer. Controllers should validate input through Form Requests, call services/repositories, and return a response.
+- `app/Http/Requests/Admin` - admin Form Request validation classes.
+- `app/DTO` - typed data objects for create/update flows and other structured input.
+- `app/Repositories` - database access contracts and Eloquent implementations.
+- `app/Services` - business logic that is not direct database access.
+- `resources/views/backend` - admin panel views.
+- `resources/views/frontend` and `resources/views/home.blade.php` - public frontend views.
+- `public/frontend/liquid-glass.css` - current public frontend styling.
+- `docker` - Docker files for local development.
 
-The app may run on shared servers by tweaking codes but **we do not guarantee it**.
+AdminLTE is used only for the administrative panel. The public frontend keeps the project-specific liquid glass design.
 
-##### Php requirements
+## Local Docker Setup
 
-* PHP &gt;= 7.1.3
-* OpenSSL PHP Extension
-* PDO PHP Extension
-* Mbstring PHP Extension
-* Tokenizer PHP Extension
-* XML PHP Extension
-* Ctype PHP Extension
-* JSON PHP Extension
-##### Recommended Server
+Docker is the recommended way to run the project locally.
 
-* Dedicated Server
-* 1 GB memory
-* Root Access
-* Ubuntu 16.04
+```bash
+docker compose -f docker/docker-compose.yml up -d --build
+```
 
-##### Minimum Server
+The app container entrypoint will:
 
-* Dedicated Server
-* 512 MB memory
+- create `.env` from `.env.example` if it does not exist;
+- install Composer dependencies if `vendor` is missing;
+- wait for MySQL;
+- generate `APP_KEY` if needed;
+- create the `public/storage` symlink if needed.
 
-#### Features
+Open the site:
 
-* Dynamic Role Management System
-* Visual Navigation manager
-* Implemented Repository pattern
-* Extended Artisan Commands
-* Secured Form Fields
-* Codeless Ajaxification
-* Laravel alike jquery frontend validation
-* User Management
-* Profile Management
-* Ready-made User Notification
-* Ready-made System Notification
-* Ready-made Maintenance mode
-* Status Based auto restriction
-* Audit Logging system
-* Error Logging system
-* Ready-made Login, signup, verification and reset password
+- Frontend: http://localhost:8081
+- Admin/login: http://localhost:8081/login
+- MySQL from host: `127.0.0.1:33060`
+- MySQL inside Docker network: `mysql:3306`
+
+Default Docker database credentials:
+
+```dotenv
+DB_DATABASE=cryptomania
+DB_USERNAME=cryptomania
+DB_PASSWORD=cryptomania
+```
+
+## Database
+
+Run migrations and seed demo data inside the app container:
+
+```bash
+docker exec cryptomania-app php artisan migrate:fresh --seed
+```
+
+Seeded users:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Super Admin | `superadmin@codemen.org` | `superadmin` |
+| Trader | `trader@codemen.org` | `trader` |
+| Trader | `trader2@codemen.org` | `trader2` |
+| Trade Analyst | `tradeanalyst@codemen.org` | `tradeanalyst` |
+
+## Useful Commands
+
+```bash
+# Start containers
+docker compose -f docker/docker-compose.yml up -d
+
+# Stop containers
+docker compose -f docker/docker-compose.yml down
+
+# Rebuild app image
+docker compose -f docker/docker-compose.yml up -d --build
+
+# Run Artisan
+docker exec cryptomania-app php artisan <command>
+
+# Clear Laravel caches
+docker exec cryptomania-app php artisan optimize:clear
+
+# Install/update PHP dependencies
+docker exec cryptomania-app composer install
+docker exec cryptomania-app composer update
+```
+
+## Tests
+
+Run tests inside Docker:
+
+```bash
+docker exec cryptomania-app php artisan test
+```
+
+Important: the current test suite contains tests that use `RefreshDatabase`. With the current local Docker configuration, this can refresh the configured MySQL database. Use a separate testing database before running destructive test flows against important local data.
+
+## Development Notes
+
+- Keep controllers thin: move business rules to services and database access to repositories.
+- Use Form Requests for validation, especially under `App\Http\Requests\Admin` for admin flows.
+- Use DTOs for create/update payloads where data crosses from requests into services/repositories.
+- Prefer constructor injection over `app(...)` calls in controllers.
+- Keep public frontend changes separate from AdminLTE admin views.
+- After changing routes, services, or providers, run:
+
+```bash
+docker exec cryptomania-app php artisan optimize:clear
+docker exec cryptomania-app php artisan route:list
+```
+
+## Current Local Ports
+
+| Service | Host URL |
+| --- | --- |
+| App | http://localhost:8081 |
+| MySQL | `127.0.0.1:33060` |

@@ -13,7 +13,7 @@ class StockItemRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return Auth::check();
     }
@@ -23,7 +23,7 @@ class StockItemRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         $stockApiServices = api_services();
 
@@ -77,7 +77,7 @@ class StockItemRequest extends Request
      * @description: Custom messages
      * @return array
      */
-    public function messages()
+    public function messages(): mixed
     {
         return [
             'deposit_status.required_if' => __('The deposit status field is required when item type is real currency / crypto currency.'),
@@ -91,7 +91,7 @@ class StockItemRequest extends Request
         ];
     }
 
-    public function attributes()
+    public function attributes(): mixed
     {
         return [
             'is_active' => __('Active status'),

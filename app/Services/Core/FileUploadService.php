@@ -20,7 +20,7 @@ class FileUploadService
      * @param int $quality
      * @return false|string
      */
-    public function upload($file, $filePath, $fileName, $prefix = '', $suffix = '', $disk = null, $width = null, $height = null, $fileExtension = 'png', $quality = 100)
+    public function upload(mixed $file, mixed $filePath, mixed $fileName, mixed $prefix = '', mixed $suffix = '', mixed $disk = null, mixed $width = null, mixed $height = null, mixed $fileExtension = 'png', mixed $quality = 100): mixed
     {
         if (is_null($disk)) {
             $disk = config('filesystems.default');

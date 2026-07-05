@@ -11,7 +11,7 @@ class NewPasswordRequest extends Request
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): mixed
     {
         return true;
     }
@@ -21,7 +21,7 @@ class NewPasswordRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): mixed
     {
         $validation = [
             'new_password' => 'required|confirmed',
@@ -34,7 +34,7 @@ class NewPasswordRequest extends Request
         return $validation;
     }
 
-    public function attributes()
+    public function attributes(): mixed
     {
         return ['g-recaptcha-response' => 'google captcha'];
     }

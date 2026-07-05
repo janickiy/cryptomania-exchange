@@ -4,80 +4,59 @@ namespace App\Http\Controllers\User\Trader;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Trader\StockOrderRequest;
-use App\Repositories\User\Trader\Interfaces\DepositInterface;
-use App\Repositories\User\Trader\Interfaces\StockOrderInterface;
-use App\Repositories\User\Trader\Interfaces\WithdrawalInterface;
 use App\Services\User\Trader\StockOrderService;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 
 class OrdersController extends Controller
 {
-    private $stockOrderService;
-    private $depositRepository;
-    private $withdrawalRepository;
-
     /**
-     * @param DepositInterface $deposit
-     * @param WithdrawalInterface $withdrawal
-     * @param StockOrderService $stockOrderService
+     * Назначение: инициализирует контроллер раздела биржевых ордеров.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(DepositInterface $deposit, WithdrawalInterface $withdrawal, StockOrderService $stockOrderService)
+    public function __construct(private readonly StockOrderService $stockOrderService)
     {
-        $this->depositRepository = $deposit;
-        $this->withdrawalRepository = $withdrawal;
-        $this->stockOrderService = $stockOrderService;
-    }
-
-    public function openOrders()
-    {
-        $data['list'] = $this->stockOrderService->openOrders();
-        $data['title'] = __('Open Orders');
-
-        return view('frontend.orders.open_orders', $data);
     }
 
     /**
-     * @param StockOrderRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: показывает открытые ордера пользователя.
+     *
+     * Действие: запрашивает текущие открытые ордера и возвращает представление списка.
      */
-    public function store(StockOrderRequest $request)
+    public function openOrders(): View|Factory|Application
     {
-        $response = app(StockOrderService::class)->order($request);
-
-        if ($response[SERVICE_RESPONSE_STATUS]) {
-            return response()->json([SERVICE_RESPONSE_SUCCESS => $response[SERVICE_RESPONSE_MESSAGE]]);
-        }
-
-        return response()->json([SERVICE_RESPONSE_ERROR => $response[SERVICE_RESPONSE_MESSAGE]]);
-
+        return view('frontend.orders.open_orders', [
+            'list' => $this->stockOrderService->openOrders(),
+            'title' => __('Open Orders'),
+        ]);
     }
 
     /**
-     * @param StockOrderInterface $stockOrderRepository
-     * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: создает новую запись в разделе биржевых ордеров.
+     *
+     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
      */
-    public function destroy(StockOrderInterface $stockOrderRepository, $id)
+    public function store(StockOrderRequest $request): JsonResponse
     {
-        $stockOrder = $stockOrderRepository->getFirstById($id);
+        $response = $this->stockOrderService->order($request);
+        $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
-        if (empty($stockOrder)) {
-            return response()->json([SERVICE_RESPONSE_ERROR => __('Order not found.')]);
-        }
+        return response()->json([$status => $response[SERVICE_RESPONSE_MESSAGE]]);
+    }
 
-        if (Auth::id() != $stockOrder->user_id) {
-            return response()->json([SERVICE_RESPONSE_ERROR => __('You are not authorize to do this action.')]);
-        }
+    /**
+     * Назначение: удаляет запись в разделе биржевых ордеров.
+     *
+     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
+     */
+    public function destroy(int|string $id): JsonResponse
+    {
+        $response = $this->stockOrderService->cancelAuthenticatedOrder($id);
+        $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
-        if ($stockOrder->status >= STOCK_ORDER_COMPLETED) {
-            return response()->json([SERVICE_RESPONSE_ERROR => __('This order cannot be deleted.')]);
-        }
-
-        $response = app(StockOrderService::class)->cancelOrder($id);
-        if ($response[SERVICE_RESPONSE_STATUS]) {
-            return response()->json([SERVICE_RESPONSE_SUCCESS => $response[SERVICE_RESPONSE_MESSAGE]]);
-        }
-
-        return response()->json([SERVICE_RESPONSE_ERROR => $response[SERVICE_RESPONSE_MESSAGE]]);
+        return response()->json([$status => $response[SERVICE_RESPONSE_MESSAGE]]);
     }
 }

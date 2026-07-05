@@ -11,11 +11,11 @@ class Wallet extends Model
 
     protected $fillable = ['id', 'user_id', 'stock_item_id', 'primary_balance', 'on_order_balance', 'address', 'is_active'];
 
-    public function stockItem(){
+    public function stockItem(): mixed{
         return $this->belongsTo(StockItem::class);
     }
 
-    public function user()
+    public function user(): mixed
     {
         return $this->belongsTo(User::class);
     }

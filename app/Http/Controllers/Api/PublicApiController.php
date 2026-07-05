@@ -2,19 +2,31 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\JobException;
 use App\Http\Requests\Api\PublicApiRequest;
 use App\Repositories\User\Admin\Interfaces\StockPairInterface;
 use App\Http\Controllers\Controller;
 use App\Services\Exchange\StockGraphDataService;
+use Illuminate\Http\JsonResponse;
 
 class PublicApiController extends Controller
 {
     /**
-     * @param PublicApiRequest $request
-     * @return mixed
+     * Назначение: инициализирует контроллер раздела публичного API.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function command(PublicApiRequest $request)
+    public function __construct(
+        private readonly StockPairInterface $stockPairs,
+        private readonly StockGraphDataService $stockGraphDataService,
+    ) {
+    }
+
+    /**
+     * Назначение: выполняет команду публичного API.
+     *
+     * Действие: валидирует API-запрос, передает команду сервису и возвращает сформированный ответ.
+     */
+    public function command(PublicApiRequest $request): mixed
     {
         $command = $request->get('command');
 
@@ -22,10 +34,11 @@ class PublicApiController extends Controller
     }
 
     /**
-     * @param $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает ticker-данные публичного API.
+     *
+     * Действие: получает рыночные данные по запросу и отдает их в формате API-ответа.
      */
-    public function returnTicker($request)
+    public function returnTicker(PublicApiRequest $request): mixed
     {
         $conditions = ['stock_pairs.is_active' => ACTIVE_STATUS_ACTIVE];
         if ($request->has('coinPair')) {
@@ -34,7 +47,7 @@ class PublicApiController extends Controller
             $conditions['base_item.item'] = strtoupper($coinPair[1]);
         }
 
-        $response = app(StockPairInterface::class)->getAllStockPairForApiByConditions($conditions);
+        $response = $this->stockPairs->getAllStockPairForApiByConditions($conditions);
 
         if (empty($response)) {
             return response()->json('No coin pair found.');
@@ -44,21 +57,22 @@ class PublicApiController extends Controller
     }
 
     /**
-     * @param $request
-     * @return \Illuminate\Http\JsonResponse
+     * Назначение: возвращает данные графика для публичного API.
+     *
+     * Действие: читает параметры графика, получает свечи или точки графика и возвращает JSON.
      */
-    public function returnChartData($request)
+    public function returnChartData(PublicApiRequest $request): JsonResponse
     {
         $coinPair = explode('_', $request->get('coinPair'));
         $interval = $request->get('interval');
 
-        $stockPair = app(StockPairInterface::class)->getByPair(strtoupper($coinPair[0]), strtoupper($coinPair[1]));
+        $stockPair = $this->stockPairs->getByPair(strtoupper($coinPair[0]), strtoupper($coinPair[1]));
 
         if (empty($stockPair)) {
             return response()->json('Invalid coin pair.');
         }
 
-        $chartData = app(StockGraphDataService::class)->getGraphData($stockPair->id, $interval);
+        $chartData = $this->stockGraphDataService->getGraphData($stockPair->id, $interval);
 
         $refactoredData = [];
 

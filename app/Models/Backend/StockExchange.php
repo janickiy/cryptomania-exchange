@@ -25,7 +25,7 @@ class StockExchange extends Model
         'is_maker',
     ];
 
-    public function stockOrder()
+    public function stockOrder(): mixed
     {
         return $this->belongsTo(StockOrder::class);
     }

@@ -22,7 +22,7 @@ class SystemNoticeRepository extends BaseRepository implements SystemNoticeInter
         $this->model = $model;
     }
 
-    public function todaysNotifications()
+    public function todaysNotifications(): mixed
     {
         $startDate = Carbon::now();
         return $this->model->where('status', 1)->where(function ($q) use ($startDate) {

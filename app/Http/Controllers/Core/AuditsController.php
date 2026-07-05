@@ -5,20 +5,29 @@ namespace App\Http\Controllers\Core;
 use App\Http\Controllers\Controller;
 use App\Repositories\Core\Interfaces\AuditInterface;
 use App\Services\Core\DataListService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 
 class AuditsController extends Controller
 {
-    protected $audit;
-
     /**
-     * @param AuditInterface $audit
+     * Назначение: инициализирует контроллер раздела аудита действий пользователей.
+     *
+     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
      */
-    public function __construct(AuditInterface $audit)
-    {
-        $this->audit = $audit;
+    public function __construct(
+        private readonly AuditInterface $audit,
+        private readonly DataListService $dataListService,
+    ) {
     }
 
-    public function index()
+    /**
+     * Назначение: показывает основную страницу или список раздела аудита действий пользователей.
+     *
+     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     */
+    public function index(): View|Factory|Application
     {
         $searchFields = [
             ['first_name', __('First Name')],
@@ -33,7 +42,7 @@ class AuditsController extends Controller
         ];
 
         $query = $this->audit->paginateWithUserFilters($searchFields, $orderFields);
-        $data['list'] = app(DataListService::class)->dataList($query, $searchFields, $orderFields);
+        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
         $data['title'] = __('Audits');
 
         return view('backend.audits.index', $data);

@@ -21,7 +21,7 @@ class BroadcastSettlementOrders implements ShouldBroadcastNow
      * @param $stockPairId
      * @param $orders
      */
-    public function __construct($stockPairId, $orders)
+    public function __construct(mixed $stockPairId, mixed $orders)
     {
         $this->stockPairId = $stockPairId;
         $this->orders = $orders;
@@ -32,12 +32,12 @@ class BroadcastSettlementOrders implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): mixed
     {
         return new Channel(channel_prefix() .'exchange.'.$this->stockPairId);
     }
 
-    public function broadcastWith()
+    public function broadcastWith(): mixed
     {
         return $this->orders;
     }

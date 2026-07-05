@@ -34,7 +34,7 @@ class MakeView extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub(): mixed
     {
         return __DIR__.'/Stubs/view.plain.stub';
     }
@@ -45,7 +45,7 @@ class MakeView extends GeneratorCommand
      * @return bool|null
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function handle()
+    public function handle(): mixed
     {
         $name = $this->getNameInput();
 
@@ -78,7 +78,7 @@ class MakeView extends GeneratorCommand
      * @param  string  $name
      * @return string
      */
-    protected function getPath($name)
+    protected function getPath(mixed $name): mixed
     {
         $name = Str::replaceFirst($this->rootNamespace(), '', $name);
         return $this->laravel['path.resources'].'/views/'.str_replace('\\', '/', $name).'.blade.php';
@@ -91,7 +91,7 @@ class MakeView extends GeneratorCommand
      * @return string
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    protected function buildClass($name)
+    protected function buildClass(mixed $name): mixed
     {
         $stub = $this->files->get($this->getStub());
 
