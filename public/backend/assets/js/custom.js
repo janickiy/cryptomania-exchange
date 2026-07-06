@@ -29,10 +29,11 @@
     footerFixer()
 
     function elementAction(id, formSubmit) {
-        var elem = document.getElementById(id);
+        var elem = document.getElementById(id) || document.getElementById(String(id).replace(/^#/, ''));
+
         if (elem) {
             if (formSubmit == 'y') {
-                document.getElementById(id).submit();
+                elem.submit();
             } else {
                 return elem.parentNode.removeChild(elem);
             }
@@ -82,23 +83,34 @@
         e.preventDefault();
         var $this = $(this);
         var dataAlert = $this.attr('data-alert');
-        dataInfo = $this.attr('data-form-id');
+        var dataInfo = $this.attr('data-form-id');
         if (!dataInfo) {
-            var dataInfo = $this.attr('href');
+            dataInfo = $this.attr('href');
             $('.flash-message').find('.flash-confirm').attr('href', dataInfo);
         } else {
             var autoForm = $this.attr('data-form-method');
             if (autoForm) {
-                var link = $this.attr('href')
+                var link = $this.attr('href');
                 var dataToken = $('meta[name="csrf-token"]').attr('content');
                 autoForm = autoForm.toUpperCase();
                 if (autoForm == 'POST' || autoForm == 'PUT' || autoForm == 'DELETE') {
-                    var newForm = '<form id="#auto-form-generation-' + dataInfo + '" method="POST" action= "' + link + '" style="height: 0; width: 0; overflow: hidden;">'; //
-                    newForm = newForm + '<input type = "hidden" name ="_token" value = "' + dataToken + '">';
-                    newForm = newForm + '<input type = "hidden" name ="_method" value = "' + autoForm + '">';
-                    $('body').prepend(newForm);
+                    var formId = 'auto-form-generation-' + dataInfo;
+                    $('#' + formId).remove();
+                    $('<form>', {
+                        id: formId,
+                        method: 'POST',
+                        action: link,
+                        css: {
+                            height: 0,
+                            width: 0,
+                            overflow: 'hidden',
+                        },
+                    })
+                        .append($('<input>', { type: 'hidden', name: '_token', value: dataToken }))
+                        .append($('<input>', { type: 'hidden', name: '_method', value: autoForm }))
+                        .prependTo('body');
+                    $('.flash-confirm').attr('data-form-auto-id', formId);
                 }
-                $('.flash-confirm').attr('data-form-auto-id', '#auto-form-generation-' + dataInfo);
             }
             $('.flash-message').find('.flash-confirm').attr('data-form-id', dataInfo);
         }
@@ -152,5 +164,11 @@ $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
 });
 
 $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-})
+    if (window.bootstrap) {
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (element) {
+            new bootstrap.Tooltip(element);
+        });
+    } else if ($.fn.tooltip) {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+});

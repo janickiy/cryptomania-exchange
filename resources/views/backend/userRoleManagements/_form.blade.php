@@ -1,80 +1,118 @@
-<input type="hidden" name="base_key" value="{{base_key()}}">
-    <div class="form-group {{ $errors->has('role_name') ? 'has-error' : '' }}">
-        <div class="row">
-        <label for="" class="col-md-3 control-label required">{{ __('Role Name') }}</label>
-            <div class="col-md-9">
-                {{ Form::text(fake_field('role_name'),old('role_name', isset($userRoleManagement) ? $userRoleManagement->role_name : null),['class'=>'form-control','data-cval-name' => 'The role name field','data-cval-rules' => 'required|escapeInput']) }}
-                <span class="validation-message cval-error" data-cval-error="{{ fake_field('role_name') }}">{{ $errors->first('role_name') }}</span>
-            </div>
-        </div>
+<input type="hidden" name="base_key" value="{{ base_key() }}">
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <label for="role-name" class="form-label required">{{ __('Role Name') }}</label>
+        {{ Form::text(fake_field('role_name'), old('role_name', isset($userRoleManagement) ? $userRoleManagement->role_name : null), [
+            'class' => 'form-control',
+            'id' => 'role-name',
+            'data-cval-name' => 'The role name field',
+            'data-cval-rules' => 'required|escapeInput',
+        ]) }}
+        <span class="validation-message cval-error" data-cval-error="{{ fake_field('role_name') }}">{{ $errors->first('role_name') }}</span>
     </div>
-<div class="form-group has-error">
-    <span class="help-block">{{ $errors->first('roles') }}</span>
 </div>
-<?php
-$ModuleClasses = [];
-?>
-@foreach($routes as $name => $routeGroups)
-    <div class="route-group">
-        <div class="checkbox checkbox-success checkbox-compact" style="margin-bottom: 20px !important; clear:both">
-            {{ Form::checkbox("module",1,false,["class"=>"flat-red module module_$name","id"=>"role-$name", "data-id"=>"$name"]) }}
-            <label class="disable-text-select" for="role-{{$name}}">{{ \Illuminate\Support\Str::title(str_replace('_',' ',$name)) }}</label>
-        </div>
-        <div class="col-md-12">
-            <div class="row dc-clear">
-            <?php $allSubModules = true; ?>
-            @foreach($routeGroups as $groupName=>$permissionLists)
-                <div class="route-subgroup">
-                    <div class="col-lg-3 col-md-12" style="margin-bottom: 20px !important;">
-                    <div class="checkbox checkbox-success checkbox-compact">
-                        {{ Form::checkbox("task",1,false,["class"=>"sub-module flat-red task module_action_$name module_action_{$name}_{$groupName}","id"=>"task-$name-$groupName", "data-id"=>"{$name}_$groupName"]) }}
-                        <label class="disable-text-select" for="task-{{$name}}-{{$groupName}}">{{ \Illuminate\Support\Str::title(str_replace('_',' ',$groupName)) }}</label>
-                    </div>
+
+@if($errors->has('roles'))
+    <div class="alert alert-danger py-2">
+        {{ $errors->first('roles') }}
+    </div>
+@endif
+
+<div class="role-permissions">
+    <div class="role-permissions-header">
+        <h4 class="mb-1">{{ __('Route Permissions') }}</h4>
+        <p class="mb-0 text-secondary">{{ __('Choose modules, sections, and exact actions available to this role.') }}</p>
+    </div>
+
+    <?php $ModuleClasses = []; ?>
+
+    @foreach($routes as $name => $routeGroups)
+        <section class="role-permission-group">
+            <div class="role-permission-group-header">
+                <div class="form-check role-check">
+                    {{ Form::checkbox('module', 1, false, [
+                        'class' => "form-check-input flat-red module module_$name",
+                        'id' => "role-$name",
+                        'data-id' => "$name",
+                    ]) }}
+                    <label class="form-check-label disable-text-select" for="role-{{ $name }}">
+                        {{ \Illuminate\Support\Str::title(str_replace('_', ' ', $name)) }}
+                    </label>
                 </div>
-                    <div class="col-lg-9 col-md-12" style="margin-bottom:20px; border-bottom:1px solid #efefef; padding-bottom: 10px">
-                    <div class="row dc-clear">
-                        <?php $allItems = true; ?>
-                        @foreach($permissionLists as $permissionName => $routeList)
-                        <div class="col-lg-3 col-md-3 col-sm-6">
-                            <div class="checkbox checkbox-success checkbox-inline checkbox-compact">
-                                {{ Form::checkbox("roles[$name][$groupName][]",$permissionName, isset($userRoleManagement->route_group[$name][$groupName]) ? (in_array($permissionName, $userRoleManagement->route_group[$name][$groupName]) ? true :false) : false ,["class"=>"route-item flat-red module_action_$name task_action_{$name}_$groupName", "id"=>"list-$name-$groupName-$permissionName"]) }}
-                                <label class="disable-text-select" for="list-{{$name}}-{{$groupName}}-{{ $permissionName }}">{{ \Illuminate\Support\Str::title(str_replace('_',' ',$permissionName)) }}</label>
+            </div>
+
+            <div class="role-permission-group-body">
+                <?php $allSubModules = true; ?>
+
+                @foreach($routeGroups as $groupName => $permissionLists)
+                    <div class="role-subgroup">
+                        <div class="role-subgroup-title">
+                            <div class="form-check role-check">
+                                {{ Form::checkbox('task', 1, false, [
+                                    'class' => "form-check-input sub-module flat-red task module_action_$name module_action_{$name}_{$groupName}",
+                                    'id' => "task-$name-$groupName",
+                                    'data-id' => "{$name}_$groupName",
+                                ]) }}
+                                <label class="form-check-label disable-text-select" for="task-{{ $name }}-{{ $groupName }}">
+                                    {{ \Illuminate\Support\Str::title(str_replace('_', ' ', $groupName)) }}
+                                </label>
                             </div>
                         </div>
+
+                        <div class="role-permission-grid">
+                            <?php $allItems = true; ?>
+
+                            @foreach($permissionLists as $permissionName => $routeList)
+                                <div class="role-permission-item">
+                                    <div class="form-check role-check">
+                                        {{ Form::checkbox("roles[$name][$groupName][]", $permissionName, isset($userRoleManagement->route_group[$name][$groupName]) ? (in_array($permissionName, $userRoleManagement->route_group[$name][$groupName]) ? true : false) : false, [
+                                            'class' => "form-check-input route-item flat-red module_action_$name task_action_{$name}_$groupName",
+                                            'id' => "list-$name-$groupName-$permissionName",
+                                        ]) }}
+                                        <label class="form-check-label disable-text-select" for="list-{{ $name }}-{{ $groupName }}-{{ $permissionName }}">
+                                            {{ \Illuminate\Support\Str::title(str_replace('_', ' ', $permissionName)) }}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <?php
+                                    if (!isset($userRoleManagement->route_group[$name][$groupName]) || !in_array($permissionName, $userRoleManagement->route_group[$name][$groupName])) {
+                                        $allSubModules = false;
+                                        $allItems = false;
+                                    }
+                                ?>
+                            @endforeach
+
                             <?php
-                                if(!isset($userRoleManagement->route_group[$name][$groupName]) || !in_array($permissionName, $userRoleManagement->route_group[$name][$groupName])){
-                                    $allSubModules = false;
-                                    $allItems = false;
-                                }
-                            ?>
-                        @endforeach
-                            <?php
-                                if($allItems){
+                                if ($allItems) {
                                     $ModuleClasses[] = "module_action_{$name}_{$groupName}";
                                 }
                             ?>
+                        </div>
                     </div>
-                </div>
-                </div>
-            @endforeach
+                @endforeach
+
                 <?php
-                if($allSubModules){
-                    $ModuleClasses[] = "module_$name";
-                }
+                    if ($allSubModules) {
+                        $ModuleClasses[] = "module_$name";
+                    }
                 ?>
             </div>
-        </div>
-    </div>
-@endforeach
-<div class="pull-right m-t-15">{{ Form::submit($buttonText,['class'=>'btn btn-success form-submission-button']) }}</div>
+        </section>
+    @endforeach
+</div>
+
+<div class="role-form-actions">
+    {{ Form::submit($buttonText, ['class' => 'btn btn-primary form-submission-button']) }}
+</div>
 
 @section('extraScript')
     <script>
         (function($){
             var selecteModules = {!! json_encode($ModuleClasses) !!};
             for(var i=0; i < selecteModules.length; i++){
-                $('.'+ selecteModules[i]).attr('checked', 'checked')
-                console.log(selecteModules[i])
+                $('.' + selecteModules[i]).prop('checked', true);
             }
         }(jQuery))
 

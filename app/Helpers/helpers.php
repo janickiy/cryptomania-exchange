@@ -374,17 +374,21 @@ if (!function_exists('array_to_string')) {
 }
 
 if (!function_exists('valid_image')) {
-    function valid_image($imagePath, $image)
+    function valid_image(string $imagePath, ?string $image): bool
     {
-        $extension = explode('.', $image);
-        $isExtensionAvailable = in_array(end($extension), config('commonconfig.image_extensions'));
+        if (empty($image)) {
+            return false;
+        }
+
+        $extension = pathinfo($image, PATHINFO_EXTENSION);
+        $isExtensionAvailable = in_array($extension, config('commonconfig.image_extensions'), true);
 
         return $isExtensionAvailable && file_exists(public_path($imagePath . $image));
     }
 }
 
 if (!function_exists('get_avatar')) {
-    function get_avatar($avatar)
+    function get_avatar(?string $avatar): string
     {
         $avatarPath = 'storage/' . config('commonconfig.path_profile_image');
 

@@ -3,115 +3,63 @@
 namespace App\Http\Controllers\User\Admin;
 
 use App\Http\Controllers\Controller;
-use App\DTO\Admin\UserAccountData;
-use App\DTO\Admin\UserStatusData;
-use App\DTO\Admin\WalletBalanceData;
 use App\Http\Requests\Admin\UpdateWalletBalanceRequest;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Requests\Admin\UserStatusRequest;
-use App\Repositories\Core\Interfaces\UserRoleManagementInterface;
-use App\Repositories\User\Interfaces\UserInterface;
-use App\Repositories\User\Trader\Interfaces\WalletInterface;
-use App\Services\Core\DataListService;
 use App\Services\User\Admin\UserManagementService;
-use App\Services\User\Trader\WalletService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 
 class UsersController extends Controller
 {
     /**
-     * Purpose: initializes the UsersController instance.
+     * Purpose: initializes the user administration controller.
      *
-     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
-     *
+     * Action: receives the management service that prepares user data and applies user changes.
      */
     public function __construct(
-        private readonly UserInterface $user,
-        private readonly UserRoleManagementInterface $userRoleManagement,
-        private readonly WalletInterface $wallets,
         private readonly UserManagementService $userManagementService,
-        private readonly WalletService $walletService,
-        private readonly DataListService $dataListService,
     ) {
     }
 
     /**
-     * Purpose: shows the main page or record list for the section.
+     * Purpose: displays the admin user list.
      *
-     * Action: collects data through services or repositories and returns the view.
-     *
+     * Action: delegates list filtering, sorting, and pagination data preparation to the service layer.
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
-        $searchFields = [
-            ['username', __('Username')],
-            ['email', __('Email')],
-            ['first_name', __('First Name')],
-            ['last_name', __('Last Name')],
-        ];
-        $orderFields = [
-            ['first_name', __('First Name')],
-            ['users.id', __('Serial')],
-            ['last_name', __('Last Name')],
-            ['email', __('Email')],
-            ['username', __('Username')],
-            ['users.created_at', __('Registered Date')],
-        ];
-        $joinArray = [
-            ['user_role_managements', 'user_role_managements.id', '=', 'users.user_role_management_id'],
-            ['user_infos', 'user_infos.user_id', '=', 'users.id'],
-        ];
-        $select = [
-            'users.*', 'role_name', 'first_name', 'last_name'
-        ];
-
-        $query = $this->user->paginateWithFilters($searchFields, $orderFields, null, $select, $joinArray);
-        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
-        $data['title'] = __('Users');
-
-        return view('backend.users.index', $data);
+        return view('backend.users.index', $this->userManagementService->indexData());
     }
 
     /**
-     * Purpose: shows the detail page for the selected record.
+     * Purpose: displays a selected user's profile details.
      *
-     * Action: loads the record by identifier and passes it to the view.
-     *
+     * Action: asks the service to load the user and returns the read-only admin view.
      */
     public function show(int|string $id): View
     {
-        $data['user'] = $this->user->findOrFailById($id);
-        $data['title'] = __('View User');
-
-        return view('backend.users.show', $data);
+        return view('backend.users.show', $this->userManagementService->showData($id));
     }
 
     /**
-     * Purpose: shows the form for creating a new record.
+     * Purpose: displays the user creation form.
      *
-     * Action: prepares form data and returns the create view.
-     *
+     * Action: asks the service for role options and other form data required to create a user.
      */
     public function create(): View
     {
-        $data['userRoleManagements'] = $this->userRoleManagement->getUserRoles();
-        $data['title'] = __('Create User');
-
-        return view('backend.users.create', $data);
+        return view('backend.users.create', $this->userManagementService->createData());
     }
 
     /**
-     * Purpose: creates a new record from request data.
+     * Purpose: stores a newly created user.
      *
-     * Action: passes validated data to the service layer and returns the operation result.
-     *
+     * Action: converts validated form input through the service layer and redirects to the created user on success.
      */
     public function store(UserRequest $request): RedirectResponse
     {
-        if ($user = $this->userManagementService->create(UserAccountData::fromArray($request->validated()))) {
+        if ($user = $this->userManagementService->createFromValidatedData($request->validated())) {
             return redirect()->route('users.show', $user->id)->with(SERVICE_RESPONSE_SUCCESS, __("User has been created successfully."));
         }
 
@@ -119,31 +67,23 @@ class UsersController extends Controller
     }
 
     /**
-     * Purpose: shows the edit form for the selected record.
+     * Purpose: displays the user edit form.
      *
-     * Action: loads current data and returns the edit view.
-     *
+     * Action: asks the service to load the selected user and available role options.
      */
     public function edit(int|string $id): View
     {
-        $data['user'] = $this->user->findOrFailById($id);
-        $data['userRoleManagements'] = $this->userRoleManagement->getUserRoles();
-        $data['title'] = __('Edit User');
-
-        return view('backend.users.edit', $data);
+        return view('backend.users.edit', $this->userManagementService->editData($id));
     }
 
     /**
-     * Purpose: updates the selected record from request data.
+     * Purpose: updates a user's account information.
      *
-     * Action: passes changes to the service layer and returns a result message.
-     * @param UserRequest $request
-     * @param int|string $id
-     * @return RedirectResponse
+     * Action: passes validated input to the service and redirects back with the operation status.
      */
     public function update(UserRequest $request, int|string $id): RedirectResponse
     {
-        if ($this->userManagementService->update((int) $id, UserAccountData::fromArray($request->validated()))) {
+        if ($this->userManagementService->updateFromValidatedData($id, $request->validated())) {
             return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('User has been updated successfully.'));
         }
 
@@ -151,89 +91,56 @@ class UsersController extends Controller
     }
 
     /**
-     * Purpose: handles the edit status action in UsersController.
+     * Purpose: displays the user status edit form.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
-     *
-     * @param int|string $id
-     * @return View
+     * Action: asks the service to load the user whose access and verification statuses will be edited.
      */
     public function editStatus(int|string $id): View
     {
-        $data['user'] = $this->user->findOrFailById($id);
-        $data['title'] = __('Edit User Status');
-
-        return view('backend.users.edit_status', $data);
+        return view('backend.users.edit_status', $this->userManagementService->editStatusData($id));
     }
 
     /**
-     * Purpose: handles the update status action in UsersController.
-     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * Purpose: updates a user's account status flags.
      *
-     * param UserStatusRequest $request
-     *
-     * @param UserStatusRequest $request
-     * @param int|string $id
-     * @return RedirectResponse
+     * Action: passes validated status input to the service and returns the service result to the edit screen.
      */
     public function updateStatus(UserStatusRequest $request, int|string $id): RedirectResponse
     {
-        [$status, $message] = $this->userManagementService->updateStatus((int) $id, UserStatusData::fromArray($request->validated()));
+        $response = $this->userManagementService->updateStatusFromValidatedData($id, $request->validated());
 
-        return redirect()->route('users.edit.status', $id)->with($status, $message);
+        return redirect()->route('users.edit.status', $id)->with($response['status'], $response[SERVICE_RESPONSE_MESSAGE]);
     }
 
     /**
-     * Purpose: handles the wallets action in UsersController.
+     * Purpose: displays wallets that belong to a selected user.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
-     *
+     * Action: delegates wallet list preparation to the service and returns the wallet index view.
      */
     public function wallets(int|string $id): View
     {
-        $data['list'] = $this->walletService->getWallets($id);
-        $data['title'] = __('Wallets');
-
-        return view('backend.users.wallets.index', $data);
+        return view('backend.users.wallets.index', $this->userManagementService->walletsData($id));
     }
 
     /**
-     * Purpose: handles the edit wallet balance action in UsersController.
+     * Purpose: displays the wallet balance adjustment form.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
-     *
-     * @param int|string $id
-     * @param int|string $walletId
-     * @return View
+     * Action: asks the service to load the user's wallet and returns the edit view.
      */
     public function editWalletBalance(int|string $id, int|string $walletId): View
     {
-        $data['wallet'] = $this->wallets->getFirstByConditions(['id' => $walletId, 'user_id' => $id]);
-        $data['title'] = __('Modify Wallet Balance');
-
-        return view('backend.users.wallets.edit', $data);
+        return view('backend.users.wallets.edit', $this->userManagementService->editWalletBalanceData($id, $walletId));
     }
 
     /**
-     * Purpose: handles the update wallet balance action in UsersControlle
+     * Purpose: updates a user's wallet balance from an admin action.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin
-     *
-     * @param UpdateWalletBalanceRequest $request
-     * @param int|string $id
-     * @param int|string $walletId
-     * @return RedirectResponse
+     * Action: passes validated wallet amount input to the service and redirects back with the result.
      */
     public function updateWalletBalance(UpdateWalletBalanceRequest $request, int|string $id, int|string $walletId): RedirectResponse
     {
-        try {
-            if ($this->userManagementService->updateWalletBalance((int) $id, (int) $walletId, WalletBalanceData::fromArray($request->validated()))) {
-                return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The wallet balance has been updated successfully.'));
-            }
-        } catch (\Exception $exception) {
-            logs()->error('Failed to update wallet balance: ' . $exception->getMessage());
-        }
+        $response = $this->userManagementService->updateWalletBalanceFromValidatedData($id, $walletId, $request->validated());
 
-        return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to update the wallet balance.'));
+        return redirect()->back()->with($response['status'], $response[SERVICE_RESPONSE_MESSAGE]);
     }
 }
