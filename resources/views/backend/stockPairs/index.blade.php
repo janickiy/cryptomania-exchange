@@ -86,7 +86,7 @@
                                                 data-bs-toggle="dropdown"
                                                 aria-expanded="false"
                                                 aria-label="{{ __('Action') }}">
-                                            <i class="fa fa-ellipsis-vertical"></i>
+                                            <i class="fa fa-ellipsis-v"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                             @if(has_permission('admin.stock-pairs.show'))
@@ -100,7 +100,7 @@
                                             @if(has_permission('admin.stock-pairs.edit'))
                                                 <li>
                                                     <a class="dropdown-item" href="{{ route('admin.stock-pairs.edit', $stockPair->id) }}">
-                                                        <i class="fa fa-pen-to-square me-2 text-primary"></i>{{ __('Edit') }}
+                                                        <i class="fa fa-pencil me-2 text-primary"></i>{{ __('Edit') }}
                                                     </a>
                                                 </li>
                                             @endif
@@ -146,7 +146,7 @@
                                                        data-form-method="DELETE"
                                                        href="{{ route('admin.stock-pairs.destroy', $stockPair->id) }}"
                                                        data-alert="{{ __('Do you want to delete this stock item?') }}">
-                                                        <i class="fa fa-trash-can me-2"></i>{{ __('Delete') }}
+                                                        <i class="fa fa-trash-o me-2"></i>{{ __('Delete') }}
                                                     </a>
                                                 </li>
                                             @endif

@@ -1363,8 +1363,14 @@
 }
 
 .user-wallets-table-card,
-.report-trades-table-card {
+.report-trades-table-card,
+.report-payment-table-card,
+.report-open-orders-table-card {
     overflow: visible;
+}
+
+.wallet-balance-card {
+    max-width: 980px;
 }
 
 .report-page-heading {
@@ -1393,6 +1399,23 @@
     border-color: var(--bs-primary);
     background: var(--bs-primary);
     color: #fff;
+}
+
+.report-status-badge {
+    min-width: 6.5rem;
+    padding: .45rem .65rem;
+}
+
+.report-ref-code {
+    display: inline-flex;
+    max-width: 12rem;
+    padding: .25rem .45rem;
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .role-form-body {
@@ -1696,13 +1719,16 @@
 
 .stock-item-form-page .card,
 .stock-pair-form-page .card,
-.stock-pairs-page .card {
+.stock-pairs-page .card,
+.stock-pair-show-page .card {
     border: 0;
     box-shadow: var(--bs-box-shadow-sm);
 }
 
 .stock-item-form-card,
 .stock-pair-form-card,
+.stock-pair-show-card,
+.stock-pair-detail-card,
 .stock-filter-card,
 .stock-pairs-table-card,
 .stock-pagination-card {
@@ -1711,9 +1737,78 @@
 
 .stock-item-form-card .card-header,
 .stock-pair-form-card .card-header,
+.stock-pair-show-card .card-header,
+.stock-pair-detail-card .card-header,
 .stock-pairs-table-card .card-header {
     border-bottom-color: var(--bs-border-color-translucent);
     background: var(--bs-card-bg);
+}
+
+.stock-pair-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .5rem;
+}
+
+.stock-pair-summary-box {
+    min-height: 6rem;
+    margin-bottom: 0;
+    border: 0;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.stock-pair-summary-box .info-box-icon {
+    width: 5rem;
+}
+
+.stock-pair-summary-box .info-box-text {
+    color: var(--bs-secondary-color);
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.stock-pair-summary-box .info-box-number {
+    color: var(--bs-body-color);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.stock-pair-card-title {
+    margin: 0;
+    color: var(--bs-body-color);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.stock-pair-detail-table th,
+.stock-pair-detail-table td {
+    padding: .9rem 1rem;
+    border-bottom-color: var(--bs-border-color-translucent);
+    vertical-align: middle;
+}
+
+.stock-pair-detail-table th {
+    width: 42%;
+    color: var(--bs-secondary-color);
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.stock-pair-detail-table td {
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+.stock-pair-status-badge {
+    min-width: 5.75rem;
+    padding: .5rem .65rem;
 }
 
 .stock-item-form .stock-switch,
@@ -1925,6 +2020,19 @@
     z-index: 1070;
 }
 
+.stock-pairs-table-card .cm-action .table-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border-color: var(--bs-border-color) !important;
+    background: var(--bs-body-bg) !important;
+    color: var(--bs-secondary-color) !important;
+    box-shadow: none;
+}
+
 .stock-pairs-table-card .cm-action .table-action-button:hover,
 .stock-pairs-table-card .cm-action .table-action-button:focus,
 .stock-pairs-table-card .cm-action .table-action-button.show {
@@ -1932,6 +2040,15 @@
     background: var(--bs-primary-bg-subtle) !important;
     color: var(--bs-primary) !important;
     box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), .14);
+}
+
+.stock-pairs-table-card .cm-action .table-action-button i {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.stock-pairs-table-card .cm-action .table-action-button::after {
+    display: none;
 }
 
 .stock-pairs-table-card .cm-action .dropdown-item {
@@ -2542,6 +2659,8 @@
     .menu-builder-card .card-header,
     .stock-item-form-card .card-header,
     .stock-pair-form-card .card-header,
+    .stock-pair-show-card .card-header,
+    .stock-pair-detail-card .card-header,
     .stock-pairs-table-card .card-header {
         display: block !important;
     }
@@ -2552,9 +2671,31 @@
     .menu-builder-card .card-header .btn,
     .stock-item-form-card .card-header .btn,
     .stock-pair-form-card .card-header .btn,
+    .stock-pair-show-card .card-header .btn,
+    .stock-pair-detail-card .card-header .btn,
     .stock-pairs-table-card .card-header .btn {
         width: 100%;
         margin-top: .75rem;
+    }
+
+    .stock-pair-header-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        margin-top: .75rem;
+    }
+
+    .stock-pair-detail-table th,
+    .stock-pair-detail-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .stock-pair-detail-table th {
+        padding-bottom: .25rem;
+    }
+
+    .stock-pair-detail-table td {
+        padding-top: 0;
     }
 
     .admin-form-grid {
