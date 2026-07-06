@@ -1,22 +1,34 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    {!!  $list['filters'] !!}
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-primary box-borderless">
-                <div class="box-body">
-                    <table class="table datatable dt-responsive display nowrap dc-table" style="width:100% !important;">
+    <div class="user-management-page">
+        {!!  $list['filters'] !!}
+
+        <div class="card user-table-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="user-table-heading">
+                    <h3 class="user-table-title">{{ __('Users') }}</h3>
+                    <p class="user-table-subtitle">{{ __('Manage platform accounts, access groups, and user activity.') }}</p>
+                </div>
+                @if(has_permission('users.create'))
+                    <a href="{{ route('users.create') }}" class="btn btn-primary">
+                        <i class="fa fa-plus me-1"></i>{{ __('Create User') }}
+                    </a>
+                @endif
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 datatable dt-responsive display nowrap dc-table" style="width:100% !important;">
                         <thead>
                         <tr>
                             <th class="all">{{ __('Email') }}</th>
-                            <th  class="min-phone-l">{{ __('First Name') }}</th>
-                            <th  class="min-phone-l">{{ __('Last Name') }}</th>
+                            <th class="min-phone-l">{{ __('First Name') }}</th>
+                            <th class="min-phone-l">{{ __('Last Name') }}</th>
                             <th class="min-phone-l">{{ __('User Group') }}</th>
                             <th class="min-phone-l">{{ __('Username') }}</th>
                             <th class="none">{{ __('Registered Date') }}</th>
                             <th class="text-center min-phone-l">{{ __('Status') }}</th>
-                            <th class="text-center all no-sort">{{ __('Action') }}</th>
+                            <th class="text-end all no-sort">{{ __('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -29,36 +41,76 @@
                                         {{ $user->email }}
                                     @endif
                                 </td>
-                                <td>{{ $user->first_name }}</td>
-                                <td>{{ $user->last_name }}</td>
-                                <td>{{ $user->role_name}}</td>
-                                <td>{{ $user->username }}</td>
-                                <td>{{ $user->created_at->format('Y-m-d') }}</td>
-                                <td class="text-center">{!! $user->is_active ? '<i class="fa fa-check text-success"></i>' : '<i class="fa fa-times text-danger"></i>' !!}</td>
-                                <td class="cm-action">
-                                    <div class="btn-group pull-right">
-                                        <button class="btn green btn-xs btn-outline dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa fa-gear"></i>
+                                <td>{{ $user->first_name ?: '-' }}</td>
+                                <td>{{ $user->last_name ?: '-' }}</td>
+                                <td>{{ $user->role_name ?: '-' }}</td>
+                                <td>{{ $user->username ?: '-' }}</td>
+                                <td>
+                                    <span class="text-secondary">{{ $user->created_at->format('M j, Y') }}</span>
+                                </td>
+                                <td class="text-center">
+                                    @if($user->is_active)
+                                        <span class="badge text-bg-success user-status-badge">
+                                            <i class="fa fa-check me-1"></i>{{ __('Active') }}
+                                        </span>
+                                    @else
+                                        <span class="badge text-bg-secondary user-status-badge">
+                                            <i class="fa fa-ban me-1"></i>{{ __('Inactive') }}
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="cm-action text-end">
+                                    <div class="dropdown d-inline-block">
+                                        <button class="btn btn-sm btn-outline-secondary table-action-button dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                                aria-label="{{ __('Action') }}">
+                                            <i class="fa fa-ellipsis-vertical"></i>
                                         </button>
-                                        <ul class="dropdown-menu pull-right">
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                            @if(has_permission('users.show'))
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('users.show',$user->id)}}">
+                                                        <i class="fa fa-eye me-2 text-primary"></i>{{ __('Show') }}
+                                                    </a>
+                                                </li>
+                                            @endif
                                             @if(has_permission('users.edit'))
-                                                <li><a href="{{ route('users.show',$user->id)}}"><i class="fa fa-eye"></i> {{ __('Show') }}</a></li>
-                                                <li><a href="{{ route('users.edit',$user->id)}}"><i
-                                                            class="fa fa-pencil-square-o fa-lg text-info"></i> {{ __('Edit Info') }}</a></li>
-                                                <li><a href="{{ route('users.edit.status',$user->id)}}"><i
-                                                            class="fa fa-pencil-square fa-lg text-info"></i> {{ __('Edit Status') }}</a></li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('users.edit',$user->id)}}">
+                                                        <i class="fa fa-pen-to-square me-2 text-primary"></i>{{ __('Edit Info') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('users.edit.status',$user->id)}}">
+                                                        <i class="fa fa-sliders me-2 text-primary"></i>{{ __('Edit Status') }}
+                                                    </a>
+                                                </li>
                                             @endif
 
                                             @if(has_permission('admin.users.wallets'))
-                                                <li><a href="{{ route('admin.users.wallets',$user->id)}}"><i class="fa fa-list fa-lg text-info"></i> {{ __('View Wallets') }}</a></li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('admin.users.wallets',$user->id)}}">
+                                                        <i class="fa fa-wallet me-2 text-info"></i>{{ __('View Wallets') }}
+                                                    </a>
+                                                </li>
                                             @endif
 
                                             @if(has_permission('reports.admin.open-orders'))
-                                                <li><a href="{{ route('reports.admin.open-orders', $user->id)}}"><i class="fa fa-list fa-lg text-info"></i> {{ __('View Open Orders') }}</a></li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('reports.admin.open-orders', $user->id)}}">
+                                                        <i class="fa fa-list-check me-2 text-info"></i>{{ __('View Open Orders') }}
+                                                    </a>
+                                                </li>
                                             @endif
 
                                             @if(has_permission('reports.admin.trades'))
-                                                <li><a href="{{ route('reports.admin.trades', $user->id)}}"><i class="fa fa-list fa-lg text-info"></i> {{ __('View trade history') }}</a></li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('reports.admin.trades', $user->id)}}">
+                                                        <i class="fa fa-clock-rotate-left me-2 text-info"></i>{{ __('View trade history') }}
+                                                    </a>
+                                                </li>
                                             @endif
                                         </ul>
                                     </div>
@@ -70,8 +122,9 @@
                 </div>
             </div>
         </div>
+
+        {!! $list['pagination'] !!}
     </div>
-    {!! $list['pagination'] !!}
 @endsection
 
 @section('script')

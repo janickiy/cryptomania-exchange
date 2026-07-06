@@ -6,9 +6,9 @@
 
         <div class="card role-table-card">
             <div class="card-header d-flex align-items-center justify-content-between gap-3">
-                <div>
-                    <h3 class="card-title mb-1">{{ __('Role Management') }}</h3>
-                    <p class="mb-0 text-secondary">{{ __('Manage access groups and route permissions.') }}</p>
+                <div class="role-table-heading">
+                    <h3 class="role-table-title">{{ __('Role Management') }}</h3>
+                    <p class="role-table-subtitle">{{ __('Manage access groups and route permissions.') }}</p>
                 </div>
                 @if(has_permission('user-role-managements.create'))
                     <a href="{{ route('user-role-managements.create') }}" class="btn btn-primary">

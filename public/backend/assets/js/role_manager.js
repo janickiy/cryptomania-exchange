@@ -1,45 +1,52 @@
-    (function ($) {
-    $('.route-group').each(function(){
-        var $this                   = $(this);
-        var mainGroupItems          = $(this).find('.route-item').length;
-        var mainGroupItemsChecked   = $(this).find('.route-item:checked').length;
-        if(mainGroupItems==mainGroupItemsChecked){
-            $this.find('.module').parent().addClass('checked');
-            $this.find('.sub-module').parent().addClass('checked');
-        }
-        else{
-            $this.find('.module').parent().removeClass('checked');
-            $this.find('.route-subgroup').each(function(){
-                var subGroupItems           = $(this).find('.route-item').length;
-                var subGroupItemsChecked    = $(this).find('.route-item:checked').length;
-                if(subGroupItems==subGroupItemsChecked){
-                    $(this).find('.sub-module').parent().addClass('checked');
-                }
-                else{
-                    $(this).find('.sub-module').parent().removeClass('checked');
-                }
-            })
-        }
+(function ($) {
+    'use strict';
+
+    function closestGroup($item) {
+        return $item.closest('.role-permission-group, .route-group');
+    }
+
+    function closestSubgroup($item) {
+        return $item.closest('.role-subgroup, .route-subgroup');
+    }
+
+    function setInputState($input, checked) {
+        $input.prop('checked', checked);
+    }
+
+    function setVisualState($input, checked) {
+        $input.parent().toggleClass('checked', checked);
+        $input.closest('.role-check').toggleClass('checked', checked);
+    }
+
+    function syncSubgroup($subgroup) {
+        var $items = $subgroup.find('.route-item');
+        var checked = $items.length > 0 && $items.length === $items.filter(':checked').length;
+        var $subModule = $subgroup.find('.sub-module').first();
+
+        setInputState($subModule, checked);
+        setVisualState($subModule, checked);
+    }
+
+    function syncGroup($group) {
+        var $items = $group.find('.route-item');
+        var checked = $items.length > 0 && $items.length === $items.filter(':checked').length;
+        var $module = $group.find('.module').first();
+
+        setInputState($module, checked);
+        setVisualState($module, checked);
+        $group.find('.role-subgroup, .route-subgroup').each(function () {
+            syncSubgroup($(this));
+        });
+    }
+
+    $('.role-permission-group, .route-group').each(function () {
+        syncGroup($(this));
     });
 
+    $(document).on('ifChanged change', 'input.route-item', function () {
+        var $item = $(this);
 
-    $('input.route-item').on('ifChanged', function(){
-        var $this                   = $(this);
-        var mainGroupItems          = $(this).closest('.route-group').find('.route-item').length;
-        var mainGroupItemsChecked   = $(this).closest('.route-group').find('.route-item:checked').length;
-        var subGroupItems           = $(this).closest('.route-subgroup').find('.route-item').length;
-        var subGroupItemsChecked    = $(this).closest('.route-subgroup').find('.route-item:checked').length;
-        if(mainGroupItems==mainGroupItemsChecked){
-            $(this).closest('.route-group').find('.module').parent().addClass('checked');
-        }
-        else{
-            $(this).closest('.route-group').find('.module').parent().removeClass('checked');
-        }
-        if(subGroupItems==subGroupItemsChecked){
-            $(this).closest('.route-subgroup').find('.sub-module').parent().addClass('checked');
-        }
-        else{
-            $(this).closest('.route-subgroup').find('.sub-module').parent().removeClass('checked');
-        }
-    })
+        syncSubgroup(closestSubgroup($item));
+        syncGroup(closestGroup($item));
+    });
 })(jQuery);

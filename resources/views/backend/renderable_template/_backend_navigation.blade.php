@@ -16,11 +16,11 @@
             @else
                 <p style="padding-top:10px"><label>{{ __('Route') }}: {{$row['route']}}</label></p>
             @endif
-            <div class="row">
-                <div class="col-xs-6">
+            <div class="row g-2">
+                <div class="col-6">
                     <p><label>{{ __('Extra Class') }}<br></label><input type="text" name="menu_item[{{$row['order']}}][class]" value="{{$row['class']}}" class="prevent-default"></p>
                     </div>
-                <div class="col-xs-6">
+                <div class="col-6">
                     <p><label>{{ __('Menu Icon') }}<br></label><input type="text" name="menu_item[{{$row['order']}}][icon]" value="{{$row['icon']}}" class="prevent-default"></p>
                 </div>
             </div>

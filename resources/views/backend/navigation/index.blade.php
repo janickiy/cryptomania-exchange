@@ -4,108 +4,113 @@
     <link rel="stylesheet" href="{{asset('backend/assets/css/menu.css')}}">
 @endsection
 @section('content')
-    <div class="row">
-        <div class="col-md-3">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Select Nav</h3>
-                </div><!-- /.box-header -->
-                <!-- form start -->
-                <div class="box-body">
-                    <div class="form-group">
-                        <ul class="list-unstyled" style="overflow-y: scroll; max-height: 150px;">
+    <div class="menu-manager-page">
+        <div class="row g-3">
+            <div class="col-lg-3">
+                <div class="card menu-panel-card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ __('Select Nav') }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group menu-place-list">
                             @foreach($navigationPlaces as $navigationPlace)
-                            <li><a href="{{route('menu-manager.index',$navigationPlace)}}">{{ucfirst(str_replace('-',' ',$navigationPlace))}}</a></li>
+                                <a class="list-group-item list-group-item-action {{ $slug === $navigationPlace ? 'active' : '' }}"
+                                   href="{{route('menu-manager.index',$navigationPlace)}}">
+                                    {{ucfirst(str_replace('-',' ',$navigationPlace))}}
+                                </a>
                             @endforeach
-                        </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Add Routes</h3>
-                </div><!-- /.box-header -->
-                <!-- form start -->
-                <div id="all-routes" class="box-body" style="overflow-y: scroll; max-height: 150px;" data-name="Unnamed">
-                    @foreach($allRoutes as $routeName => $routeData)
-                        @php
-                            $middleware = $routeData->middleware();
-                            $parameters = $routeData->signatureParameters();
-                            $isMenuable = true;
-                        @endphp
-                        @foreach($parameters as $parameter)
-                            @if(!$parameter->isOptional())
-                                @php($isMenuable = false)
-                                @break
+                <div class="card menu-panel-card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ __('Add Routes') }}</h3>
+                    </div>
+                    <div id="all-routes" class="card-body menu-scroll-panel" data-name="Unnamed">
+                        @foreach($allRoutes as $routeName => $routeData)
+                            @php
+                                $middleware = $routeData->middleware();
+                                $parameters = $routeData->signatureParameters();
+                                $isMenuable = true;
+                            @endphp
+                            @foreach($parameters as $parameter)
+                                @if(!$parameter->isOptional())
+                                    @php($isMenuable = false)
+                                    @break
+                                @endif
+                            @endforeach
+                            @if($isMenuable && !empty($middleware) && !in_array('api', $middleware) && !in_array('Barryvdh\Debugbar\Middleware\DebugbarEnabled',$middleware))
+                                <?php
+                                $route = explode('/{', $routeName)[0];
+                                if ($route == '/' || $route == '' || strlen($route) == 2) {
+                                    $route = 'Home';
+                                } else {
+                                    if (strpos($route, '/') == 2) {
+                                        $route = substr($route, 3);
+                                    }
+                                    $route = ucfirst(str_replace('/', ' - ', str_replace('-', ' ', $route)));
+                                }
+                                ?>
+                                <label class="form-check menu-route-check">
+                                    <input type="checkbox" class="form-check-input route-check-box" value="{{$routeData->getName()}}">
+                                    <span class="form-check-label">{{$route}}</span>
+                                </label>
                             @endif
                         @endforeach
-                        @if($isMenuable && !empty($middleware) && !in_array('api', $middleware) && !in_array('Barryvdh\Debugbar\Middleware\DebugbarEnabled',$middleware))
-                            <?php
-                            $route = explode('/{', $routeName)[0];
-                            if ($route == '/' || $route == '' || strlen($route) == 2) {
-                                $route = 'Home';
-                            } else {
-                                if (strpos($route, '/') == 2) {
-                                    $route = substr($route, 3);
-                                }
-                                $route = ucfirst(str_replace('/', ' - ', str_replace('-', ' ', $route)));
-                            }
-                            ?>
-                            <div class="checkbox" style="margin:3px 0;">
-                                <label>
-                                    <input type="checkbox" class="route-check-box" value="{{$routeData->getName()}}"> <span>{{$route}}</span>
-                                </label>
-                            </div>
-                        @endif
-                    @endforeach
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary w-100" id="add-route" type="button">
+                            <i class="fa fa-plus me-1"></i>{{ __('Add Route') }}
+                        </button>
+                    </div>
                 </div>
-                <div class="box-footer">
-                    <button class="btn btn-primary" id="add-route">Add Route</button>
+
+                <div class="card menu-panel-card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ __('Add LINK') }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="link-data" class="form-label">{{ __('URL') }}</label>
+                            <input type="text" id="link-data" placeholder="{{ __('Enter url') }}" class="form-control">
+                        </div>
+                        <div class="mb-0">
+                            <label for="link-name" class="form-label">{{ __('Menu Item Name') }}</label>
+                            <input type="text" data-name="Unnamed" id="link-name" placeholder="{{ __('Enter Menu Item Name') }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary w-100" id="add-link" type="button">
+                            <i class="fa fa-link me-1"></i>{{ __('Add A custom Link') }}
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Add LINK</h3>
-                </div><!-- /.box-header -->
-                <!-- form start -->
-                <div class="box-body">
-                    <div class="form-group">
-                        <input type="text" id="link-data" placeholder="Enter url" class="form-control">
+            <div class="col-lg-9">
+                <div class="card menu-builder-card">
+                    <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                        <div class="admin-page-heading">
+                            <h3 class="admin-page-title">{{ __('Menu ITEMS') }}</h3>
+                            <p class="admin-page-subtitle">{{ __('Drag items to reorder and nest navigation entries.') }}</p>
+                        </div>
+                        <button class="btn btn-primary menu-submit" type="button">
+                            <i class="fa fa-floppy-disk me-1"></i>{{ __('Save Menu') }}
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <input type="text" data-name="Unnamed" id="link-name" placeholder="Enter Menu Item Name" class="form-control">
+                    {{ Form::open(['route'=>['menu-manager.save', $slug], 'method'=>'post','id'=>'menu-form']) }}
+                    <div class="card-body menu-builder-body">
+                        <div class="menu-tree-wrapper">
+                            {!! $menu !!}
+                        </div>
+                        <button id="form-submit-button" type="submit" style="display:none">{{ __('Save Menu') }}</button>
                     </div>
-                </div>
-                <div class="box-footer">
-                    <button class="btn btn-primary" id="add-link">Add A custom Link</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="box box-primary" style="min-height: 636px;">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Menu ITEMS</h3>
-                </div>
-                {{ Form::open(['route'=>['menu-manager.save', $slug], 'method'=>'post','id'=>'menu-form']) }}
-                <div class="box-header with-border">
-                    {{--<button class="btn btn-primary menu-submit" type="submit">Save Menu</button>--}}
-                </div>
-                <div class="box-body">
-                    <div style="overflow:hidden; width:100%;">
-                        {!! $menu !!}
-                    </div>
-                </div>
-                    <button id="form-submit-button" type="submit" style="display:none">Save Menu</button>
-                {{ Form::close() }}
-                <div class="box-footer">
-                    <button class="btn btn-primary menu-submit">Save Menu</button>
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('script')

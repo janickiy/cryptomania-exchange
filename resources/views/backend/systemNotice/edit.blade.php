@@ -1,21 +1,22 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    <div class="box box-success">
-        <div class="box-header with-border">
-            <h3 class="box-title">{{ __('Edit System Notice') }}</h3>
-            <div class="box-tools pull-right">
-                <a href="{{ route('system-notices.index') }}" class="btn btn-primary back-button">{{ __('Back') }}</a>
-            </div>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-sm-8">
-                    {!! Form::model($systemNotice, ['route'=>['system-notices.update',$systemNotice->id], 'method' => 'post', 'class'=>'form-horizontal system-notice-form']) !!}
-                    @method('PUT')
-                    @include('backend.systemNotice._form',['buttonText'=> __('Update')])
-                    {!! Form::close() !!}
+    <div class="system-notice-form-page">
+        <div class="card system-notice-form-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="admin-page-heading">
+                    <h3 class="admin-page-title">{{ __('Edit System Notice') }}</h3>
+                    <p class="admin-page-subtitle">{{ __('Update message content, visibility window, and publication status.') }}</p>
                 </div>
+                <a href="{{ route('system-notices.index') }}" class="btn btn-outline-secondary back-button">
+                    <i class="fa fa-arrow-left me-1"></i>{{ __('Back') }}
+                </a>
+            </div>
+            <div class="card-body admin-form-body">
+                {!! Form::model($systemNotice, ['route'=>['system-notices.update',$systemNotice->id], 'method' => 'post', 'class'=>'system-notice-form admin-section-form']) !!}
+                @method('PUT')
+                @include('backend.systemNotice._form',['buttonText'=> __('Update')])
+                {!! Form::close() !!}
             </div>
         </div>
     </div>

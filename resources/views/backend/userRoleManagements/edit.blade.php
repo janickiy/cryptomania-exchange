@@ -4,15 +4,15 @@
     <div class="role-management-page">
         <div class="card role-form-card">
             <div class="card-header d-flex align-items-center justify-content-between gap-3">
-                <div>
-                    <h3 class="card-title mb-1">{{ __('Edit User Role') }}: {{ $userRoleManagement->role_name }}</h3>
-                    <p class="mb-0 text-secondary">{{ __('Update the routes this role can access.') }}</p>
+                <div class="role-form-heading">
+                    <h3 class="role-form-title">{{ __('Edit User Role') }}</h3>
+                    <p class="role-form-subtitle">{{ $userRoleManagement->role_name }}</p>
                 </div>
                 <a href="{{ route('user-role-managements.index') }}" class="btn btn-outline-secondary back-button">
                     <i class="fa fa-arrow-left me-1"></i>{{ __('Back') }}
                 </a>
             </div>
-            <div class="card-body">
+            <div class="card-body role-form-body">
                 {!! Form::open(['route' => ['user-role-managements.update', $userRoleManagement->id], 'method' => 'PUT', 'class' => 'user-role-management-form']) !!}
                     @include('backend.userRoleManagements._form', ['buttonText' => __('Update')])
                 {!! Form::close() !!}

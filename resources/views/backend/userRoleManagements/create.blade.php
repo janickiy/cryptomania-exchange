@@ -4,15 +4,15 @@
     <div class="role-management-page">
         <div class="card role-form-card">
             <div class="card-header d-flex align-items-center justify-content-between gap-3">
-                <div>
-                    <h3 class="card-title mb-1">{{ __('Create User Role') }}</h3>
-                    <p class="mb-0 text-secondary">{{ __('Select the routes this role can access.') }}</p>
+                <div class="role-form-heading">
+                    <h3 class="role-form-title">{{ __('Create User Role') }}</h3>
+                    <p class="role-form-subtitle">{{ __('Role Management') }}</p>
                 </div>
                 <a href="{{ route('user-role-managements.index') }}" class="btn btn-outline-secondary back-button">
                     <i class="fa fa-arrow-left me-1"></i>{{ __('Back') }}
                 </a>
             </div>
-            <div class="card-body">
+            <div class="card-body role-form-body">
                 {!! Form::open(['route' => ['user-role-managements.store'], 'method' => 'POST', 'class' => 'user-role-management-form']) !!}
                     @include('backend.userRoleManagements._form', ['buttonText' => __('Create')])
                 {!! Form::close() !!}

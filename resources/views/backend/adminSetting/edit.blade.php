@@ -1,37 +1,45 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    <?php $title_name = ucwords(\Illuminate\Support\Str::replaceLast('_', ' ', $adminSettingType)); ?>
-    <div class="box box-success">
-        <div class="box-header with-border">
-            <h3 class="box-title">Admin Setting - {{$title_name}}</h3>
-            <div class="box-tools pull-right">
-                <a href="{{ route('admin-settings.index',['admin_setting_type'=>$adminSettingType]) }}"
-                   class="btn btn-primary back-button">{{__('View :settingName Setting',['settingName' =>$title_name])}}</a>
-            </div>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-sm-4 col-md-3">
-                    <ul class="nav nav-pills nav-stacked">
-                        @foreach($settings['settingSections'] as $settingSection)
-                            <li class="{{is_current_route('admin-settings.edit', 'active', ['admin_setting_type'=>$settingSection])}}">
-                                <a href="{{route('admin-settings.edit',['admin_setting_type'=>$settingSection])}}">{{ ucwords(\Illuminate\Support\Str::replaceLast('_', ' ', $settingSection)) }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
+    <?php $title_name = ucwords(str_replace('_', ' ', (string) $adminSettingType)); ?>
+    <div class="admin-settings-page">
+        <div class="card admin-settings-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="admin-page-heading">
+                    <h3 class="admin-page-title">{{ __('Admin Setting') }} - {{ $title_name }}</h3>
+                    <p class="admin-page-subtitle">{{ __('Edit application configuration values for this section.') }}</p>
                 </div>
-                <div class="col-sm-8 col-md-9">
-                    {{ Form::open(['route'=>['admin-settings.update','admin_setting_type'=>$adminSettingType], 'method'=>'PUT','files'=> true]) }}
-                    <table class="table table-bordered">
-                        {!! $settings['html'] !!}
-                        <tr>
-                            <td colspan="2" class="text-right">
-                                {{ Form::submit(__('Update :settingName Setting',['settingName' =>$title_name]),['class'=>'btn btn-success']) }}
-                            </td>
-                        </tr>
-                    </table>
-                    {{ Form::close() }}
+                <a href="{{ route('admin-settings.index',['admin_setting_type'=>$adminSettingType]) }}"
+                   class="btn btn-outline-secondary back-button">
+                    <i class="fa fa-eye me-1"></i>{{__('View :settingName Setting',['settingName' =>$title_name])}}
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-lg-3">
+                        <div class="list-group admin-settings-nav">
+                            @foreach($settings['settingSections'] as $settingSection)
+                                <a class="list-group-item list-group-item-action {{ is_current_route('admin-settings.edit', 'active', ['admin_setting_type'=>$settingSection]) }}"
+                                   href="{{route('admin-settings.edit',['admin_setting_type'=>$settingSection])}}">
+                                    {{ ucwords(str_replace('_', ' ', (string) $settingSection)) }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        {{ Form::open(['route'=>['admin-settings.update','admin_setting_type'=>$adminSettingType], 'method'=>'PUT','files'=> true]) }}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle admin-settings-table">
+                                {!! $settings['html'] !!}
+                                <tr>
+                                    <td colspan="2" class="text-end">
+                                        {{ Form::submit(__('Update :settingName Setting',['settingName' =>$title_name]),['class'=>'btn btn-primary']) }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        {{ Form::close() }}
+                    </div>
                 </div>
             </div>
         </div>

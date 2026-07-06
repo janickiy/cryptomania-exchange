@@ -1,17 +1,22 @@
 <input type="hidden" name="base_key" value="{{ base_key() }}">
 
-<div class="row g-3 mb-4">
-    <div class="col-lg-8">
-        <label for="role-name" class="form-label required">{{ __('Role Name') }}</label>
-        {{ Form::text(fake_field('role_name'), old('role_name', isset($userRoleManagement) ? $userRoleManagement->role_name : null), [
-            'class' => 'form-control',
-            'id' => 'role-name',
-            'data-cval-name' => 'The role name field',
-            'data-cval-rules' => 'required|escapeInput',
-        ]) }}
-        <span class="validation-message cval-error" data-cval-error="{{ fake_field('role_name') }}">{{ $errors->first('role_name') }}</span>
+<section class="role-details-section">
+    <div class="role-section-header">
+        <h4 class="role-section-title">{{ __('Role Details') }}</h4>
     </div>
-</div>
+    <div class="role-details-grid">
+        <div class="role-field">
+            <label for="role-name" class="form-label required">{{ __('Role Name') }}</label>
+            {{ Form::text(fake_field('role_name'), old('role_name', isset($userRoleManagement) ? $userRoleManagement->role_name : null), [
+                'class' => 'form-control',
+                'id' => 'role-name',
+                'data-cval-name' => 'The role name field',
+                'data-cval-rules' => 'required|escapeInput',
+            ]) }}
+            <span class="validation-message cval-error" data-cval-error="{{ fake_field('role_name') }}">{{ $errors->first('role_name') }}</span>
+        </div>
+    </div>
+</section>
 
 @if($errors->has('roles'))
     <div class="alert alert-danger py-2">
@@ -21,8 +26,7 @@
 
 <div class="role-permissions">
     <div class="role-permissions-header">
-        <h4 class="mb-1">{{ __('Route Permissions') }}</h4>
-        <p class="mb-0 text-secondary">{{ __('Choose modules, sections, and exact actions available to this role.') }}</p>
+        <h4 class="mb-0">{{ __('Route Permissions') }}</h4>
     </div>
 
     <?php $ModuleClasses = []; ?>

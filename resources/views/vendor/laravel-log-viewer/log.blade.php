@@ -1,56 +1,51 @@
 @extends('backend.layouts.main_layout')
 @section('content')
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-primary box-borderless">
-                <div class="box-body">
-                    <div class="caption font-dark" style="width: 100%;">
-                        <i class="icon-layers font-dark"></i>
-                        <span class="caption-subject bold uppercase">Log files</span>
-                    </div>
-                    <br>
-                    <div>
-                        @foreach($files as $file)
-                            <div class="btn {{($current_file == $file) ? 'btn-primary' : 'btn-success'}}"
-                                 style="margin: 5px 0">
-                                <a href="?l={{ \Illuminate\Support\Facades\Crypt::encrypt($file) }}"
-                                   style="text-decoration: none !important;color:#fff">
-                                    {{$file}}
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
-                    <hr>
-                    @if($current_file)
-                        <div>
-                            <a href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}"><span
-                                        class="fa fa-download"></span>
-                                Download file</a>
-                            -
-                            <a id="delete-log"
-                               href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}"><span
-                                        class="fa fa-trash"></span> Delete current file</a>
-                            @if(count($files) > 1)
-                                -
-                                <a id="delete-all-log" href="?delall=true"><span class="fa fa-trash"></span> Delete all
-                                    files</a>
-                            @endif
-                        </div>
-                        <br>
-                    @endif
+    <div class="logs-page">
+        <div class="card logs-toolbar-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="admin-page-heading">
+                    <h3 class="admin-page-title">{{ __('Log files') }}</h3>
+                    <p class="admin-page-subtitle">{{ __('Inspect, download, and clear application log files.') }}</p>
                 </div>
             </div>
+            <div class="card-body">
+                <div class="logs-file-list">
+                    @foreach($files as $file)
+                        <a class="btn {{($current_file == $file) ? 'btn-primary' : 'btn-outline-secondary'}}"
+                           href="?l={{ \Illuminate\Support\Facades\Crypt::encrypt($file) }}">
+                            <i class="fa fa-file-lines me-1"></i>{{ $file }}
+                        </a>
+                    @endforeach
+                </div>
+
+                @if($current_file)
+                    <div class="logs-actions">
+                        <a class="btn btn-outline-primary btn-sm"
+                           href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}">
+                            <span class="fa fa-download me-1"></span>{{ __('Download file') }}
+                        </a>
+                        <a class="btn btn-outline-danger btn-sm" id="delete-log"
+                           href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}">
+                            <span class="fa fa-trash me-1"></span>{{ __('Delete current file') }}
+                        </a>
+                        @if(count($files) > 1)
+                            <a class="btn btn-danger btn-sm" id="delete-all-log" href="?delall=true">
+                                <span class="fa fa-trash me-1"></span>{{ __('Delete all files') }}
+                            </a>
+                        @endif
+                    </div>
+                @endif
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-primary box-borderless">
-                <div class="box-body">
-                    @if ($logs === null)
-                        <div>
-                            Log file >50M, please download it.
-                        </div>
-                    @else
+
+        <div class="card logs-table-card">
+            <div class="card-body p-0">
+                @if ($logs === null)
+                    <div class="p-3 text-secondary">
+                        {{ __('Log file >50M, please download it.') }}
+                    </div>
+                @else
+                    <div class="table-responsive">
                         <table id="table-log" class="table datatable dt-responsive display nowrap dc-table"
                                style="width:100% !important;">
                             <thead>
@@ -95,8 +90,8 @@
                             @endforeach
                             </tbody>
                         </table>
-                    @endif
-                </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
