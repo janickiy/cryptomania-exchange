@@ -81,7 +81,7 @@
                                 </td>
                                 <td class="cm-action text-end">
                                     <div class="dropdown d-inline-block">
-                                        <button class="btn btn-sm btn-outline-secondary table-action-button dropdown-toggle"
+                                        <button class="btn btn-sm btn-outline-secondary table-action-button"
                                                 type="button"
                                                 data-bs-toggle="dropdown"
                                                 aria-expanded="false"

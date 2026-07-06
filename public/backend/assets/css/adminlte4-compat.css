@@ -1717,6 +1717,304 @@
     padding-top: .25rem;
 }
 
+.admin-list-page .card {
+    border: 0;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.admin-list-filter-card,
+.admin-list-pagination-card {
+    margin-bottom: 1rem;
+}
+
+.admin-list-table-card,
+.admin-list-filter-card,
+.admin-list-pagination-card {
+    overflow: visible;
+}
+
+.admin-list-table-card .card-header {
+    border-bottom-color: var(--bs-border-color-translucent);
+    background: var(--bs-card-bg);
+}
+
+.admin-list-filter-card .card-body,
+.admin-list-pagination-card .card-body {
+    padding: .85rem 1rem;
+}
+
+.admin-list-page .cm-filter {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem 1.5rem;
+}
+
+.admin-list-page .cm-filter::before,
+.admin-list-page .cm-filter::after {
+    display: none;
+}
+
+.admin-list-page .cm-filter > div,
+.admin-list-page .cm-filter > .cm-order-filter,
+.admin-list-page .cm-filter > .cm-date-filter,
+.admin-list-page .cm-filter > .cm-search-filter {
+    position: static;
+    display: flex;
+    align-items: center;
+    flex: 0 1 auto;
+    gap: .45rem;
+    float: none;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+}
+
+.admin-list-page .cm-filter .form-control {
+    min-height: 2.375rem;
+    margin: 0;
+    padding: .375rem .75rem;
+    border-color: var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    box-shadow: none;
+    font-size: .9rem;
+}
+
+.admin-list-page .cm-filter select.form-control {
+    width: 8rem;
+}
+
+.admin-list-page .cm-filter > .cm-order-filter select:last-of-type,
+.admin-list-page .cm-filter .select-compact {
+    width: 5.75rem !important;
+}
+
+.admin-list-page .cm-filter > .cm-date-filter input {
+    width: 9rem !important;
+}
+
+.admin-list-page .cm-filter > .cm-search-filter input {
+    width: 12rem !important;
+}
+
+.admin-list-page .cm-filter > .cm-date-filter span {
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+}
+
+.admin-list-page .cm-filter button,
+.admin-list-page .cm-filter > .cm-order-filter button,
+.admin-list-page .cm-filter > .cm-date-filter button,
+.admin-list-page .cm-filter > .cm-search-filter button {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.375rem;
+    height: 2.375rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-primary);
+    color: #fff;
+    line-height: 1;
+}
+
+.admin-list-page .cm-filter button:hover,
+.admin-list-page .cm-filter button:focus {
+    background: var(--bs-primary);
+    color: #fff;
+    filter: brightness(.92);
+}
+
+.admin-list-table-card .table-responsive {
+    overflow: visible;
+}
+
+.admin-list-table-card .table > :not(caption) > * > * {
+    padding: .9rem 1rem;
+}
+
+.admin-list-table-card table.dataTable thead,
+.admin-list-table-card .table thead {
+    background: transparent !important;
+    color: inherit !important;
+}
+
+.admin-list-table-card table.dataTable thead tr th,
+.admin-list-table-card .table thead tr th {
+    padding: .85rem 1rem !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--bs-border-color-translucent) !important;
+    background: var(--bs-tertiary-bg) !important;
+    color: var(--bs-secondary-color) !important;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.25;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+.admin-list-table-card table.dataTable thead tr th.sorting,
+.admin-list-table-card table.dataTable thead tr th.sorting_asc,
+.admin-list-table-card table.dataTable thead tr th.sorting_desc {
+    padding-right: 2.25rem !important;
+    background-image: none !important;
+}
+
+.admin-list-table-card table.dataTable thead .sorting::after,
+.admin-list-table-card table.dataTable thead .sorting_asc::after,
+.admin-list-table-card table.dataTable thead .sorting_desc::after,
+.admin-list-table-card table.dataTable thead .sorting_asc_disabled::after,
+.admin-list-table-card table.dataTable thead .sorting_desc_disabled::after {
+    top: 50%;
+    right: .9rem;
+    bottom: auto;
+    display: block;
+    width: 1rem;
+    color: var(--bs-secondary-color);
+    font-family: "FontAwesome";
+    font-size: .75rem;
+    font-weight: 900;
+    line-height: 1;
+    opacity: .55;
+    transform: translateY(-50%);
+}
+
+.admin-list-table-card table.dataTable thead .sorting::after {
+    content: "\f0dc";
+    opacity: .35;
+}
+
+.admin-list-table-card table.dataTable thead .sorting_asc::after {
+    content: "\f0de";
+    opacity: .75;
+}
+
+.admin-list-table-card table.dataTable thead .sorting_desc::after {
+    content: "\f0dd";
+    opacity: .75;
+}
+
+.admin-list-table-card table.dataTable thead .no-sort::after,
+.admin-list-table-card table.dataTable thead .sorting_disabled::after {
+    display: none !important;
+    content: "";
+}
+
+.admin-list-table-card table.dataTable.no-footer {
+    border-bottom-color: var(--bs-border-color-translucent) !important;
+}
+
+.admin-list-table-card .dropdown-menu {
+    z-index: 1070;
+}
+
+.admin-list-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border-color: var(--bs-border-color) !important;
+    background: var(--bs-body-bg) !important;
+    color: var(--bs-secondary-color) !important;
+    box-shadow: none;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.admin-list-action-button:hover,
+.admin-list-action-button:focus,
+.admin-list-action-button.show {
+    border-color: var(--bs-primary) !important;
+    background: var(--bs-primary-bg-subtle) !important;
+    color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), .14);
+}
+
+.admin-list-action-button i {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.admin-list-action-button::after {
+    display: none;
+}
+
+.admin-list-table-card .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: .5rem .85rem !important;
+    color: var(--bs-dropdown-link-color);
+    font-size: .9rem;
+    gap: .25rem;
+}
+
+.admin-list-status-badge,
+.admin-list-type-badge {
+    min-width: 5.75rem;
+    padding: .5rem .65rem;
+}
+
+.admin-list-message {
+    display: inline-block;
+    max-width: min(44rem, 100%);
+    white-space: normal;
+}
+
+.notice-row-unread .admin-list-message,
+.notice-row-unread td {
+    font-weight: 700;
+}
+
+.admin-list-pagination-card .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    margin: 0;
+}
+
+.admin-list-pagination-card .pagination > li > a,
+.admin-list-pagination-card .pagination > li > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: .35rem .65rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+.admin-list-pagination-card .pagination > .active > span,
+.admin-list-pagination-card .pagination > li > a:hover {
+    border-color: var(--bs-primary);
+    background: var(--bs-primary);
+    color: #fff;
+}
+
+.admin-list-pagination-card .pagination > .disabled > span {
+    color: var(--bs-secondary-color);
+    opacity: .6;
+}
+
+.admin-list-pagination-card .pagination-text {
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+}
+
+.admin-list-pagination-card .pagination-text span {
+    color: var(--bs-body-color);
+    font-weight: 700;
+}
+
 .stock-item-form-page .card,
 .stock-pair-form-page .card,
 .stock-pairs-page .card,
@@ -2657,6 +2955,7 @@
     .admin-settings-card .card-header,
     .logs-toolbar-card .card-header,
     .menu-builder-card .card-header,
+    .admin-list-table-card .card-header,
     .stock-item-form-card .card-header,
     .stock-pair-form-card .card-header,
     .stock-pair-show-card .card-header,
@@ -2669,6 +2968,7 @@
     .admin-settings-card .card-header .btn,
     .logs-toolbar-card .card-header .btn,
     .menu-builder-card .card-header .btn,
+    .admin-list-table-card .card-header .btn,
     .stock-item-form-card .card-header .btn,
     .stock-pair-form-card .card-header .btn,
     .stock-pair-show-card .card-header .btn,
@@ -2705,6 +3005,36 @@
     .admin-form-actions {
         display: grid;
         grid-template-columns: 1fr;
+    }
+
+    .admin-list-page .cm-filter,
+    .admin-list-page .cm-filter > div,
+    .admin-list-page .cm-filter > .cm-order-filter,
+    .admin-list-page .cm-filter > .cm-date-filter,
+    .admin-list-page .cm-filter > .cm-search-filter {
+        width: 100%;
+    }
+
+    .admin-list-page .cm-filter > div,
+    .admin-list-page .cm-filter > .cm-order-filter,
+    .admin-list-page .cm-filter > .cm-date-filter,
+    .admin-list-page .cm-filter > .cm-search-filter {
+        flex-wrap: wrap;
+    }
+
+    .admin-list-page .cm-filter select.form-control,
+    .admin-list-page .cm-filter > .cm-date-filter input,
+    .admin-list-page .cm-filter > .cm-search-filter input {
+        flex: 1 1 9rem;
+        width: auto !important;
+    }
+
+    .admin-list-page .cm-filter .select-compact {
+        flex: 1 1 7rem;
+    }
+
+    .admin-list-table-card .table-responsive {
+        overflow-x: auto;
     }
 
     .admin-settings-nav {
