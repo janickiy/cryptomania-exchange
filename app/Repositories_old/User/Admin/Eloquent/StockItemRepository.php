@@ -14,6 +14,10 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
     protected $model;
 
     /**
+     * Purpose: initializes the StockItemRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockItem $model
      */
     public function __construct(StockItem $model)
@@ -22,10 +26,14 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
     }
 
     /**
+     * Purpose: performs the get active list operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param null $stockItemType
      * @return mixed
      */
-    public function getActiveList(mixed $stockItemType = null): Collection {
+    public function getActiveList(int|string|null $stockItemType = null): Collection {
         $conditions = ['is_active' => ACTIVE_STATUS_ACTIVE];
 
         if( !is_null($stockItemType) ) {
@@ -36,6 +44,10 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
     }
 
     /**
+     * Purpose: performs the get count by conditions operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $conditions
      * @return mixed
      */
@@ -45,10 +57,14 @@ class StockItemRepository extends BaseRepository implements StockItemInterface
     }
 
     /**
+     * Purpose: performs the get stock pairs by id operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $id
      * @return mixed
      */
-    public function getStockPairsById(mixed $id): Builder
+    public function getStockPairsById(int|string $id): Builder
     {
         return $this->model->where('id', $id)
             ->leftJoin('stock_pairs as base', 'base.base_item_id', '=', 'stock_items.id')

@@ -8,6 +8,10 @@ use Intervention\Image\Facades\Image;
 class FileUploadService
 {
     /**
+     * Purpose: executes the upload service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $file
      * @param $filePath
      * @param $fileName

@@ -8,6 +8,10 @@ class StripTags extends TransformsRequest
 {
 
     /**
+     * Purpose: handles an HTTP request in StripTags middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
      * Transform the given value.
      *
      * @param string $key

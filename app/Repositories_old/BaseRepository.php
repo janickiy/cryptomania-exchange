@@ -7,13 +7,20 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 abstract class BaseRepository
 {
     use RepositoryTrait;
 
-    public function getAll(mixed $relations = null, mixed $orders = null): Collection
+    /**
+     * Purpose: returns all records handled by the repository.
+     *
+     * Action: encapsulates model reads so callers do not depend on Eloquent query details.
+     *
+     */
+    public function getAll(string|array|null $relations = null, ?array $orders = null): Collection
     {
         $query = $this->model->with($this->extractToArray($relations));
 
@@ -24,7 +31,13 @@ abstract class BaseRepository
         return $query->get();
     }
 
-    public function getByConditions(array $conditions, mixed $relations = null, mixed $orders = null): Collection
+    /**
+     * Purpose: finds records by the provided conditions.
+     *
+     * Action: hides Eloquent query construction behind the repository interface.
+     *
+     */
+    public function getByConditions(array $conditions, string|array|null $relations = null, ?array $orders = null): Collection
     {
         $query = $this->model->where($conditions)->with($this->extractToArray($relations));
 
@@ -35,23 +48,47 @@ abstract class BaseRepository
         return $query->get();
     }
 
-    public function findOrFailById(int $id, mixed $relations = null): Model
+    /**
+     * Purpose: finds a repository record by identifier.
+     *
+     * Action: gives services a centralized way to access model data.
+     *
+     */
+    public function findOrFailById(int|string $id, string|array|null $relations = null): Model
     {
         return $this->model->with($this->extractToArray($relations))->findOrFail($id);
     }
 
-    public function findOrFailByConditions(array $conditions, mixed $relations = null): Model
+    /**
+     * Purpose: finds records by the provided conditions.
+     *
+     * Action: hides Eloquent query construction behind the repository interface.
+     *
+     */
+    public function findOrFailByConditions(array $conditions, string|array|null $relations = null): Model
     {
         $instant = $this->model->where($conditions)->with($this->extractToArray($relations))->first();
         abort_if(empty($instant), 404);
         return $instant;
     }
 
+    /**
+     * Purpose: creates a new record in storage.
+     *
+     * Action: accepts prepared data or a DTO and persists only fields allowed by the model.
+     *
+     */
     public function create(array $attributes): Model|false
     {
-        return $this->model->create(array_only($attributes, $this->model->getFillable()));
+        return $this->model->create(Arr::only($attributes, $this->model->getFillable()));
     }
 
+    /**
+     * Purpose: updates one or more records in storage.
+     *
+     * Action: centralizes data changes and returns the result to the service layer.
+     *
+     */
     public function update(array $attributes, int $id, string $attribute = "id"): Model|bool
     {
         $instance = $this->getFirstByConditions([$attribute => $id]);
@@ -60,14 +97,26 @@ abstract class BaseRepository
             return false;
         }
 
-        return $instance->update(array_only($attributes, $this->model->getFillable())) ? $instance : false;
+        return $instance->update(Arr::only($attributes, $this->model->getFillable())) ? $instance : false;
     }
 
-    public function getFirstByConditions(array $conditions, mixed $relations = null): ?Model
+    /**
+     * Purpose: finds records by the provided conditions.
+     *
+     * Action: hides Eloquent query construction behind the repository interface.
+     *
+     */
+    public function getFirstByConditions(array $conditions, string|array|null $relations = null): ?Model
     {
         return $this->model->where($conditions)->with($this->extractToArray($relations))->first();
     }
 
+    /**
+     * Purpose: updates one or more records in storage.
+     *
+     * Action: centralizes data changes and returns the result to the service layer.
+     *
+     */
     public function updateByConditions(array $attributes, array $conditions): Model|bool
     {
         $instance = $this->getFirstByConditions($conditions);
@@ -76,9 +125,15 @@ abstract class BaseRepository
             return false;
         }
 
-        return $instance->update(array_only($attributes, $this->model->getFillable())) ? $instance : false;
+        return $instance->update(Arr::only($attributes, $this->model->getFillable())) ? $instance : false;
     }
 
+    /**
+     * Purpose: removes records from storage.
+     *
+     * Action: encapsulates delete operations and their result in the repository layer.
+     *
+     */
     public function deleteById(int $id): bool
     {
         $instance = $this->getFirstById($id);
@@ -95,11 +150,23 @@ abstract class BaseRepository
         return true;
     }
 
-    public function getFirstById(int $id, mixed $relations = null): ?Model
+    /**
+     * Purpose: finds a repository record by identifier.
+     *
+     * Action: gives services a centralized way to access model data.
+     *
+     */
+    public function getFirstById(int|string $id, string|array|null $relations = null): ?Model
     {
         return $this->model->where('id', $id)->with($this->extractToArray($relations))->first();
     }
 
+    /**
+     * Purpose: removes records from storage.
+     *
+     * Action: encapsulates delete operations and their result in the repository layer.
+     *
+     */
     public function deleteByConditions(array $conditions): bool
     {
         $instance = $this->getFirstByConditions($conditions);
@@ -116,6 +183,12 @@ abstract class BaseRepository
         return true;
     }
 
+    /**
+     * Purpose: performs the toggle status by id operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
+     */
     public function toggleStatusById(int $id, string $attribute = 'is_active'): Model|false
     {
         $instance = $this->getFirstById($id);
@@ -133,6 +206,12 @@ abstract class BaseRepository
         return $instance->update() ? $instance : false;
     }
 
+    /**
+     * Purpose: performs the toggle status by conditions operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
+     */
     public function toggleStatusByConditions(array $conditions, string $attribute = 'is_active'): Model|false
     {
         $instance = $this->getFirstByConditions($conditions);
@@ -146,11 +225,23 @@ abstract class BaseRepository
         return $instance->update() ? $instance : false;
     }
 
+    /**
+     * Purpose: performs the insert operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
+     */
     public function insert(array $attributes): bool
     {
         return $this->model->insert($attributes);
     }
 
+    /**
+     * Purpose: performs the bulk update operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
+     */
     public function bulkUpdate(array $values): int|false
     {
         if (!count($values)) {
@@ -225,12 +316,24 @@ abstract class BaseRepository
         return DB::update($sql);
     }
 
+    /**
+     * Purpose: performs the paginate operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
+     */
     public function paginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p'): LengthAwarePaginator
     {
         return $this->model->paginate($perPage, $columns, $paginationKey);
     }
 
-    public function simplePaginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p', mixed $where = null, mixed $order = 'desc'): Paginator
+    /**
+     * Purpose: performs the simple paginate operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
+     */
+    public function simplePaginate(array $columns = ['*'], int $perPage = ITEM_PER_PAGE, string $paginationKey = 'p', ?array $where = null, string $order = 'desc'): Paginator
     {
         if(!empty($where)){
             $this->model = $this->model->where($where);
@@ -241,7 +344,13 @@ abstract class BaseRepository
         return $this->model->orderBy('id',$order)->simplePaginate($perPage, $columns, $paginationKey);
     }
 
-    public function filters(mixed $searchFields, mixed $orderFields = null, mixed $whereArray = null, mixed $selectData = null, mixed $joinArray = null, mixed $groupBy = null, mixed $paginationKey = 'p', mixed $dateField = 'created_at'): Collection
+    /**
+     * Purpose: builds a record list with filters, search, and sorting.
+     *
+     * Action: provides shared table behavior for admin pages and reports.
+     *
+     */
+    public function filters(array $searchFields, ?array $orderFields = null, ?array $whereArray = null, array|string|null $selectData = null, ?array $joinArray = null, array|string|null $groupBy = null, string $paginationKey = 'p', string $dateField = 'created_at'): Collection
     {
         $tableName = $this->model->getTable();
         if (!is_null($joinArray) && is_array($joinArray)) {
@@ -252,13 +361,13 @@ abstract class BaseRepository
         }
         $itemPerPage = empty($itemPerPage) ? admin_settings('item_per_page') : $itemPerPage;
         $itemPerPage = filter_var($itemPerPage, FILTER_VALIDATE_INT) != false ? $itemPerPage : ITEM_PER_PAGE;
-        $order = \Request::get($paginationKey . '_ord');
-        $col = \Request::get($paginationKey . '_sort');
-        $search = \Request::get($paginationKey . '_srch');
-        $frm = \Request::get($paginationKey . '_frm');
-        $to = \Request::get($paginationKey . '_to');
-        $comp = \Request::get($paginationKey . '_comp');
-        $ssf = \Request::get($paginationKey . '_ssf');
+        $order = request()->query($paginationKey . '_ord');
+        $col = request()->query($paginationKey . '_sort');
+        $search = request()->query($paginationKey . '_srch');
+        $frm = request()->query($paginationKey . '_frm');
+        $to = request()->query($paginationKey . '_to');
+        $comp = request()->query($paginationKey . '_comp');
+        $ssf = request()->query($paginationKey . '_ssf');
 
         if ($order == 'a') {
             $order = 'asc';
@@ -382,7 +491,13 @@ abstract class BaseRepository
         return $data;
     }
 
-    public function paginateWithFilters(mixed $searchFields, mixed $orderFields = null, mixed $whereArray = null, mixed $selectData = null, mixed $joinArray = null, mixed $groupBy = null, mixed $itemPerPage = null, mixed $paginationKey = 'p', mixed $dateField = 'created_at'): LengthAwarePaginator
+    /**
+     * Purpose: builds a record list with filters, search, and sorting.
+     *
+     * Action: provides shared table behavior for admin pages and reports.
+     *
+     */
+    public function paginateWithFilters(array $searchFields, ?array $orderFields = null, ?array $whereArray = null, array|string|null $selectData = null, ?array $joinArray = null, array|string|null $groupBy = null, int|string|null $itemPerPage = null, string $paginationKey = 'p', string $dateField = 'created_at'): LengthAwarePaginator
     {
         $tableName = $this->model->getTable();
         if (!is_null($joinArray) && is_array($joinArray)) {
@@ -393,13 +508,13 @@ abstract class BaseRepository
         }
         $itemPerPage = empty($itemPerPage) ? admin_settings('item_per_page') : $itemPerPage;
         $itemPerPage = filter_var($itemPerPage, FILTER_VALIDATE_INT) != false ? $itemPerPage : ITEM_PER_PAGE;
-        $order = \Request::get($paginationKey . '_ord');
-        $col = \Request::get($paginationKey . '_sort');
-        $search = \Request::get($paginationKey . '_srch');
-        $frm = \Request::get($paginationKey . '_frm');
-        $to = \Request::get($paginationKey . '_to');
-        $comp = \Request::get($paginationKey . '_comp');
-        $ssf = \Request::get($paginationKey . '_ssf');
+        $order = request()->query($paginationKey . '_ord');
+        $col = request()->query($paginationKey . '_sort');
+        $search = request()->query($paginationKey . '_srch');
+        $frm = request()->query($paginationKey . '_frm');
+        $to = request()->query($paginationKey . '_to');
+        $comp = request()->query($paginationKey . '_comp');
+        $ssf = request()->query($paginationKey . '_ssf');
 
         if ($order == 'a') {
             $order = 'asc';

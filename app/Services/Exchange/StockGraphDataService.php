@@ -11,6 +11,10 @@ class StockGraphDataService
     public $stockGraphData;
 
     /**
+     * Purpose: initializes the StockGraphDataService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockGraphDataInterface $stockGraphData
      */
     public function __construct(StockGraphDataInterface $stockGraphData)
@@ -19,6 +23,10 @@ class StockGraphDataService
     }
 
     /**
+     * Purpose: starts the main business process for the service.
+     *
+     * Action: coordinates checks, calculations, and repository calls required by the scenario.
+     *
      * @param $stockPairId
      * @param $latestStockPrice
      * @param $date
@@ -99,6 +107,10 @@ class StockGraphDataService
     }
 
     /**
+     * Purpose: executes the generate graph data with empty value service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param Carbon $startDate
      * @param Carbon $endDate
      * @return object
@@ -159,6 +171,10 @@ class StockGraphDataService
     }
 
     /**
+     * Purpose: executes the get graph data service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $stockPairId
      * @param int $interval
      * @return array

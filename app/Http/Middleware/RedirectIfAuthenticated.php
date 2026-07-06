@@ -3,12 +3,17 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
     /**
+     * Purpose: handles an HTTP request in RedirectIfAuthenticated middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -16,7 +21,7 @@ class RedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next, mixed $guard = null): Response
+    public function handle(Request $request, Closure $next, ?string $guard = null): Response
     {
         if (Auth::guard($guard)->check()) {
             return redirect('/home');

@@ -11,5 +11,11 @@ namespace App\Repositories\Core\Interfaces;
 
 interface AuditInterface
 {
+    /**
+     * Purpose: describes the paginate with user filters contract for AuditInterface.
+     *
+     * Action: defines the expected signature so implementations use one consistent behavior for this scenario.
+     *
+     */
     public function paginateWithUserFilters(array $searchFields, array $orderFields);
 }

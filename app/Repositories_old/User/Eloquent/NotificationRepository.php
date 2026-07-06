@@ -15,34 +15,52 @@ class NotificationRepository extends BaseRepository implements NotificationInter
      */
     protected $model;
 
+    /**
+     * Purpose: initializes the NotificationRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
+     */
     public function __construct(Notification $model)
     {
         $this->model = $model;
     }
 
     /**
+     * Purpose: performs the get last five operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $userId
      * @return mixed
      */
-    public function getLastFive(mixed $userId): Collection
+    public function getLastFive(int|string $userId): Collection
     {
        return $this->model->where('user_id',$userId)->whereNull('read_at')->orderBy('id','desc')->take(5)->get();
     }
 
     /**
+     * Purpose: performs the count unread operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $userId
      * @return mixed
      */
-    public function countUnread(mixed $userId): int
+    public function countUnread(int|string $userId): int
     {
         return $this->model->where('user_id',$userId)->whereNull('read_at')->count();
     }
 
     /**
+     * Purpose: performs the read operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $id
      * @return false
      */
-    public function read(mixed $id): bool
+    public function read(int|string $id): bool
     {
         $notice = $this->model->where('id', $id)->firstOrFail();
         if (empty($notice->read_at)) {
@@ -53,10 +71,14 @@ class NotificationRepository extends BaseRepository implements NotificationInter
     }
 
     /**
+     * Purpose: performs the unread operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $id
      * @return false
      */
-    public function unread(mixed $id): bool
+    public function unread(int|string $id): bool
     {
         $notice = $this->model->where('id', $id)->firstOrFail();
         if (!empty($notice->read_at)) {

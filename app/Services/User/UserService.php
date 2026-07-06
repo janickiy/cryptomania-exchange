@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
+    /**
+     * Purpose: executes the generate service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function generate(mixed $parameters): User|false
     {
         $userParams = Arr::only($parameters, ['email', 'username', 'is_email_verified', 'is_financial_active', 'is_accessible_under_maintenance', 'is_active']);

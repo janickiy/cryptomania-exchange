@@ -20,6 +20,10 @@ class AuditRepository extends BaseRepository implements AuditInterface
     protected $model;
 
     /**
+     * Purpose: initializes the AuditRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param Audit $audit
      */
     public function __construct(Audit $audit)

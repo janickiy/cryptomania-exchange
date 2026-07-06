@@ -40,11 +40,25 @@ class StockOrder extends Model
         'taker_fee',
     ];
 
+    /**
+     * Purpose: defines a model relation or computed value through stock pair.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     * @return BelongsTo
+     */
     public function stockPair(): BelongsTo
     {
         return $this->belongsTo(StockPair::class);
     }
 
+    /**
+     * Purpose: defines a model relation or computed value through user.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     * @return BelongsTo
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

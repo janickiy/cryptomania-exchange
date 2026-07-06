@@ -26,17 +26,25 @@ class CancelStockOrder implements ShouldQueue
 
 
     /**
+     * Purpose: initializes the CancelStockOrder instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * Create a new job instance.
      *
      * @param $stockOrderId
      */
-    public function __construct(mixed $stockOrderId)
+    public function __construct(int|string $stockOrderId)
     {
         $this->queue = 'cancel';
         $this->stockOrderId = $stockOrderId;
     }
 
     /**
+     * Purpose: performs the main job or listener work.
+     *
+     * Action: handles a queued task or event outside the HTTP request lifecycle.
+     *
      * Execute the job.
      *
      * @return bool

@@ -18,19 +18,35 @@ class UserRoleManagement extends Model implements AuditableInterface
 
     protected $fakeFields = ['role_name', 'route_group'];
 
-    public function getRouteGroupAttribute(mixed $value): ?array
+    /**
+     * Purpose: returns a computed model attribute through the get route group attribute accessor.
+     *
+     * Action: is used by Eloquent when reading the property so the app receives a prepared value.
+     *
+     */
+    public function getRouteGroupAttribute(?string $value): ?array
     {
         return json_decode($value, true);
     }
 
     /**
+     * Purpose: normalizes a model attribute through the set route group attribute mutator.
+     *
+     * Action: is used by Eloquent when assigning the property so the stored value has the expected format.
+     *
      * @param $value
      */
-    public function setRouteGroupAttribute(mixed $value): void
+    public function setRouteGroupAttribute(array|string|null $value): void
     {
         $this->attributes['route_group'] = json_encode($value);
     }
 
+    /**
+     * Purpose: defines a model relation or computed value through users.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

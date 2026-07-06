@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileService
 {
+    /**
+     * Purpose: executes the profile service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function profile(): array
     {
         $data['user'] = Auth::user()->load('userRoleManagement');
@@ -25,6 +31,10 @@ class ProfileService
     }
 
     /**
+     * Purpose: executes the update password service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param PasswordUpdateRequest $request
      * @return array
      */
@@ -49,6 +59,10 @@ class ProfileService
     }
 
     /**
+     * Purpose: executes the update personal info service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param array<string, mixed> $parameters
      * @return array<string, mixed>
      */
@@ -68,6 +82,10 @@ class ProfileService
     }
 
     /**
+     * Purpose: executes the update settings service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param array<string, mixed> $parameters
      * @return array<string, mixed>
      */
@@ -87,6 +105,10 @@ class ProfileService
     }
 
     /**
+     * Purpose: executes the generate referral link service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<string, mixed>
      */
     public function generateReferralLink(): array
@@ -109,6 +131,10 @@ class ProfileService
     }
 
     /**
+     * Purpose: executes the avatar upload service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param UserAvatarRequest $request
      * @return array
      */
@@ -134,6 +160,10 @@ class ProfileService
     }
 
     /**
+     * Purpose: executes the user related info service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $userId
      * @return array
      */
@@ -151,6 +181,10 @@ class ProfileService
     }
 
     /**
+     * Purpose: executes the routes for admin service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $userId
      * @return array
      */
@@ -171,6 +205,10 @@ class ProfileService
     }
 
     /**
+     * Purpose: executes the routes for user service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $userId
      * @return array
      */

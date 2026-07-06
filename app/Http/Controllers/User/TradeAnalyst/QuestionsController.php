@@ -17,9 +17,10 @@ use Illuminate\Support\Facades\DB;
 class QuestionsController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела вопросов и ответов.
+     * Purpose: initializes the QuestionsController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly QuestionInterface $questionRepository,
@@ -28,9 +29,10 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела вопросов и ответов.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
     public function index(): View|Factory|Application
     {
@@ -55,9 +57,10 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Назначение: показывает форму ответа на вопрос трейдера.
+     * Purpose: handles the answer form action in QuestionsController.
      *
-     * Действие: загружает вопрос по идентификатору и возвращает представление формы ответа.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function answerForm(int|string $id): View|Factory|Application
     {
@@ -67,9 +70,10 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Назначение: сохраняет ответ аналитика на вопрос.
+     * Purpose: handles the answer action in QuestionsController.
      *
-     * Действие: создает комментарий-ответ, связывает его с вопросом и возвращает результат операции.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function answer(CommentRequest $request, int|string $id, CommentInterface $comment): RedirectResponse
     {
@@ -91,9 +95,10 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Назначение: удаляет запись в разделе вопросов и ответов.
+     * Purpose: deletes the selected record.
      *
-     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
+     * Action: performs deletion through a service or repository and redirects back with the result.
+     *
      */
     public function destroy(int|string $id): RedirectResponse
     {

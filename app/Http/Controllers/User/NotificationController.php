@@ -14,9 +14,10 @@ use Illuminate\Support\Facades\Auth;
 class NotificationController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела уведомлений пользователя.
+     * Purpose: initializes the NotificationController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly NotificationInterface $notification,
@@ -25,9 +26,10 @@ class NotificationController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела уведомлений пользователя.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
     public function index(): View|Factory|Application
     {
@@ -53,9 +55,10 @@ class NotificationController extends Controller
     }
 
     /**
-     * Назначение: помечает уведомление прочитанным.
+     * Purpose: handles the mark as read action in NotificationController.
      *
-     * Действие: обновляет статус уведомления по идентификатору и возвращает пользователя назад.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function markAsRead(int|string $id): RedirectResponse
     {
@@ -67,9 +70,10 @@ class NotificationController extends Controller
     }
 
     /**
-     * Назначение: помечает уведомление непрочитанным.
+     * Purpose: handles the mark as unread action in NotificationController.
      *
-     * Действие: обновляет статус уведомления по идентификатору и возвращает пользователя назад.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function markAsUnread(int|string $id): RedirectResponse
     {

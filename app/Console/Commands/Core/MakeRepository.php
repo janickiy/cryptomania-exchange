@@ -33,6 +33,10 @@ class MakeRepository extends GeneratorCommand
 
 
     /**
+     * Purpose: supports command generation or execution through get stub.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the stub file for the generator.
      *
      * @return string
@@ -51,6 +55,10 @@ class MakeRepository extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through get options.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the console command options.
      *
      * @return array
@@ -64,6 +72,10 @@ class MakeRepository extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through get default namespace.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the default namespace for the class.
      *
      * @param  string $rootNamespace
@@ -74,6 +86,12 @@ class MakeRepository extends GeneratorCommand
         return $rootNamespace . '\Repositories';
     }
 
+    /**
+     * Purpose: supports command generation or execution through build class.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
+     */
     protected function buildClass(mixed $name): string
     {
 //        $repositoryNamespace = $this->getNamespace($name);
@@ -96,6 +114,10 @@ class MakeRepository extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through build interface replacements.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Build the model replacement values.
      *
      * @param  array $replace
@@ -117,9 +139,13 @@ class MakeRepository extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through parse interface.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the fully-qualified model class name.
      *
-     * @param $interface
+     * @param mixed $interface
      * @return string
      */
     protected function parseInterface(mixed $interface): string
@@ -139,6 +165,10 @@ class MakeRepository extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through build model replacements.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Build the model replacement values.
      *
      * @param  array $replace
@@ -162,6 +192,10 @@ class MakeRepository extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through parse model.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the fully-qualified model class name.
      *
      * @param  string $model

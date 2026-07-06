@@ -33,6 +33,10 @@ class Handler extends ExceptionHandler
     ];
 
     /**
+     * Purpose: performs the report operation in Handler.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * Report or log an exception.
      *
      * @param  \Throwable $exception
@@ -45,6 +49,10 @@ class Handler extends ExceptionHandler
     }
 
     /**
+     * Purpose: performs the render operation in Handler.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request $request

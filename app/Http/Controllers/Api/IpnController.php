@@ -11,18 +11,23 @@ use Illuminate\Http\Request;
 class IpnController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела платежных IPN-уведомлений.
+     * Purpose: initializes the IpnController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(private readonly WalletService $walletService)
     {
     }
 
     /**
-     * Назначение: обрабатывает IPN-уведомление CoinPayments.
+     * Purpose: handles the ipn action in IpnController.
      *
-     * Действие: передает тело callback-запроса в сервис кошельков и завершает обработку без вывода страницы.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
+     * @param Request $request
+     * @return void
+     *
      */
     public function ipn(Request $request): void
     {
@@ -53,9 +58,13 @@ class IpnController extends Controller
     }
 
     /**
-     * Назначение: обрабатывает Bitcoin IPN-уведомление.
+     * Purpose: handles the bitcoin ipn action in IpnController.
      *
-     * Действие: передает валюту и данные callback-запроса в сервис кошельков для проверки транзакции.
+     * Action: connects the HTTP request to services or views so the controller remains thin
+     *
+     * @param Request $request
+     * @param string $currency
+     * @return void
      */
     public function bitcoinIpn(Request $request, string $currency): void
     {

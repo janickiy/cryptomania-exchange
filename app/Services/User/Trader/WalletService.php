@@ -25,12 +25,22 @@ class WalletService
     public $walletRepository;
     private $apiPath = 'App\\Services\\Api\\';
 
+    /**
+     * Purpose: initializes the WalletService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
+     */
     public function __construct(WalletInterface $wallet)
     {
         $this->walletRepository = $wallet;
     }
 
     /**
+     * Purpose: executes the get wallets service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $userId
      * @return array
      */
@@ -53,6 +63,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the generate wallet address service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $wallet
      * @return string
      */
@@ -81,6 +95,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the store deposit service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param DepositRequest $request
      * @param $id
      * @return array|Response
@@ -155,6 +173,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the store withdrawal service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<string, mixed>
      */
     public function storeWithdrawal(WithdrawalData $data, int|string $id): array
@@ -237,6 +259,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the complete payment service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param Request $request
      * @return array
      */
@@ -244,7 +270,7 @@ class WalletService
     {
         $paymentInfo = session()->get('PaypalPayment');
 
-        if (empty($paymentInfo) || empty($request->get('PayerID')) || empty($request->get('token'))) {
+        if (empty($paymentInfo) || empty($request->query('PayerID')) || empty($request->query('token'))) {
             return [
                 SERVICE_RESPONSE_STATUS => false,
                 SERVICE_RESPONSE_MESSAGE => __('Invalid payment request')
@@ -253,7 +279,7 @@ class WalletService
 
         session()->forget('PaypalPayment');
 
-        $paymentStatus = app(PaypalRestApi::class)->getPaymentStatus($paymentInfo['payment_id'], $request->get('PayerID'));
+        $paymentStatus = app(PaypalRestApi::class)->getPaymentStatus($paymentInfo['payment_id'], $request->query('PayerID'));
 
         $transactionInfo = [
             'paid_amount' => $paymentStatus->transactions[0]->amount->total,
@@ -294,6 +320,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the withdrawal transaction parameters service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<int, array<string, mixed>>
      */
     private function withdrawalTransactionParameters(mixed $wallet, mixed $withdrawal, string $systemFee): array
@@ -348,6 +378,12 @@ class WalletService
         ];
     }
 
+    /**
+     * Purpose: executes the withdrawal notification message service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function withdrawalNotificationMessage(mixed $wallet, mixed $withdrawal): string
     {
         if (admin_settings('auto_withdrawal_process') == ACTIVE_STATUS_ACTIVE) {
@@ -366,6 +402,10 @@ class WalletService
     }
 
     /**
+     * Purpose: builds a normalized response for a service operation.
+     *
+     * Action: lets callers handle success and failure responses consistently.
+     *
      * @param array<string, mixed> $extra
      * @return array<string, mixed>
      */
@@ -378,6 +418,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the complete payment service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $transactionInfo
      * @param $depositInfo
      * @return bool
@@ -504,6 +548,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the cancel payment service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $paymentInfo
      * @return array
      */
@@ -518,6 +566,12 @@ class WalletService
         ];
     }
 
+    /**
+     * Purpose: executes the cancel payment service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function cancelPayment(): array
     {
         $paymentInfo = session()->get('PaypalPayment');
@@ -527,6 +581,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the send service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $withdrawalId
      * @return void
      */
@@ -634,6 +692,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the update transaction service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $ipnResponse
      * @return bool|null
      */
@@ -830,6 +892,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the deposit service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $ipnResponse
      * @param $wallet
      * @param $deposited
@@ -973,6 +1039,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the withdraw service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $withdrawal
      * @return array
      */
@@ -1026,6 +1096,10 @@ class WalletService
     }
 
     /**
+     * Purpose: executes the reverse withdraw service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $withdrawalId
      * @param $stockItem
      */

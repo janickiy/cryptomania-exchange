@@ -15,7 +15,13 @@ class BitcoinApi extends Bitcoind
     /***
      * @param $currency
      */
-    public function __construct(mixed $currency)
+    /**
+     * Purpose: initializes the BitcoinApi instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
+     */
+    public function __construct(string $currency)
     {
         $this->currency = $currency;
         $configuration = config(strtolower($currency));

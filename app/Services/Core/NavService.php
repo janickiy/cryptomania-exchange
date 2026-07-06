@@ -12,6 +12,10 @@ class NavService
     public $navigation;
 
     /**
+     * Purpose: initializes the NavService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param NavigationInterface $navigation
      */
     public function __construct(NavigationInterface $navigation)
@@ -22,6 +26,10 @@ class NavService
     //--------------- frontend navigation functions ------------------------
 
     /**
+     * Purpose: executes the navigation single service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $navPlace
      * @param string $template
      * @return string
@@ -43,6 +51,10 @@ class NavService
     }
 
     /**
+     * Purpose: executes the template builder service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $navTemplate
      * @return array
      */
@@ -78,6 +90,10 @@ class NavService
     }
 
     /**
+     * Purpose: executes the navigation builder service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $navData
      * @param $navTemplate
      * @return string
@@ -123,6 +139,10 @@ class NavService
     }
 
     /**
+     * Purpose: executes the tag builder service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $startingWrapper
      * @param null $dbClass
      * @param null $activeClass
@@ -149,6 +169,10 @@ class NavService
     }
 
     /**
+     * Purpose: executes the navigation inside service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $dbData
      * @param $allAvailableRoutes
      * @param $navTemplate
@@ -209,6 +233,10 @@ class NavService
     }
 
     /**
+     * Purpose: executes the list item start builder service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $data
      * @param $navTemplate
      * @param $level
@@ -302,6 +330,10 @@ class NavService
     // For single nav use
 
     /**
+     * Purpose: executes the link builder service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $dbData
      * @param $navTemplate
      * @return array
@@ -349,6 +381,10 @@ class NavService
     //--------------- backend navigation functions ------------------------
 
     /**
+     * Purpose: executes the backend menu builder service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $slug
      * @return array
      */
@@ -369,6 +405,10 @@ class NavService
     }
 
     /**
+     * Purpose: executes the backend inner menu service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $dbData
      * @param int $parentId
      * @param null $result
@@ -404,6 +444,10 @@ class NavService
     }
 
     /**
+     * Purpose: executes the backend menu save service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param Request $request
      * @param $slug
      * @return array

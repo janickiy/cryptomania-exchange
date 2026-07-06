@@ -9,9 +9,7 @@ use App\Http\Requests\Core\PasswordResetRequest;
 use App\Http\Requests\Core\RegisterRequest;
 use App\Services\Guest\AuthService;
 use App\Services\User\UserService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +18,10 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела аутентификации и регистрации.
+     * Purpose: initializes the AuthController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly AuthService $service,
@@ -31,23 +30,24 @@ class AuthController extends Controller
     }
 
     /**
-     * Назначение: показывает форму входа пользователя.
+     * Purpose: handles the login form action in AuthController.
      *
-     * Действие: возвращает представление страницы авторизации.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
+     * @return View
      */
-    public function loginForm(): View|Factory|Application
+    public function loginForm(): View
     {
         return view('backend.login');
     }
 
-    /*
-     * login user
-     */
-
     /**
-     * Назначение: авторизует пользователя.
+     * Purpose: handles user login.
      *
-     * Действие: проверяет учетные данные через сервис аутентификации и перенаправляет пользователя по результату входа.
+     * Action: passes credentials to the auth service and returns the authentication result.
+     *
+     * @param LoginRequest $request
+     * @return RedirectResponse
      */
     public function login(LoginRequest $request): RedirectResponse
     {
@@ -61,9 +61,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Назначение: завершает пользовательскую сессию.
+     * Purpose: ends the user session.
      *
-     * Действие: выходит из аккаунта, очищает сессию и перенаправляет пользователя на допустимый маршрут.
+     * Action: logs the user out and redirects to a safe page.
+     * @return RedirectResponse
      */
     public function logout(): RedirectResponse
     {
@@ -75,23 +76,27 @@ class AuthController extends Controller
 
         Auth::logout();
         session()->flush();
+
         return redirect()->route($redirectRoute)->with(SERVICE_RESPONSE_SUCCESS, __('You have been logged out successfully.'));
     }
 
     /**
-     * Назначение: показывает форму регистрации пользователя.
+     * Purpose: creates a user account from registration data.
      *
-     * Действие: возвращает представление страницы регистрации.
+     * Action: passes validated data to the service and returns the account creation result.
+     * @return View
      */
-    public function register(): View|Factory|Application
+    public function register(): View
     {
         return view('backend.register');
     }
 
     /**
-     * Назначение: регистрирует нового пользователя.
+     * Purpose: handles the store user action in AuthController.
      *
-     * Действие: принимает валидированные регистрационные данные, создает аккаунт и возвращает сообщение о результате.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * @param RegisterRequest $request
+     * @return RedirectResponse
      */
     public function storeUser(RegisterRequest $request): RedirectResponse
     {
@@ -105,19 +110,22 @@ class AuthController extends Controller
     }
 
     /**
-     * Назначение: показывает форму восстановления пароля.
+     * Purpose: handles the forget password action in AuthController.
      *
-     * Действие: возвращает представление для ввода email и запуска сброса пароля.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * @return View
      */
-    public function forgetPassword(): View|Factory|Application
+    public function forgetPassword(): View
     {
         return view('backend.forget_password');
     }
 
     /**
-     * Назначение: отправляет письмо для восстановления пароля.
+     * Purpose: handles the send password reset mail action in AuthController.
      *
-     * Действие: передает валидированный email в сервис сброса пароля и возвращает flash-сообщение.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * @param PasswordResetRequest $request\
+     * @return RedirectResponse
      */
     public function sendPasswordResetMail(PasswordResetRequest $request): RedirectResponse
     {
@@ -128,11 +136,14 @@ class AuthController extends Controller
     }
 
     /**
-     * Назначение: показывает форму установки нового пароля.
+     * Purpose: handles the reset password action in AuthController.
      *
-     * Действие: проверяет токен сброса, получает данные из сервиса и возвращает форму нового пароля.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * @param Request $request
+     * @param int|string $id
+     * @return View
      */
-    public function resetPassword(Request $request, int|string $id): View|Factory|Application
+    public function resetPassword(Request $request, int|string $id): View
     {
         $data = $this->service->resetPassword($request, $id);
 
@@ -140,9 +151,13 @@ class AuthController extends Controller
     }
 
     /**
-     * Назначение: обновляет пароль пользователя.
+     * Purpose: handles the update password action in AuthController.
      *
-     * Действие: принимает валидированный пароль, передает его в сервис и возвращает результат операции.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
+     * @param NewPasswordRequest $request
+     * @param int|string $id
+     * @return RedirectResponse
      */
     public function updatePassword(NewPasswordRequest $request, int|string $id): RedirectResponse
     {

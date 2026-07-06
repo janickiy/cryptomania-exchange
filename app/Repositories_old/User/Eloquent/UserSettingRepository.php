@@ -15,6 +15,10 @@ class UserSettingRepository extends BaseRepository implements UserSettingInterfa
     protected $model;
 
     /**
+     * Purpose: initializes the UserSettingRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param UserSetting $model
      */
     public function __construct(UserSetting $model)

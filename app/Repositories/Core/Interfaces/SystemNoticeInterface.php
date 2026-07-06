@@ -11,5 +11,11 @@ namespace App\Repositories\Core\Interfaces;
 
 interface SystemNoticeInterface
 {
+    /**
+     * Purpose: describes the todays notifications contract for SystemNoticeInterface.
+     *
+     * Action: defines the expected signature so implementations use one consistent behavior for this scenario.
+     *
+     */
     public function todaysNotifications();
 }

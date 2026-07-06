@@ -14,9 +14,10 @@ use Illuminate\Foundation\Application;
 class DashboardController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела административной панели.
+     * Purpose: initializes the DashboardController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly DashboardService $dashboardService,
@@ -27,9 +28,10 @@ class DashboardController extends Controller
     }
 
     /**
-     * Назначение: обрабатывает основной маршрут раздела административной панели.
+     * Purpose: handles calling the DashboardController instance as a single action.
      *
-     * Действие: подготавливает данные страницы и возвращает целевое представление.
+     * Action: is used by a route or caller when the class has one primary handler.
+     *
      */
     public function __invoke(): View|Factory|Application
     {

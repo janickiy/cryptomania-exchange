@@ -3,131 +3,97 @@
 namespace App\Http\Controllers\Reports\Trader;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\User\Interfaces\UserInfoInterface;
-use App\Repositories\User\Trader\Interfaces\WalletInterface;
 use App\Services\User\Admin\ReportsService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела отчетов.
+     * Purpose: initializes the ReportsController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
      */
     public function __construct(
         private readonly ReportsService $reportsService,
-        private readonly WalletInterface $wallets,
-        private readonly UserInfoInterface $userInfo,
     ) {
     }
 
     /**
-     * Назначение: показывает общий отчет по депозитам.
+     * Purpose: displays the authenticated trader's deposit report rows.
      *
-     * Действие: получает список депозитов с учетом типа транзакции и возвращает отчетное представление.
+     * Action: delegates authenticated user scoping and list preparation to the report service.
      */
-    public function allDeposits(?string $paymentTransactionType = null): View|Factory|Application
+    public function allDeposits(?string $paymentTransactionType = null): View
     {
-        $data['list'] = $this->reportsService->deposits(Auth::id(), null, $paymentTransactionType);
-        $data['title'] = __('Deposits');
-        $data['status'] = $paymentTransactionType;
-
-        return view('frontend.reports.all_deposit', $data);
+        return view('frontend.reports.all_deposit', $this->reportsService->traderAllDepositsData($paymentTransactionType));
     }
 
     /**
-     * Назначение: показывает отчет по депозитам конкретного пользователя.
+     * Purpose: displays the authenticated trader's wallet deposit report rows.
      *
-     * Действие: фильтрует депозиты по пользователю и типу транзакции, затем возвращает отчет.
+     * Action: delegates wallet ownership checks and list preparation to the report service.
      */
-    public function deposits(int|string $id, ?string $paymentTransactionType = null): View|Factory|Application
+    public function deposits(int|string $id, ?string $paymentTransactionType = null): View
     {
-        $data['wallet'] = $this->wallets->firstOrFail(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
-        $data['list'] = $this->reportsService->deposits(Auth::id(), $id, $paymentTransactionType);
-        $data['title'] = __('Deposits');
-        $data['status'] = $paymentTransactionType;
-
-        return view('frontend.reports.deposit', $data);
+        return view('frontend.reports.deposit', $this->reportsService->traderDepositsData($id, $paymentTransactionType));
     }
 
     /**
-     * Назначение: показывает общий отчет по выводам средств.
+     * Purpose: displays the authenticated trader's withdrawal report rows.
      *
-     * Действие: получает список выводов с учетом типа транзакции и возвращает отчетное представление.
+     * Action: delegates authenticated user scoping and list preparation to the report service.
      */
-    public function allWithdrawals(?string $paymentTransactionType = null): View|Factory|Application
+    public function allWithdrawals(?string $paymentTransactionType = null): View
     {
-        $data['list'] = $this->reportsService->withdrawals(Auth::id(), null, $paymentTransactionType);
-        $data['title'] = __('Withdrawals');
-        $data['status'] = $paymentTransactionType;
-
-        return view('frontend.reports.all_withdrawal', $data);
+        return view('frontend.reports.all_withdrawal', $this->reportsService->traderAllWithdrawalsData($paymentTransactionType));
     }
 
     /**
-     * Назначение: показывает отчет по выводам конкретного пользователя.
+     * Purpose: displays the authenticated trader's wallet withdrawal report rows.
      *
-     * Действие: фильтрует выводы по пользователю и типу транзакции, затем возвращает отчет.
+     * Action: delegates wallet ownership checks and list preparation to the report service.
      */
-    public function withdrawals(int|string $id, ?string $paymentTransactionType = null): View|Factory|Application
+    public function withdrawals(int|string $id, ?string $paymentTransactionType = null): View
     {
-        $data['wallet'] = $this->wallets->firstOrFail(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
-        $data['list'] = $this->reportsService->withdrawals(Auth::id(), $id, $paymentTransactionType);
-        $data['title'] = __('Withdrawals');
-        $data['status'] = $paymentTransactionType;
-
-        return view('frontend.reports.withdrawal', $data);
+        return view('frontend.reports.withdrawal', $this->reportsService->traderWithdrawalsData($id, $paymentTransactionType));
     }
 
     /**
-     * Назначение: показывает отчет по сделкам.
+     * Purpose: displays the authenticated trader's executed trade report rows.
      *
-     * Действие: фильтрует торговые операции по пользователю или категории и возвращает отчет.
+     * Action: delegates trade category filtering and authenticated user scoping to the service.
      */
-    public function trades(?string $categoryType = null): View|Factory|Application
+    public function trades(?string $categoryType = null): View
     {
-        $data['list'] = $this->reportsService->trades(Auth::id(), $categoryType);
-        $data['title'] = __('Trades');
-        $data['categoryType'] = $categoryType;
-
-        return view('frontend.reports.trades', $data);
+        return view('frontend.reports.trades', $this->reportsService->traderTradesData($categoryType));
     }
 
     /**
-     * Назначение: показывает отчет по реферальным пользователям.
+     * Purpose: displays the authenticated trader's referred users.
      *
-     * Действие: получает пользователей, приглашенных текущим аккаунтом, и возвращает отчетное представление.
+     * Action: delegates referral list scoping and data preparation to the report service.
      */
-    public function referralUsers(): View|Factory|Application
+    public function referralUsers(): View
     {
-        $data['list'] = $this->reportsService->referralUsers(Auth::id());
-        $data['title'] = __('Trades');
-
-        return view('frontend.reports.referral_users', $data);
+        return view('frontend.reports.referral_users', $this->reportsService->traderReferralUsersData());
     }
 
     /**
-     * Назначение: показывает отчет по реферальным начислениям.
+     * Purpose: displays referral earnings for a selected referred user.
      *
-     * Действие: проверяет наличие реферального кода, получает начисления и возвращает отчет или перенаправление.
+     * Action: resolves the encrypted referral id through the service and renders earning totals.
      */
-    public function referralEarning(): View|Factory|Application|RedirectResponse
+    public function referralEarning(Request $request): View|RedirectResponse
     {
-        try {
-            $userId = decrypt(request()->get('ref'));
-        } catch (\Exception $exception) {
+        $encryptedReferralId = $request->query('ref');
+        $referralUserId = $this->reportsService->resolveReferralUserId(is_string($encryptedReferralId) ? $encryptedReferralId : null);
+
+        if (is_null($referralUserId)) {
             return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Referral earning not found for this request.'));
         }
 
-        $data['list'] = $this->reportsService->referralEarning(\auth()->id(), $userId);
-        $data['referralUserInfo'] = $this->userInfo->findOrFailByConditions(['user_id' => $userId]);
-        $data['title'] = __('Referral Earning');
-//        dd($data);
-        return view('frontend.reports.referral_earning', $data);
+        return view('frontend.reports.referral_earning', $this->reportsService->traderReferralEarningData($referralUserId));
     }
 }

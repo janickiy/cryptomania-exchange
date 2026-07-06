@@ -2,6 +2,7 @@
 
 namespace App\Events\Exchange;
 
+use App\Models\User\StockOrder;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
@@ -14,16 +15,24 @@ class BroadcastPrivateOrder implements ShouldBroadcastNow
     public $order;
 
     /**
+     * Purpose: initializes the BroadcastPrivateOrder instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * Create a new event instance.
      *
      * @param $order
      */
-    public function __construct(mixed $order)
+    public function __construct(StockOrder $order)
     {
         $this->order = $order;
     }
 
     /**
+     * Purpose: returns the channels where the event is broadcast.
+     *
+     * Action: is used by Laravel broadcasting to deliver the event to the right subscribers.
+     *
      * Get the channels the event should broadcast on.
      *
      * @return \Illuminate\Broadcasting\Channel|array
@@ -34,6 +43,10 @@ class BroadcastPrivateOrder implements ShouldBroadcastNow
     }
 
     /**
+     * Purpose: determines whether the event should be broadcast.
+     *
+     * Action: prevents unnecessary broadcasting when the event does not match the required business state.
+     *
      * Determine if this event should broadcast.
      *
      * @return bool
@@ -44,6 +57,10 @@ class BroadcastPrivateOrder implements ShouldBroadcastNow
     }
 
     /**
+     * Purpose: returns the broadcast payload.
+     *
+     * Action: sends only the required event data to clients.
+     *
      * Get the data to broadcast.
      *
      * @return array

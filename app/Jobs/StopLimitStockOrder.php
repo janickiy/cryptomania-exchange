@@ -18,12 +18,16 @@ class StopLimitStockOrder implements ShouldQueue
     public $stockPrice;
 
     /**
+     * Purpose: initializes the StopLimitStockOrder instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * Create a new job instance.
      *
      * @param $stockPairId
      * @param $stockPrice
      */
-    public function __construct(mixed $stockPairId, mixed $stockPrice)
+    public function __construct(int|string $stockPairId, int|float|string $stockPrice)
     {
         $this->queue = 'stop-limit';
         $this->stockPairId = $stockPairId;
@@ -31,6 +35,10 @@ class StopLimitStockOrder implements ShouldQueue
     }
 
     /**
+     * Purpose: performs the main job or listener work.
+     *
+     * Action: handles a queued task or event outside the HTTP request lifecycle.
+     *
      * Execute the job.
      *
      * @return void

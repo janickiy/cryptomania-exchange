@@ -13,18 +13,20 @@ use Illuminate\Http\JsonResponse;
 class OrdersController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела биржевых ордеров.
+     * Purpose: initializes the OrdersController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(private readonly StockOrderService $stockOrderService)
     {
     }
 
     /**
-     * Назначение: показывает открытые ордера пользователя.
+     * Purpose: handles the open orders action in OrdersController.
      *
-     * Действие: запрашивает текущие открытые ордера и возвращает представление списка.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function openOrders(): View|Factory|Application
     {
@@ -35,9 +37,10 @@ class OrdersController extends Controller
     }
 
     /**
-     * Назначение: создает новую запись в разделе биржевых ордеров.
+     * Purpose: creates a new record from request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: passes validated data to the service layer and returns the operation result.
+     *
      */
     public function store(StockOrderRequest $request): JsonResponse
     {
@@ -48,9 +51,10 @@ class OrdersController extends Controller
     }
 
     /**
-     * Назначение: удаляет запись в разделе биржевых ордеров.
+     * Purpose: deletes the selected record.
      *
-     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
+     * Action: performs deletion through a service or repository and redirects back with the result.
+     *
      */
     public function destroy(int|string $id): JsonResponse
     {

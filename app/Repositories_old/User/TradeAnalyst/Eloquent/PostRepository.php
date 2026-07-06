@@ -15,6 +15,10 @@ class PostRepository extends BaseRepository implements PostInterface
     protected $model;
 
     /**
+     * Purpose: initializes the PostRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param Post $post
      */
     public function __construct(Post $post)
@@ -23,12 +27,16 @@ class PostRepository extends BaseRepository implements PostInterface
     }
 
     /**
+     * Purpose: performs the get latest by condition operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $conditions
      * @param null $limit
      * @param array $relations
      * @return mixed
      */
-    public function getLatestByCondition(array $conditions, mixed $limit = null, mixed $relations = []): Collection
+    public function getLatestByCondition(array $conditions, ?int $limit = null, string|array|null $relations = []): Collection
     {
         if (is_null($limit)) {
             return $this->model->where($conditions)->with($relations)->latest()->get();

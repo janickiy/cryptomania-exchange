@@ -8,17 +8,15 @@ use App\Http\Requests\Admin\SystemNoticeRequest;
 use App\Repositories\Core\Interfaces\SystemNoticeInterface;
 use App\Services\Core\DataListService;
 use App\Services\User\Admin\SystemNoticeAdminService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 
 class SystemNoticeController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела системных уведомлений.
+     * Purpose: initializes the SystemNoticeController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
      */
     public function __construct(
         private readonly SystemNoticeInterface $systemNotice,
@@ -28,96 +26,181 @@ class SystemNoticeController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела системных уведомлений.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
-        $searchFields = [
+        $searchFields = $this->searchFields();
+        $orderFields = $this->orderFields();
+
+        return view('backend.systemNotice.index', [
+            'list' => $this->dataListService->dataList(
+                $this->systemNotice->paginateWithFilters($searchFields, $orderFields),
+                $searchFields,
+                $orderFields
+            ),
+            'title' => __('System Notice'),
+        ]);
+    }
+
+    /**
+     * Purpose: shows the form for creating a new record.
+     *
+     * Action: prepares form data and returns the create view.
+     */
+    public function create(): View
+    {
+        return view('backend.systemNotice.create', $this->formData(__('Create Notice')));
+    }
+
+    /**
+     * Purpose: creates a new record from request data.
+     *
+     * Action: passes validated data to the service layer and returns the operation result.
+     */
+    public function store(SystemNoticeRequest $request): RedirectResponse
+    {
+        return $this->operationResponse(
+            (bool) $this->systemNoticeService->create($this->noticeData($request)),
+            __('Notice has been created successfully.'),
+            __('Failed to create notice.')
+        );
+    }
+
+    /**
+     * Purpose: shows the edit form for the selected record.
+     *
+     * Action: loads current data and returns the edit view.
+     */
+    public function edit(int|string $id): View
+    {
+        return view('backend.systemNotice.edit', $this->formData(__('Edit Notices'), [
+            'systemNotice' => $this->systemNotice->findOrFailById($id),
+        ]));
+    }
+
+    /**
+     * Purpose: updates the selected record from request data.
+     *
+     * Action: passes changes to the service layer and returns a result message.
+     */
+    public function update(SystemNoticeRequest $request, int|string $id): RedirectResponse
+    {
+        return $this->operationResponse(
+            $this->systemNoticeService->update((int) $id, $this->noticeData($request)),
+            __('System notice has been updated successfully.'),
+            __('Failed to update system notice.')
+        );
+    }
+
+    /**
+     * Purpose: deletes the selected record.
+     *
+     * Action: performs deletion through a service or repository and redirects back with the result.
+     */
+    public function destroy(int|string $id): RedirectResponse
+    {
+        return $this->operationResponse(
+            $this->systemNoticeService->delete((int) $id),
+            __('System notice has been deleted successfully.'),
+            __('Failed to delete system notice.')
+        );
+    }
+
+    /**
+     * Purpose: returns fields available for system notice search.
+     *
+     * Action: keeps filter field definitions out of the page action.
+     *
+     * @return array<int, array{0: string, 1: string}>
+     */
+    private function searchFields(): array
+    {
+        return [
             ['title', __('Title')],
         ];
-        $orderFields = [
+    }
+
+    /**
+     * Purpose: returns fields available for system notice sorting.
+     *
+     * Action: keeps sort field definitions out of the page action.
+     *
+     * @return array<int, array{0: string, 1: string}>
+     */
+    private function orderFields(): array
+    {
+        return [
             ['id', __('Serial')],
             ['type', __('Type')],
             ['status', __('Status')],
             ['start_at', __('Start Time')],
             ['end_at', __('End Time')],
         ];
-
-        $query = $this->systemNotice->paginateWithFilters($searchFields, $orderFields);
-        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
-        $data['title'] = __('System Notice');
-
-        return view('backend.systemNotice.index', $data);
     }
 
     /**
-     * Назначение: показывает форму создания записи в разделе системных уведомлений.
+     * Purpose: prepares shared data for system notice forms.
      *
-     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     * Action: merges page title, notice types, and optional view data.
+     *
+     * @param array<string, object|string> $extra
+     * @return array<string, array<string, string>|object|string>
      */
-    public function create(): View|Factory|Application
+    private function formData(string $title, array $extra = []): array
     {
-        $data['types'] = array_combine(config('commonconfig.system_notice_types'), array_map('ucfirst', config('commonconfig.system_notice_types')));
-        $data['title'] = __('Create Notice');
-
-        return view('backend.systemNotice.create', $data);
+        return array_merge([
+            'title' => $title,
+            'types' => $this->noticeTypes(),
+        ], $extra);
     }
 
     /**
-     * Назначение: создает новую запись в разделе системных уведомлений.
+     * Purpose: returns selectable system notice types.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: builds the option list from application configuration.
+     *
+     * @return array<string, string>
      */
-    public function store(SystemNoticeRequest $request): RedirectResponse
+    private function noticeTypes(): array
     {
-        if ($this->systemNoticeService->create(SystemNoticeData::fromArray($request->validated()))) {
-            return redirect()->route('system-notices.index')->with(SERVICE_RESPONSE_SUCCESS, __('Notice has been created successfully.'));
+        $types = config('commonconfig.system_notice_types', []);
+
+        if (!is_array($types)) {
+            return [];
         }
 
-        return redirect()->back()->withInput()->with(SERVICE_RESPONSE_ERROR, __('Failed to create notice.'));
+        return array_combine($types, array_map('ucfirst', $types)) ?: [];
     }
 
     /**
-     * Назначение: показывает форму редактирования записи в разделе системных уведомлений.
+     * Purpose: converts validated request data into a DTO.
      *
-     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
+     * Action: keeps transport data creation in one controller helper.
      */
-    public function edit(int|string $id): View|Factory|Application
+    private function noticeData(SystemNoticeRequest $request): SystemNoticeData
     {
-        $data['systemNotice'] = $this->systemNotice->findOrFailById($id);
-        $data['types'] = array_combine(config('commonconfig.system_notice_types'), array_map('ucfirst', config('commonconfig.system_notice_types')));
-        $data['title'] = __('Edit Notices');
-
-        return view('backend.systemNotice.edit', $data);
+        return SystemNoticeData::fromArray($request->validated());
     }
 
     /**
-     * Назначение: обновляет запись в разделе системных уведомлений.
+     * Purpose: redirects after a system notice write operation.
      *
-     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
+     * Action: returns a success redirect to the list or an error redirect back to the form.
      */
-    public function update(SystemNoticeRequest $request, int|string $id): RedirectResponse
+    private function operationResponse(bool $success, string $successMessage, string $errorMessage): RedirectResponse
     {
-        if ($this->systemNoticeService->update((int) $id, SystemNoticeData::fromArray($request->validated()))) {
-            return redirect()->route('system-notices.index')->with(SERVICE_RESPONSE_SUCCESS, __('System notice has been updated successfully.'));
+        if ($success) {
+            return redirect()
+                ->route('system-notices.index')
+                ->with(SERVICE_RESPONSE_SUCCESS, $successMessage);
         }
 
-        return redirect()->back()->withInput()->with(SERVICE_RESPONSE_ERROR, __('Failed to update system notice.'));
-    }
-
-    /**
-     * Назначение: удаляет запись в разделе системных уведомлений.
-     *
-     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
-     */
-    public function destroy(int|string $id): RedirectResponse
-    {
-        if ($this->systemNoticeService->delete((int) $id)) {
-            return redirect()->route('system-notices.index')->with(SERVICE_RESPONSE_SUCCESS, __('System notice has been deleted successfully.'));
-        }
-
-        return redirect()->back()->withInput()->with(SERVICE_RESPONSE_ERROR, __('Failed to delete system notice.'));
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with(SERVICE_RESPONSE_ERROR, $errorMessage);
     }
 }

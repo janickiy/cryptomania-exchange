@@ -26,6 +26,12 @@ class StockExchange extends Model
         'is_maker',
     ];
 
+    /**
+     * Purpose: defines a model relation or computed value through stock order.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     */
     public function stockOrder(): BelongsTo
     {
         return $this->belongsTo(StockOrder::class);

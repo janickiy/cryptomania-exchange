@@ -15,6 +15,10 @@ class UserInfoRepository extends BaseRepository implements UserInfoInterface
     protected $model;
 
     /**
+     * Purpose: initializes the UserInfoRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param UserInfo $model
      */
     public function __construct(UserInfo $model)

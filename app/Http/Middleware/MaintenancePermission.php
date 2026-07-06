@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,13 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 class MaintenancePermission
 {
     /**
+     * Purpose: handles an HTTP request in MaintenancePermission middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure $next
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response
     {
         $auth = Auth::check();
         $is_under_maintenance = admin_settings('maintenance_mode');

@@ -16,13 +16,17 @@ class BroadcastPrivateStockExchange implements ShouldBroadcastNow
     public $stockExchange;
 
     /**
+     * Purpose: initializes the BroadcastPrivateStockExchange instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * Create a new event instance..' . $this->userId
      *
      * @param $stockPairId
      * @param $userId
      * @param $stockExchange
      */
-    public function __construct(mixed $stockPairId, mixed $userId, mixed $stockExchange)
+    public function __construct(int|string $stockPairId, int|string $userId, array $stockExchange)
     {
         $this->stockPairId = $stockPairId;
         $this->userId = $userId;
@@ -30,6 +34,10 @@ class BroadcastPrivateStockExchange implements ShouldBroadcastNow
     }
 
     /**
+     * Purpose: returns the channels where the event is broadcast.
+     *
+     * Action: is used by Laravel broadcasting to deliver the event to the right subscribers.
+     *
      * Get the channels the event should broadcast on.
      *
      * @return \Illuminate\Broadcasting\Channel|array
@@ -40,6 +48,12 @@ class BroadcastPrivateStockExchange implements ShouldBroadcastNow
     }
 
 
+    /**
+     * Purpose: returns the broadcast payload.
+     *
+     * Action: sends only the required event data to clients.
+     *
+     */
     public function broadcastWith(): array
     {
         return $this->stockExchange;

@@ -6,6 +6,12 @@ use App\DTO\DataTransferObject;
 
 final readonly class SystemNoticeData implements DataTransferObject
 {
+    /**
+     * Purpose: initializes the SystemNoticeData instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
+     */
     public function __construct(
         public string $title,
         public string $description,
@@ -17,6 +23,12 @@ final readonly class SystemNoticeData implements DataTransferObject
     }
 
     /**
+     * Purpose: creates a DTO from an input array.
+     *
+     * Action: passes validated data between layers without unstructured arrays.
+     *
+.
+     *
      * @param array<string, mixed> $data
      */
     public static function fromArray(array $data): self
@@ -32,6 +44,10 @@ final readonly class SystemNoticeData implements DataTransferObject
     }
 
     /**
+     * Purpose: converts the DTO back to an array.
+     *
+     * Action: provides data to repositories, models, or APIs in the expected format.
+     *
      * @return array<string, mixed>
      */
     public function toArray(): array

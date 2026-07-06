@@ -22,6 +22,10 @@ class AuditRepository extends BaseRepository implements AuditInterface
     protected $model;
 
     /**
+     * Purpose: initializes the AuditRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param Audit $audit
      */
     public function __construct(Audit $audit)
@@ -29,6 +33,12 @@ class AuditRepository extends BaseRepository implements AuditInterface
         $this->model = $audit;
     }
 
+    /**
+     * Purpose: performs the paginate with user filters operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
+     */
     public function paginateWithUserFilters(array $searchFields, array $orderFields): LengthAwarePaginator
     {
         return $this->paginateWithFilters(

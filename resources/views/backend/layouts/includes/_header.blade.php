@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="{{ asset('common/vendors/datatable_responsive/datatables/plugins/bootstrap/datatables.bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('common/vendors/datatable_responsive/datatables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/assets/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('backend/assets/css/adminlte4-compat.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend/assets/css/adminlte4-compat.css') }}?v={{ filemtime(public_path('backend/assets/css/adminlte4-compat.css')) }}">
 
     @yield('after-style')
     <!--[if lt IE 9]>

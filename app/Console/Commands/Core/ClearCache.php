@@ -25,6 +25,10 @@ class ClearCache extends Command
     protected $availableCommands;
 
     /**
+     * Purpose: initializes the ClearCache instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * Create a new command instance.
      *
      * @return void
@@ -36,9 +40,12 @@ class ClearCache extends Command
     }
 
     /**
+     * Purpose: executes the console command.
+     *
+     * Action: runs an application action from the CLI and reports the result to the terminal.
+     *
      * Execute the console command.
      *
-     * @return mixed
      */
     public function handle(): void
     {

@@ -5,6 +5,10 @@ namespace App\Services\Core;
 class DataListService
 {
     /**
+     * Purpose: executes the data list service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $query
      * @param $searchFields
      * @param null $orderFields

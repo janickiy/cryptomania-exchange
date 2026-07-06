@@ -41,14 +41,14 @@ final class ApplicationCodeHealthTest extends TestCase
         self::assertSame([], $failures);
     }
 
-    public function test_every_controller_method_documents_purpose_and_action(): void
+    public function test_every_app_method_documents_purpose_and_action(): void
     {
         $failures = [];
 
-        foreach ($this->classAndTraitMethods($this->appPath('Http/Controllers')) as [$path, $method]) {
+        foreach ($this->documentedAppMethods() as [$path, $method]) {
             $docblock = $method->getDocComment()?->getText() ?? '';
 
-            if (!str_contains($docblock, 'Назначение:') || !str_contains($docblock, 'Действие:')) {
+            if (!str_contains($docblock, 'Purpose:') || !str_contains($docblock, 'Action:')) {
                 $failures[] = $path . ':' . $method->getStartLine() . '::' . $method->name->toString();
             }
         }
@@ -81,7 +81,113 @@ final class ApplicationCodeHealthTest extends TestCase
         self::assertSame([], $failures);
     }
 
+    public function test_deprecated_laravel_request_and_helper_calls_are_not_used(): void
+    {
+        $failures = [];
+        $patterns = [
+            '/\\\\Request::get\s*\(/' => 'Use request()->query() or request()->input() instead of Request::get().',
+            '/request\s*\(\s*\)->get\s*\(/' => 'Use request()->query() or request()->input() instead of request()->get().',
+            '/\$request->get\s*\(/' => 'Use $request->query() or $request->input() instead of $request->get().',
+            '/\$this->request->get\s*\(/' => 'Use $this->request->query() or $this->request->input() instead of $this->request->get().',
+            '/\$this->get\s*\(/' => 'Use $this->query() or $this->input() instead of FormRequest::get().',
+            '/array_(only|except)\s*\(/' => 'Use Illuminate\Support\Arr instead of deprecated array helper functions.',
+            '/str_random\s*\(/' => 'Use Illuminate\Support\Str::random() instead of str_random().',
+            '/Input::/' => 'Use the Request instance instead of the deprecated Input facade.',
+        ];
+
+        foreach ([$this->appPath(), $this->projectPath('resources/views'), $this->projectPath('routes')] as $rootPath) {
+            foreach ($this->phpFiles($rootPath) as $path) {
+                $contents = (string) file_get_contents($path);
+
+                foreach ($patterns as $pattern => $message) {
+                    if (preg_match_all($pattern, $contents, $matches, PREG_OFFSET_CAPTURE) === 0) {
+                        continue;
+                    }
+
+                    foreach ($matches[0] as $match) {
+                        $line = substr_count(substr($contents, 0, $match[1]), "\n") + 1;
+                        $failures[] = $path . ':' . $line . ' ' . $message;
+                    }
+                }
+            }
+        }
+
+        self::assertSame([], $failures);
+    }
+
     /**
+     * Purpose: performs the documented app methods operation in ApplicationCodeHealthTest.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
+     * @return list<array{0: string, 1: Node\Stmt\ClassMethod}>
+     */
+    private function documentedAppMethods(): array
+    {
+        $methods = [];
+
+        foreach ($this->phpFiles($this->appPath()) as $path) {
+            $ast = $this->parse($path);
+            $traverser = new NodeTraverser();
+            $traverser->addVisitor(new class($path, $methods) extends NodeVisitorAbstract {
+                /** @var list<Node\Stmt\Class_|Node\Stmt\Trait_|Node\Stmt\Interface_|Node\Stmt\Enum_> */
+                private array $ownerStack = [];
+
+                /**
+                 * Purpose: initializes the NodeVisitorAbstract instance.
+                 *
+                 * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+                 *
+                 * @param list<array{0: string, 1: Node\Stmt\ClassMethod}> $methods
+                 */
+                public function __construct(
+                    private readonly string $path,
+                    private array &$methods,
+                ) {
+                }
+
+                public function enterNode(Node $node): null
+                {
+                    if ($node instanceof Node\Stmt\Class_
+                        || $node instanceof Node\Stmt\Trait_
+                        || $node instanceof Node\Stmt\Interface_
+                        || $node instanceof Node\Stmt\Enum_
+                    ) {
+                        $this->ownerStack[] = $node;
+                        return null;
+                    }
+
+                    if ($node instanceof Node\Stmt\ClassMethod && end($this->ownerStack) !== false) {
+                        $this->methods[] = [$this->path, $node];
+                    }
+
+                    return null;
+                }
+
+                public function leaveNode(Node $node): null
+                {
+                    if ($node instanceof Node\Stmt\Class_
+                        || $node instanceof Node\Stmt\Trait_
+                        || $node instanceof Node\Stmt\Interface_
+                        || $node instanceof Node\Stmt\Enum_
+                    ) {
+                        array_pop($this->ownerStack);
+                    }
+
+                    return null;
+                }
+            });
+            $traverser->traverse($ast);
+        }
+
+        return $methods;
+    }
+
+    /**
+     * Purpose: performs the class and trait methods operation in ApplicationCodeHealthTest.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * @return list<array{0: string, 1: Node\Stmt\ClassMethod}>
      */
     private function classAndTraitMethods(?string $rootPath = null): array
@@ -96,6 +202,10 @@ final class ApplicationCodeHealthTest extends TestCase
                 private array $ownerStack = [];
 
                 /**
+                 * Purpose: initializes the NodeVisitorAbstract instance.
+                 *
+                 * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+                 *
                  * @param list<array{0: string, 1: Node\Stmt\ClassMethod}> $methods
                  */
                 public function __construct(
@@ -135,6 +245,10 @@ final class ApplicationCodeHealthTest extends TestCase
     }
 
     /**
+     * Purpose: performs the declared symbols operation in ApplicationCodeHealthTest.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * @return list<array{0: string, 1: class-string}>
      */
     private function declaredSymbols(): array
@@ -174,6 +288,10 @@ final class ApplicationCodeHealthTest extends TestCase
     }
 
     /**
+     * Purpose: performs the parse operation in ApplicationCodeHealthTest.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * @return list<Node\Stmt>
      */
     private function parse(string $path): array
@@ -184,6 +302,10 @@ final class ApplicationCodeHealthTest extends TestCase
     }
 
     /**
+     * Purpose: performs the php files operation in ApplicationCodeHealthTest.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * @return list<string>
      */
     private function phpFiles(string $rootPath): array
@@ -204,8 +326,15 @@ final class ApplicationCodeHealthTest extends TestCase
 
     private function appPath(?string $path = null): string
     {
-        $appPath = dirname(__DIR__, 2) . '/app';
+        $appPath = $this->projectPath('app');
 
         return $path === null ? $appPath : $appPath . '/' . $path;
+    }
+
+    private function projectPath(?string $path = null): string
+    {
+        $projectPath = dirname(__DIR__, 2);
+
+        return $path === null ? $projectPath : $projectPath . '/' . $path;
     }
 }

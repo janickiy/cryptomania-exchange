@@ -62,6 +62,10 @@ class StockExchangeService
     private $referralEarnings = [];
 
     /**
+     * Purpose: initializes the StockExchangeService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockOrder $stockOrder
      * @param StockOrderInterface $stockOrderRepository
      */
@@ -89,6 +93,12 @@ class StockExchangeService
         ];
     }
 
+    /**
+     * Purpose: starts the main business process for the service.
+     *
+     * Action: coordinates checks, calculations, and repository calls required by the scenario.
+     *
+     */
     public function process(): bool
     {
         $this->stockPair = app(StockPairInterface::class)->getFirstStockPairDetailByConditions(['stock_pairs.id' => $this->stockOrder->stock_pair_id]);
@@ -235,11 +245,23 @@ class StockExchangeService
 
     }
 
+    /**
+     * Purpose: executes the get opposite stock orders service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function getOppositeStockOrders(): Collection
     {
         return $this->stockOrderRepository->getOppositeStockOrders($this->stockOrder);
     }
 
+    /**
+     * Purpose: executes the process stock order inputs service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function processStockOrderInputs(): bool
     {
         $minimumTransactionFee = $this->minimumTransactionFee($this->baseItemType);
@@ -283,6 +305,10 @@ class StockExchangeService
     }
 
     /**
+     * Purpose: executes the minimum transaction fee service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $type
      * @return string
      */
@@ -292,6 +318,10 @@ class StockExchangeService
     }
 
     /**
+     * Purpose: executes the stock order input sub process service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $sellOrderStatus
      * @param $buyOrderStatus
      */
@@ -322,6 +352,10 @@ class StockExchangeService
     }
 
     /**
+     * Purpose: executes the process stock exchange inputs service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $stockExchangeGroup
      */
     private function processStockExchangeInputs(mixed $stockExchangeGroup): void
@@ -455,6 +489,12 @@ class StockExchangeService
 
     }
 
+    /**
+     * Purpose: executes the process wallet inputs service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function processWalletInputs(): void
     {
         // Buy Order
@@ -560,6 +600,12 @@ class StockExchangeService
         }
     }
 
+    /**
+     * Purpose: executes the process referral earning service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function processReferralEarning(): void
     {
         $referralPercentage = admin_settings('referral_percentage');
@@ -635,6 +681,10 @@ class StockExchangeService
     }
 
     /**
+     * Purpose: executes the opposite stock order settlement process service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $oppositeStockOrder
      */
     private function oppositeStockOrderSettlementProcess(mixed $oppositeStockOrder): void
@@ -751,6 +801,12 @@ class StockExchangeService
         }
     }
 
+    /**
+     * Purpose: executes the primary stock order settlement process service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function primaryStockOrderSettlementProcess(): void
     {
         $unprocessedAmount = bcsub(bcsub($this->stockOrder->amount, $this->stockOrder->exchanged), $this->primaryStockAmount);
@@ -920,6 +976,12 @@ class StockExchangeService
         array_push($this->updateStockOrdersInputs, $primaryStockOrder);
     }
 
+    /**
+     * Purpose: executes the process transaction inputs service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function processTransactionInputs(mixed $stockExchangeGroup): void
     {
         $stockExchanges = app(StockExchangeInterface::class)->getByConditions(['stock_exchange_group_id' => $stockExchangeGroup->id]);
@@ -1163,6 +1225,12 @@ class StockExchangeService
         }
     }
 
+    /**
+     * Purpose: executes the summary report development service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function summaryReportDevelopment(mixed $stockExchange): void
     {
         if ($stockExchange->exchange_type == EXCHANGE_BUY) {
@@ -1185,6 +1253,12 @@ class StockExchangeService
         }
     }
 
+    /**
+     * Purpose: executes the update coin pair service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function updateCoinPair(): bool
     {
         $currentTime = $this->date->timestamp;
@@ -1251,6 +1325,10 @@ class StockExchangeService
     }
 
     /**
+     * Purpose: executes the get time intervals service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $date
      * @return array
      */

@@ -29,6 +29,10 @@ class MakeService extends GeneratorCommand
     protected $type = 'Service';
 
     /**
+     * Purpose: supports command generation or execution through get stub.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the stub file for the generator.
      *
      * @return string
@@ -39,6 +43,10 @@ class MakeService extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through get default namespace.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the default namespace for the class.
      *
      * @param  string $rootNamespace

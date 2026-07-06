@@ -28,6 +28,10 @@ class MakeInterface extends GeneratorCommand
     protected $type = 'Interface';
 
     /**
+     * Purpose: describes the get stub contract for MakeInterface.
+     *
+     * Action: defines the expected signature so implementations use one consistent behavior for this scenario.
+     *
      * Get the stub file for the generator.
      *
      * @return string
@@ -38,6 +42,10 @@ class MakeInterface extends GeneratorCommand
     }
 
     /**
+     * Purpose: describes the get default namespace contract for MakeInterface.
+     *
+     * Action: defines the expected signature so implementations use one consistent behavior for this scenario.
+     *
      * Get the default namespace for the class.
      *
      * @param  string $rootNamespace

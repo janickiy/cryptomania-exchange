@@ -16,9 +16,10 @@ use Illuminate\Support\Facades\DB;
 class QuestionsController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела вопросов и ответов.
+     * Purpose: initializes the QuestionsController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly QuestionInterface $questionRepository,
@@ -27,9 +28,10 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела вопросов и ответов.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
     public function index(): View|Factory|Application
     {
@@ -55,9 +57,10 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Назначение: показывает форму создания записи в разделе вопросов и ответов.
+     * Purpose: shows the form for creating a new record.
      *
-     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     * Action: prepares form data and returns the create view.
+     *
      */
     public function create(): View|Factory|Application
     {
@@ -66,9 +69,10 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Назначение: создает новую запись в разделе вопросов и ответов.
+     * Purpose: creates a new record from request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: passes validated data to the service layer and returns the operation result.
+     *
      */
     public function store(QuestionRequest $request): RedirectResponse
     {

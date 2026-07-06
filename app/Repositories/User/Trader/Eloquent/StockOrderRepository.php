@@ -16,6 +16,10 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
     protected $model;
 
     /**
+     * Purpose: initializes the StockOrderRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockOrder $stockOrder
      */
     public function __construct(StockOrder $stockOrder)
@@ -24,6 +28,10 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
     }
 
     /**
+     * Purpose: performs the get opposite stock orders operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param StockOrder $stockOrder
      * @return \Illuminate\Support\Collection
      */
@@ -41,10 +49,14 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
     }
 
     /**
+     * Purpose: performs the get orders operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @return mixed
      */
-    public function getOrders(mixed $conditions): Collection
+    public function getOrders(array $conditions): Collection
     {
         $orderBy = $conditions['exchange_type'] == EXCHANGE_BUY ? 'desc' : 'asc';
         return $this->model
@@ -57,10 +69,14 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
     }
 
     /**
+     * Purpose: performs the get my open orders operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @return mixed
      */
-    public function getMyOpenOrders(mixed $conditions): Collection
+    public function getMyOpenOrders(array $conditions): Collection
     {
         return $this->model
             ->where($conditions)
@@ -70,10 +86,14 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
     }
 
     /**
+     * Purpose: performs the get total stock order operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @return mixed
      */
-    public function getTotalStockOrder(mixed $conditions): ?StockOrder
+    public function getTotalStockOrder(array $conditions): ?StockOrder
     {
         return $this->model
             ->where($conditions)
@@ -82,11 +102,15 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
     }
 
     /**
+     * Purpose: performs the get stop limit orders operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @param $stockPrice
      * @return mixed
      */
-    public function getStopLimitOrders(mixed $conditions, mixed $stockPrice): Collection
+    public function getStopLimitOrders(array $conditions, int|float|string $stockPrice): Collection
     {
         return $this->model->where($conditions)->where(function ($q) use ($stockPrice) {
             $q->where(['exchange_type' => EXCHANGE_BUY, ['stop_limit', '<=', $stockPrice]])
@@ -95,15 +119,23 @@ class StockOrderRepository extends BaseRepository implements StockOrderInterface
     }
 
     /**
+     * Purpose: performs the get stop limit orders by ids operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $ids
      * @return mixed
      */
-    public function getStopLimitOrdersByIds(mixed $ids): Collection
+    public function getStopLimitOrdersByIds(array $ids): Collection
     {
         return $this->model->whereIn('id', $ids)->where('status', STOCK_ORDER_PENDING)->get();
     }
 
     /**
+     * Purpose: performs the count operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $conditions
      * @return mixed
      */

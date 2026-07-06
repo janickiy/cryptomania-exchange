@@ -8,29 +8,29 @@ use App\Http\Requests\User\UserAvatarRequest;
 use App\Http\Requests\User\UserRequest;
 use App\Http\Requests\User\UserSettingRequest;
 use App\Services\User\ProfileService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела профиля пользователя.
+     * Purpose: initializes the ProfileController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(private readonly ProfileService $service)
     {
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела профиля пользователя.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
         $data = $this->service->profile();
         $data['title'] = __('Profile');
@@ -39,11 +39,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: показывает форму редактирования записи в разделе профиля пользователя.
+     * Purpose: shows the edit form for the selected record.
      *
-     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
+     * Action: loads current data and returns the edit view.
+     *
      */
-    public function edit(): View|Factory|Application
+    public function edit(): View
     {
         $data = $this->service->profile();
         $data['title'] = __('Edit Profile');
@@ -52,9 +53,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: обновляет запись в разделе профиля пользователя.
+     * Purpose: updates the selected record from request data.
      *
-     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
+     * Action: passes changes to the service layer and returns a result message.
+     *
      */
     public function update(UserRequest $request): RedirectResponse
     {
@@ -65,11 +67,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: показывает форму смены пароля.
+     * Purpose: handles the change password action in ProfileController.
      *
-     * Действие: загружает данные профиля и возвращает представление формы смены пароля.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
-    public function changePassword(): View|Factory|Application
+    public function changePassword(): View
     {
         $data = $this->service->profile();
         $data['title'] = __('Change Password');
@@ -78,9 +81,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: обновляет пароль пользователя.
+     * Purpose: handles the update password action in ProfileController.
      *
-     * Действие: принимает валидированный пароль, передает его в сервис и возвращает результат операции.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function updatePassword(PasswordUpdateRequest $request): RedirectResponse
     {
@@ -91,11 +95,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: показывает настройки профиля пользователя.
+     * Purpose: handles the setting action in ProfileController.
      *
-     * Действие: получает данные профиля и возвращает страницу текущих настроек.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
-    public function setting(): View|Factory|Application
+    public function setting(): View
     {
         $data = $this->service->profile();
         $data['title'] = __('Setting');
@@ -104,11 +109,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: показывает форму редактирования настроек профиля.
+     * Purpose: handles the setting edit action in ProfileController.
      *
-     * Действие: получает данные профиля и возвращает форму изменения языка и часового пояса.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
-    public function settingEdit(): View|Factory|Application
+    public function settingEdit(): View
     {
         $data = $this->service->profile();
         $data['title'] = __('Edit Setting');
@@ -117,15 +123,16 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: обновляет настройки профиля пользователя.
+     * Purpose: handles the setting update action in ProfileController.
      *
-     * Действие: принимает валидированные настройки, передает их в сервис профиля и возвращает результат.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function settingUpdate(UserSettingRequest $request): RedirectResponse
     {
         $response = $this->service->updateSettings([
-            'language' => $request->get('language', config('app.locale')),
-            'timezone' => $request->get('timezone', config('app.timezone')),
+            'language' => $request->input('language', config('app.locale')),
+            'timezone' => $request->input('timezone', config('app.timezone')),
         ]);
         $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
@@ -133,11 +140,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: показывает форму изменения аватара.
+     * Purpose: handles the avatar edit action in ProfileController.
      *
-     * Действие: получает данные профиля и возвращает форму загрузки нового изображения.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
-    public function avatarEdit(): View|Factory|Application
+    public function avatarEdit(): View
     {
         $data = $this->service->profile();
         $data['title'] = __('Change Avatar');
@@ -146,9 +154,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: обновляет аватар пользователя.
+     * Purpose: handles the avatar update action in ProfileController.
      *
-     * Действие: принимает валидированный файл изображения, передает его в сервис профиля и возвращает результат загрузки.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function avatarUpdate(UserAvatarRequest $request): RedirectResponse
     {
@@ -159,11 +168,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: показывает реферальную страницу пользователя.
+     * Purpose: handles the referral action in ProfileController.
      *
-     * Действие: возвращает представление с текущим пользователем и его реферальными данными.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
-    public function referral(): View|Factory|Application
+    public function referral(): View
     {
         return view('backend.profile.referral', [
             'title' => __('Referral'),
@@ -172,9 +182,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * Назначение: создает или обновляет реферальную ссылку пользователя.
+     * Purpose: handles the generate referral link action in ProfileController.
      *
-     * Действие: вызывает сервис профиля и возвращает flash-сообщение с результатом генерации.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function generateReferralLink(): RedirectResponse
     {

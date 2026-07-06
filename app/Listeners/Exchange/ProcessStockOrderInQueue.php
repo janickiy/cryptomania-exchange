@@ -11,9 +11,13 @@ class ProcessStockOrderInQueue implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    public $queue = 'exchange';
+    public string $queue = 'exchange';
 
     /**
+     * Purpose: initializes the ProcessStockOrderInQueue instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * Create the event listener.
      *
      * @return void
@@ -24,6 +28,10 @@ class ProcessStockOrderInQueue implements ShouldQueue
     }
 
     /**
+     * Purpose: performs the main job or listener work.
+     *
+     * Action: handles a queued task or event outside the HTTP request lifecycle.
+     *
      * Handle the event.
      *
      * @param BroadcastOrder $event
@@ -34,6 +42,12 @@ class ProcessStockOrderInQueue implements ShouldQueue
         app(StockExchangeService::class, [$event->order])->process();
     }
 
+    /**
+     * Purpose: determines whether the listener should be queued.
+     *
+     * Action: controls asynchronous event processing.
+     *
+     */
     public function shouldQueue(mixed $event): bool
     {
         return (

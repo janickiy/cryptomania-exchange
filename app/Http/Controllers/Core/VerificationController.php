@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Core;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\PasswordResetRequest;
 use App\Services\Core\VerificationService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,18 +13,22 @@ use Illuminate\Support\Facades\Auth;
 class VerificationController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела email-верификации.
+     * Purpose: initializes the VerificationController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(private readonly VerificationService $verificationService)
     {
     }
 
     /**
-     * Назначение: подтверждает действие или код пользователя.
+     * Purpose: handles user or account verification.
      *
-     * Действие: передает данные запроса в сервис проверки и возвращает перенаправление по результату.
+     * Action: checks the provided parameters and redirects with the verification result
+     *
+     * @param Request $request
+     * @return RedirectResponse
      */
     public function verify(Request $request): RedirectResponse
     {
@@ -38,19 +40,24 @@ class VerificationController extends Controller
     }
 
     /**
-     * Назначение: показывает форму повторной отправки письма подтверждения.
+     * Purpose: shows the form for resending a verification message.
      *
-     * Действие: возвращает представление для запроса нового verification-письма.
+     * Action: returns the view where the user can request a new email.
+     *
+     * @return View
      */
-    public function resendForm(): View|Factory|Application
+    public function resendForm(): View
     {
         return view('backend.email_verify');
     }
 
     /**
-     * Назначение: отправляет письмо подтверждения повторно.
+     * Purpose: sends a system email or notification from request data.
      *
-     * Действие: валидирует запрос, запускает сервис отправки и возвращает результат пользователю.
+     * Action: delegates sending to a service and returns the result to the user.
+     *
+     * @param PasswordResetRequest $request
+     * @return RedirectResponse
      */
     public function send(PasswordResetRequest $request): RedirectResponse
     {

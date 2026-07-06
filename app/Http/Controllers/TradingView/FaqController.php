@@ -6,17 +6,16 @@ use App\Models\User\Question;
 use App\Repositories\User\Trader\Interfaces\QuestionInterface;
 use App\Services\Core\DataListService;
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 
 class FaqController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела часто задаваемых вопросов.
+     * Purpose: initializes the FaqController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly QuestionInterface $questions,
@@ -25,11 +24,12 @@ class FaqController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела часто задаваемых вопросов.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
         $searchFields = [
             ['questions.title', __('Title')],
@@ -55,11 +55,12 @@ class FaqController extends Controller
     }
 
     /**
-     * Назначение: показывает детальную страницу записи в разделе часто задаваемых вопросов.
+     * Purpose: shows the detail page for the selected record.
      *
-     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
+     * Action: loads the record by identifier and passes it to the view.
+     *
      */
-    public function show(int|string $id): View|Factory|Application
+    public function show(int|string $id): View
     {
         $data['question'] = $this->questions->findOrFailByConditions(['id' => $id]);
         $data['title'] = __('Question Details');

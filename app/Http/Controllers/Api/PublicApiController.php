@@ -11,9 +11,10 @@ use Illuminate\Http\JsonResponse;
 class PublicApiController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела публичного API.
+     * Purpose: initializes the PublicApiController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly StockPairInterface $stockPairs,
@@ -21,28 +22,32 @@ class PublicApiController extends Controller
     ) {
     }
 
+
     /**
-     * Назначение: выполняет команду публичного API.
+     * Purpose: handles the command action in PublicApiController.
+     * Action: connects the HTTP request to services or views so the controller remains th
      *
-     * Действие: валидирует API-запрос, передает команду сервису и возвращает сформированный ответ.
+     * @param PublicApiRequest $request
+     * @return JsonResponse|array
      */
     public function command(PublicApiRequest $request): JsonResponse|array
     {
-        $command = $request->get('command');
+        $command = $request->input('command');
 
         return $this->{$command}($request);
     }
 
     /**
-     * Назначение: возвращает ticker-данные публичного API.
+     * Purpose: handles the return ticker action in PublicApiController.
      *
-     * Действие: получает рыночные данные по запросу и отдает их в формате API-ответа.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function returnTicker(PublicApiRequest $request): JsonResponse|array
     {
         $conditions = ['stock_pairs.is_active' => ACTIVE_STATUS_ACTIVE];
         if ($request->has('coinPair')) {
-            $coinPair = explode('_', $request->get('coinPair'));
+            $coinPair = explode('_', $request->input('coinPair'));
             $conditions['stock_item.item'] = strtoupper($coinPair[0]);
             $conditions['base_item.item'] = strtoupper($coinPair[1]);
         }
@@ -57,14 +62,17 @@ class PublicApiController extends Controller
     }
 
     /**
-     * Назначение: возвращает данные графика для публичного API.
+     * Purpose: handles the return chart data action in PublicApiController.
      *
-     * Действие: читает параметры графика, получает свечи или точки графика и возвращает JSON.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
+     * @param PublicApiRequest $request
+     * @return JsonResponse
      */
     public function returnChartData(PublicApiRequest $request): JsonResponse
     {
-        $coinPair = explode('_', $request->get('coinPair'));
-        $interval = $request->get('interval');
+        $coinPair = explode('_', $request->input('coinPair'));
+        $interval = $request->input('interval');
 
         $stockPair = $this->stockPairs->getByPair(strtoupper($coinPair[0]), strtoupper($coinPair[1]));
 

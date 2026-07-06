@@ -5,14 +5,18 @@ namespace App\Repositories;
 trait RepositoryTrait
 {
     /**
+     * Purpose: performs the column query operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $columns
      * @param string $key
      * @param null $default
      * @return false|mixed
      */
-    protected function _column_query(mixed $columns, mixed $key = 'sort', mixed $default = null): string|false
+    protected function _column_query(array $columns, string $key = 'sort', ?string $default = null): string|false
     {
-        $data = \Request::get($key);
+        $data = request()->query($key);
         if (is_numeric($data) && array_key_exists($data, array_column($columns, 0))) {
             return $columns[$data][0];
         }
@@ -20,10 +24,14 @@ trait RepositoryTrait
     }
 
     /**
+     * Purpose: performs the where builder operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $where
      * @return mixed
      */
-    protected function _where_builder(mixed $where): object
+    protected function _where_builder(array $where): object
     {
         $model = $this->model;
         $output = $this->_subWhere($model, $where);
@@ -31,11 +39,15 @@ trait RepositoryTrait
     }
 
     /**
+     * Purpose: performs the sub where operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $model
      * @param $where
      * @return mixed
      */
-    protected function _subWhere(mixed $model, mixed $where): object
+    protected function _subWhere(object $model, array $where): object
     {
         if (count($where) <= 0) {
             return $model;
@@ -95,10 +107,14 @@ trait RepositoryTrait
     }
 
     /**
+     * Purpose: performs the get updatable fields operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $values
      * @return array|false|int[]|string[]
      */
-    private function _getUpdatableFields(mixed $values): array|false
+    private function _getUpdatableFields(array $values): array|false
     {
         $fields = [];
         $conditions = [];
@@ -119,10 +135,14 @@ trait RepositoryTrait
     }
 
     /**
+     * Purpose: performs the extract to array operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $relations
      * @return array|false|string[]
      */
-    public function extractToArray(mixed $relations): array
+    public function extractToArray(string|array|null $relations): array
     {
 
         if (is_string($relations)) {

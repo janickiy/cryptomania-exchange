@@ -19,7 +19,13 @@ class CoinPaymentApi implements CryptoStockApiInterface
     private $ch;
     private $currency;
 
-    public function __construct(mixed $currency)
+    /**
+     * Purpose: initializes the CoinPaymentApi instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
+     */
+    public function __construct(string $currency)
     {
         $configuration = config('coinpayment');
         $this->privateKey = $configuration['private_key'];
@@ -31,17 +37,27 @@ class CoinPaymentApi implements CryptoStockApiInterface
         $this->currency = $currency;
     }
 
+    /**
+     * Purpose: executes the is setup service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     private function is_setup(): bool
     {
         return !empty($this->privateKey) && !empty($this->publicKey) && !empty($this->merchantID) && !empty($this->ipnSecret) && !empty($this->ipnUrl);
     }
 
     /**
+     * Purpose: executes the api call service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $cmd
      * @param array $req
      * @return mixed|string[]
      */
-    private function api_call(mixed $cmd, mixed $req = array()): array
+    private function api_call(string $cmd, array $req = []): array
     {
         if (!$this->is_setup()) {
             return array('error' => 'You have not called the Setup function with your private and public keys!');
@@ -88,6 +104,12 @@ class CoinPaymentApi implements CryptoStockApiInterface
         }
     }
 
+    /**
+     * Purpose: executes the generate address service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function generateAddress(): array
     {
         $req = array(
@@ -99,37 +121,53 @@ class CoinPaymentApi implements CryptoStockApiInterface
     }
 
     /**
+     * Purpose: executes the get txn info by address service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $address
      */
-    public function getTxnInfoByAddress(mixed $address): void
+    public function getTxnInfoByAddress(string $address): void
     {
         //
     }
 
     /**
+     * Purpose: executes the get txn info by txn id service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $txid
      * @return mixed|string[]
      */
-    public function getTxnInfoByTxnId(mixed $txid): array
+    public function getTxnInfoByTxnId(string $txid): array
     {
         return $this->api_call('get_tx_info', array('txid' => $txid));
     }
 
     /**
+     * Purpose: executes the get txn list service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param int $limit
      * @return mixed|string[]
      */
-    public function getTxnList(mixed $limit = 25): array
+    public function getTxnList(int $limit = 25): array
     {
         return $this->api_call('get_tx_ids', array('limit' => $limit));
     }
 
     /**
+     * Purpose: executes the send to address service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $address
      * @param $amount
      * @return array|mixed|string[]
      */
-    public function sendToAddress(mixed $address, mixed $amount): array
+    public function sendToAddress(string $address, int|float|string $amount): array
     {
         $req = array(
             'amount' => $amount,
@@ -155,11 +193,15 @@ class CoinPaymentApi implements CryptoStockApiInterface
     // send the validateIPN to $request->all(), $request->server()
 
     /**
+     * Purpose: executes the validate ipn service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $post_data
      * @param $server_data
      * @return array
      */
-    public function validateIPN(mixed $post_data, mixed $server_data): array
+    public function validateIPN(array $post_data, array $server_data): array
     {
         try {
             if (!isset($post_data['ipn_mode'], $post_data['merchant'], $post_data['status'], $post_data['status_text'])) {

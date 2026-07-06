@@ -16,9 +16,10 @@ use Illuminate\Support\Facades\Auth;
 class IdController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела верификации личности пользователя.
+     * Purpose: initializes the IdController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly ProfileService $profileService,
@@ -28,9 +29,10 @@ class IdController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела верификации личности пользователя.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
     public function index(): View|Factory|Application
     {
@@ -41,9 +43,10 @@ class IdController extends Controller
     }
 
     /**
-     * Назначение: создает новую запись в разделе верификации личности пользователя.
+     * Purpose: creates a new record from request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: passes validated data to the service layer and returns the operation result.
+     *
      */
     public function store(IdRequest $request): RedirectResponse
     {

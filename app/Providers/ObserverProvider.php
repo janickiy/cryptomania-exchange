@@ -11,6 +11,10 @@ use Illuminate\Support\ServiceProvider;
 class ObserverProvider extends ServiceProvider
 {
     /**
+     * Purpose: runs boot-time provider configuration.
+     *
+     * Action: connects routes, observers, policies, or other settings after services are registered.
+     *
      * Bootstrap services.
      *
      * @return void
@@ -22,6 +26,10 @@ class ObserverProvider extends ServiceProvider
     }
 
     /**
+     * Purpose: registers application dependencies in the service container.
+     *
+     * Action: prepares bindings used later by Laravel and application layers.
+     *
      * Register services.
      *
      * @return void

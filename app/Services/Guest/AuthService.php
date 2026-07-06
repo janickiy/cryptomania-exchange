@@ -18,6 +18,10 @@ class AuthService
     protected $user;
 
     /**
+     * Purpose: initializes the AuthService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param UserInterface $repository
      */
     public function __construct(UserInterface $repository)
@@ -26,6 +30,10 @@ class AuthService
     }
 
     /**
+     * Purpose: executes the login service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param LoginRequest $request
      * @return array
      */
@@ -68,6 +76,10 @@ class AuthService
     }
 
     /**
+     * Purpose: executes the send password reset mail service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param PasswordResetRequest $request
      * @return array
      */
@@ -96,6 +108,10 @@ class AuthService
     }
 
     /**
+     * Purpose: executes the reset password service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param Request $request
      * @param $id
      * @return array
@@ -115,6 +131,10 @@ class AuthService
     }
 
     /**
+     * Purpose: executes the update password service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param NewPasswordRequest $request
      * @param $id
      * @return array

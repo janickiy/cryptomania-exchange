@@ -23,9 +23,10 @@ use Illuminate\Http\RedirectResponse;
 class UsersController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела пользователей.
+     * Purpose: initializes the UsersController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly UserInterface $user,
@@ -38,9 +39,10 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела пользователей.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
     public function index(): View|Factory|Application
     {
@@ -74,11 +76,12 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: показывает детальную страницу записи в разделе пользователей.
+     * Purpose: shows the detail page for the selected record.
      *
-     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
+     * Action: loads the record by identifier and passes it to the view.
+     *
      */
-    public function show(int|string $id): View|Factory|Application
+    public function show(int|string $id): View
     {
         $data['user'] = $this->user->findOrFailById($id);
         $data['title'] = __('View User');
@@ -87,11 +90,12 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: показывает форму создания записи в разделе пользователей.
+     * Purpose: shows the form for creating a new record.
      *
-     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     * Action: prepares form data and returns the create view.
+     *
      */
-    public function create(): View|Factory|Application
+    public function create(): View
     {
         $data['userRoleManagements'] = $this->userRoleManagement->getUserRoles();
         $data['title'] = __('Create User');
@@ -100,9 +104,10 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: создает новую запись в разделе пользователей.
+     * Purpose: creates a new record from request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: passes validated data to the service layer and returns the operation result.
+     *
      */
     public function store(UserRequest $request): RedirectResponse
     {
@@ -114,11 +119,12 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: показывает форму редактирования записи в разделе пользователей.
+     * Purpose: shows the edit form for the selected record.
      *
-     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
+     * Action: loads current data and returns the edit view.
+     *
      */
-    public function edit(int|string $id): View|Factory|Application
+    public function edit(int|string $id): View
     {
         $data['user'] = $this->user->findOrFailById($id);
         $data['userRoleManagements'] = $this->userRoleManagement->getUserRoles();
@@ -128,9 +134,12 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: обновляет запись в разделе пользователей.
+     * Purpose: updates the selected record from request data.
      *
-     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
+     * Action: passes changes to the service layer and returns a result message.
+     * @param UserRequest $request
+     * @param int|string $id
+     * @return RedirectResponse
      */
     public function update(UserRequest $request, int|string $id): RedirectResponse
     {
@@ -142,11 +151,14 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: показывает форму изменения статуса пользователя.
+     * Purpose: handles the edit status action in UsersController.
      *
-     * Действие: загружает пользователя и возвращает административную форму статусов.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
+     * @param int|string $id
+     * @return View
      */
-    public function editStatus(int|string $id): View|Factory|Application
+    public function editStatus(int|string $id): View
     {
         $data['user'] = $this->user->findOrFailById($id);
         $data['title'] = __('Edit User Status');
@@ -155,9 +167,14 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: обновляет статус пользователя.
+     * Purpose: handles the update status action in UsersController.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
      *
-     * Действие: принимает валидированные статусы аккаунта, передает их в сервис и возвращает результат.
+     * param UserStatusRequest $request
+     *
+     * @param UserStatusRequest $request
+     * @param int|string $id
+     * @return RedirectResponse
      */
     public function updateStatus(UserStatusRequest $request, int|string $id): RedirectResponse
     {
@@ -167,11 +184,12 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: показывает кошельки выбранного пользователя.
+     * Purpose: handles the wallets action in UsersController.
      *
-     * Действие: загружает пользователя и связанные кошельки, затем возвращает административное представление.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
-    public function wallets(int|string $id): View|Factory|Application
+    public function wallets(int|string $id): View
     {
         $data['list'] = $this->walletService->getWallets($id);
         $data['title'] = __('Wallets');
@@ -180,11 +198,15 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: показывает форму изменения баланса кошелька.
+     * Purpose: handles the edit wallet balance action in UsersController.
      *
-     * Действие: загружает пользователя и кошелек, затем возвращает форму ручной корректировки баланса.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
+     * @param int|string $id
+     * @param int|string $walletId
+     * @return View
      */
-    public function editWalletBalance(int|string $id, int|string $walletId): View|Factory|Application
+    public function editWalletBalance(int|string $id, int|string $walletId): View
     {
         $data['wallet'] = $this->wallets->getFirstByConditions(['id' => $walletId, 'user_id' => $id]);
         $data['title'] = __('Modify Wallet Balance');
@@ -193,9 +215,14 @@ class UsersController extends Controller
     }
 
     /**
-     * Назначение: обновляет баланс кошелька пользователя.
+     * Purpose: handles the update wallet balance action in UsersControlle
      *
-     * Действие: принимает валидированную корректировку, передает ее в сервис и возвращает результат операции.
+     * Action: connects the HTTP request to services or views so the controller remains thin
+     *
+     * @param UpdateWalletBalanceRequest $request
+     * @param int|string $id
+     * @param int|string $walletId
+     * @return RedirectResponse
      */
     public function updateWalletBalance(UpdateWalletBalanceRequest $request, int|string $id, int|string $walletId): RedirectResponse
     {

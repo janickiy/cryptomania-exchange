@@ -9,6 +9,10 @@ use Illuminate\Validation\Rule;
 class UserRoleManagementRequest extends Request
 {
     /**
+     * Purpose: determines whether the current user may submit this request.
+     *
+     * Action: returns the access check result before Laravel runs the validation rules.
+     *
      * Determine if the user is authorized to make this request.
      *
      * @return bool
@@ -19,6 +23,10 @@ class UserRoleManagementRequest extends Request
     }
 
     /**
+     * Purpose: returns validation rules for incoming request data.
+     *
+     * Action: keeps request validation out of controllers and lets Laravel validate the payload consistently.
+     *
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -39,6 +47,12 @@ class UserRoleManagementRequest extends Request
         }
     }
 
+    /**
+     * Purpose: returns custom validation error messages.
+     *
+     * Action: shows clearer error text for specific form or API validation rules.
+     *
+     */
     public function messages(): array
     {
         return [
@@ -47,12 +61,18 @@ class UserRoleManagementRequest extends Request
         ];
     }
 
+    /**
+     * Purpose: prepares the validator instance for the current request.
+     *
+     * Action: adds extra validation checks or transformations before the standard Laravel validation flow.
+     *
+     */
     public function getValidatorInstance(): Validator
     {
         $validator = parent::getValidatorInstance();
         $validator->after(function () use ($validator) {
             $routeConfigs = config('permissionRoutes.configurable_routes');
-            $roles = $this->get('roles', []);
+            $roles = $this->input('roles', []);
 
             foreach ($roles as $roleKey => $roleValue) {
                 foreach ($roleValue as $roleGroupKey => $roleGroupValue) {

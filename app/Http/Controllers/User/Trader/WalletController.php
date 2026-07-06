@@ -18,9 +18,10 @@ use Illuminate\Support\Facades\Auth;
 class WalletController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела кошельков пользователя.
+     * Purpose: initializes the WalletController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly WalletInterface $walletRepository,
@@ -29,9 +30,10 @@ class WalletController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела кошельков пользователя.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
     public function index(): View|Factory|Application
     {
@@ -44,9 +46,10 @@ class WalletController extends Controller
     }
 
     /**
-     * Назначение: показывает форму пополнения кошелька.
+     * Purpose: handles the create deposit action in WalletController.
      *
-     * Действие: загружает кошелек по идентификатору и возвращает представление формы депозита.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function createDeposit(int|string $id): View|Factory|Application
     {
@@ -73,9 +76,10 @@ class WalletController extends Controller
     }
 
     /**
-     * Назначение: создает заявку на пополнение кошелька.
+     * Purpose: handles the store deposit action in WalletController.
      *
-     * Действие: принимает валидированные данные депозита, передает их в сервис кошельков и возвращает результат.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function storeDeposit(DepositRequest $request, int|string $id): RedirectResponse
     {
@@ -89,9 +93,10 @@ class WalletController extends Controller
     }
 
     /**
-     * Назначение: обрабатывает успешное завершение внешнего платежа.
+     * Purpose: handles the complete payment action in WalletController.
      *
-     * Действие: читает ответ платежного провайдера, завершает депозит через сервис и перенаправляет пользователя.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function completePayment(Request $request): RedirectResponse
     {
@@ -106,9 +111,10 @@ class WalletController extends Controller
     }
 
     /**
-     * Назначение: обрабатывает отмену внешнего платежа.
+     * Purpose: handles the cancel payment action in WalletController.
      *
-     * Действие: возвращает пользователя назад с сообщением об отмененной операции.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function cancelPayment(): RedirectResponse
     {
@@ -118,9 +124,10 @@ class WalletController extends Controller
     }
 
     /**
-     * Назначение: показывает форму вывода средств.
+     * Purpose: handles the create withdrawal action in WalletController.
      *
-     * Действие: загружает кошелек по идентификатору и возвращает форму создания заявки на вывод.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function createWithdrawal(int|string $id): View|Factory|Application
     {
@@ -131,9 +138,10 @@ class WalletController extends Controller
     }
 
     /**
-     * Назначение: создает заявку на вывод средств.
+     * Purpose: handles the store withdrawal action in WalletController.
      *
-     * Действие: принимает валидированные данные вывода, передает их в сервис кошельков и возвращает результат.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
     public function storeWithdrawal(WithdrawalRequest $request, int|string $id): RedirectResponse
     {

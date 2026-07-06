@@ -400,7 +400,7 @@
                 var $this = $(this);
                 var parentWidth = $this.parent().outerWidth();
                 var scrollTime = +$this.data('time');
-                var childWidth = $this.children().eq(0).outerWidth();
+                var childWidth = $this.children().eq(0).outerWidth(true);
                 var sublength = $this.children().length;
                 var thisWidth = childWidth * (sublength - 1);
                 if (parentWidth < thisWidth) {

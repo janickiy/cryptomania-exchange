@@ -9,6 +9,10 @@ use Illuminate\Support\ServiceProvider;
 class PermissionProvider extends ServiceProvider
 {
     /**
+     * Purpose: runs boot-time provider configuration.
+     *
+     * Action: connects routes, observers, policies, or other settings after services are registered.
+     *
      * Bootstrap services.
      *
      * @return void
@@ -18,6 +22,12 @@ class PermissionProvider extends ServiceProvider
         $this->loadAdminSettings();
     }
 
+    /**
+     * Purpose: configures the provider through load admin settings.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     private function loadAdminSettings(): void
     {
         $adminSettings = admin_settings();
@@ -38,6 +48,10 @@ class PermissionProvider extends ServiceProvider
     }
 
     /**
+     * Purpose: registers application dependencies in the service container.
+     *
+     * Action: prepares bindings used later by Laravel and application layers.
+     *
      * Register services.
      *
      * @return void

@@ -12,6 +12,10 @@ class AdminSettingService
     protected $adminSetting;
 
     /**
+     * Purpose: initializes the AdminSettingService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param AdminSettingInterface $adminSetting
      */
     public function __construct(AdminSettingInterface $adminSetting)
@@ -20,6 +24,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the admin update service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param Request $request
      * @param null $adminSettingType
      * @return array
@@ -158,6 +166,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the admin setting validation service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $val
      * @param $rules
@@ -205,6 +217,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the image validation service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $image
      * @return bool
      */
@@ -217,6 +233,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the admin form service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param null $data
      * @param false $viewOnly
      * @return array
@@ -273,6 +293,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the view output service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $value
      * @param $data_array
@@ -303,6 +327,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the text service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $data_array
      * @param $input_class
@@ -320,6 +348,10 @@ class AdminSettingService
     //rules here
 
     /**
+     * Purpose: executes the image service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $data_array
      * @param $input_class
@@ -341,6 +373,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the textarea service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $data_array
      * @param $input_class
@@ -358,6 +394,10 @@ class AdminSettingService
     //rules here
 
     /**
+     * Purpose: executes the select service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $data_array
      * @param $input_class
@@ -380,6 +420,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the checkbox service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $data_array
      * @param $input_class
@@ -404,6 +448,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the radio service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $data_array
      * @param $input_class
@@ -425,6 +473,10 @@ class AdminSettingService
     }
 
     /**
+     * Purpose: executes the toggle service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $key
      * @param $data_array
      * @param $input_class

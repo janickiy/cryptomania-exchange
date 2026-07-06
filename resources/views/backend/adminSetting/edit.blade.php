@@ -1,7 +1,7 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    <?php $title_name = ucwords(str_replace_last('_', ' ', $adminSettingType)); ?>
+    <?php $title_name = ucwords(\Illuminate\Support\Str::replaceLast('_', ' ', $adminSettingType)); ?>
     <div class="box box-success">
         <div class="box-header with-border">
             <h3 class="box-title">Admin Setting - {{$title_name}}</h3>
@@ -16,7 +16,7 @@
                     <ul class="nav nav-pills nav-stacked">
                         @foreach($settings['settingSections'] as $settingSection)
                             <li class="{{is_current_route('admin-settings.edit', 'active', ['admin_setting_type'=>$settingSection])}}">
-                                <a href="{{route('admin-settings.edit',['admin_setting_type'=>$settingSection])}}">{{ ucwords(str_replace_last('_',' ',$settingSection)) }}</a>
+                                <a href="{{route('admin-settings.edit',['admin_setting_type'=>$settingSection])}}">{{ ucwords(\Illuminate\Support\Str::replaceLast('_', ' ', $settingSection)) }}</a>
                             </li>
                         @endforeach
                     </ul>

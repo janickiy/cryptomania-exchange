@@ -4,12 +4,17 @@ namespace App\Http\Middleware;
 
 use App\Models\Core\AdminSetting;
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class Language
 {
     /**
+     * Purpose: handles an HTTP request in Language middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
      * @Developer: zahid
      * @Date: 2018-07-29 2:58 PM
      * @Description:
@@ -18,7 +23,7 @@ class Language
      * @return mixed
      * @throws \Exception
      */
-    public function handle(mixed $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response
     {
 
         $locale = $request->segment(1);

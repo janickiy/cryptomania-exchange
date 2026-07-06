@@ -14,12 +14,26 @@ class Comment extends Model
 
     protected $fakeFields = ['commentable_id', 'content', 'commentable_type'];
 
+    /**
+     * Purpose: defines a model relation or computed value through user.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     * @return BelongsTo
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
 
+    /**
+     * Purpose: defines a model relation or computed value through commentable.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     * @return MorphTo
+     */
     public function commentable(): MorphTo
     {
         return $this->morphTo();

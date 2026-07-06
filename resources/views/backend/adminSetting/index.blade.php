@@ -1,7 +1,7 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    <?php $title_name = ucwords(str_replace_last('_',' ',$adminSettingType)); ?>
+    <?php $title_name = ucwords(\Illuminate\Support\Str::replaceLast('_', ' ', $adminSettingType)); ?>
     <div class="box box-success">
         <div class="box-header with-border">
             <h3 class="box-title">Admin Setting - {{$title_name}}</h3>
@@ -23,7 +23,7 @@
                                 }
                             ?>
                             <li class="{{$current_route}}">
-                                <a href="{{route('admin-settings.index',['admin_setting_type'=>$settingSection])}}">{{ucwords(str_replace_last('_',' ',$settingSection))}}</a>
+                                <a href="{{route('admin-settings.index',['admin_setting_type'=>$settingSection])}}">{{ ucwords(\Illuminate\Support\Str::replaceLast('_', ' ', $settingSection)) }}</a>
                             </li>
                             <?php $default = false; ?>
                         @endforeach

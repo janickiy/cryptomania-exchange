@@ -11,6 +11,10 @@ use Illuminate\Validation\ValidationException;
 abstract class Request extends FormRequest
 {
     /**
+     * Purpose: handles request preparation or validation through failed validation.
+     *
+     * Action: moves input-data logic from controllers into a dedicated FormRequest class.
+     *
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator $validator

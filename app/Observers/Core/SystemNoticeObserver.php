@@ -8,6 +8,10 @@ use Carbon\Carbon;
 class SystemNoticeObserver
 {
     /**
+     * Purpose: performs the created operation in SystemNoticeObserver.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * @param SystemNotice $systemNotice
      * @throws \Exception
      */
@@ -29,6 +33,10 @@ class SystemNoticeObserver
     }
 
     /**
+     * Purpose: performs the updated operation in SystemNoticeObserver.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * @param SystemNotice $systemNoticeUpdate
      * @throws \Exception
      */

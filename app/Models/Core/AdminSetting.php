@@ -17,7 +17,13 @@ class AdminSetting extends Model implements AuditableInterface
         'value',
     ];
 
-    public function getRouteGroupAttribute(mixed $value): ?array
+    /**
+     * Purpose: returns a computed model attribute through the get route group attribute accessor.
+     *
+     * Action: is used by Eloquent when reading the property so the app receives a prepared value.
+     *
+     */
+    public function getRouteGroupAttribute(?string $value): ?array
     {
         return json_decode($value,true);
     }

@@ -11,6 +11,7 @@
     "php": "^8.3",
     "ext-bcmath": "*",
     "anhskohbo/no-captcha": "^3.8",
+    "bacon/bacon-qr-code": "^2.0",
     "colorlibhq/adminlte-laravel": "^1.0",
     "denpa/php-bitcoinrpc": "^2.1",
     "intervention/image": "^2.7",

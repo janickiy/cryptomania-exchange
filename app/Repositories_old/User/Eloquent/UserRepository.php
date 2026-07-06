@@ -16,6 +16,10 @@ class UserRepository extends BaseRepository implements UserInterface
     protected $model;
 
     /**
+     * Purpose: initializes the UserRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param User $model
      */
     public function __construct(User $model)
@@ -24,6 +28,10 @@ class UserRepository extends BaseRepository implements UserInterface
     }
 
     /**
+     * Purpose: performs the get count by conditions operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $conditions
      * @return mixed
      */
@@ -33,6 +41,10 @@ class UserRepository extends BaseRepository implements UserInterface
     }
 
     /**
+     * Purpose: performs the get by user ids operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $ids
      * @param array $conditions
      * @return mixed

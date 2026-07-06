@@ -15,6 +15,10 @@ class WalletRepository extends BaseRepository implements WalletInterface
     protected $model;
 
     /**
+     * Purpose: initializes the WalletRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param Wallet $model
      */
     public function __construct(Wallet $model)
@@ -23,6 +27,10 @@ class WalletRepository extends BaseRepository implements WalletInterface
     }
 
     /**
+     * Purpose: performs the find stock item operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param int $id
      * @return Wallet|null
      */
@@ -32,6 +40,10 @@ class WalletRepository extends BaseRepository implements WalletInterface
     }
 
     /**
+     * Purpose: performs the insert operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $parameters
      * @return bool
      */
@@ -41,10 +53,14 @@ class WalletRepository extends BaseRepository implements WalletInterface
     }
 
     /**
+     * Purpose: performs the create unavailable wallet operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $userID
      * @return bool
      */
-    public function createUnavailableWallet(mixed $userID): bool
+    public function createUnavailableWallet(int|string $userID): bool
     {
         $date = now();
         $activeStockItems = app(StockItemInterface::class)->getActiveList();
@@ -65,6 +81,10 @@ class WalletRepository extends BaseRepository implements WalletInterface
     }
 
     /**
+     * Purpose: performs the first or fail operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $conditions
      * @return Wallet
      */
@@ -74,6 +94,10 @@ class WalletRepository extends BaseRepository implements WalletInterface
     }
 
     /**
+     * Purpose: performs the count operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $conditions
      * @return int
      */
@@ -83,6 +107,10 @@ class WalletRepository extends BaseRepository implements WalletInterface
     }
 
     /**
+     * Purpose: updates one or more records in storage.
+     *
+     * Action: centralizes data changes and returns the result to the service layer.
+     *
      * @param array $attributes
      * @param array $conditions
      * @return int
@@ -93,11 +121,15 @@ class WalletRepository extends BaseRepository implements WalletInterface
     }
 
     /**
+     * Purpose: updates one or more records in storage.
+     *
+     * Action: centralizes data changes and returns the result to the service layer.
+     *
      * @param $conditions
      * @param $amount
      * @return bool
      */
-    public function updateWalletBalance(mixed $conditions, mixed $amount): bool
+    public function updateWalletBalance(array $conditions, int|float|string $amount): bool
     {
         try {
             DB::beginTransaction();

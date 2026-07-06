@@ -10,7 +10,7 @@
 <script src="{{ asset('common/vendors/iCheck/icheck.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@4/dist/js/adminlte.min.js"></script>
 @yield('extraScript')
-<script src="{{ asset('backend/assets/js/custom.js') }}"></script>
+<script src="{{ asset('backend/assets/js/custom.js') }}?v={{ filemtime(public_path('backend/assets/js/custom.js')) }}"></script>
 @yield('script')
 </body>
 </html>

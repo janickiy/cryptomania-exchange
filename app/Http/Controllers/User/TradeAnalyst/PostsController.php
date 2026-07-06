@@ -7,9 +7,7 @@ use App\Http\Requests\User\TradeAnalyst\PostRequest;
 use App\Repositories\User\TradeAnalyst\Interfaces\PostInterface;
 use App\Services\Core\DataListService;
 use App\Services\Core\FileUploadService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,9 +16,10 @@ use Illuminate\Support\Facades\Storage;
 class PostsController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела торговых публикаций аналитика.
+     * Purpose: initializes the PostsController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly PostInterface $postRepository,
@@ -30,11 +29,12 @@ class PostsController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела торговых публикаций аналитика.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
         $conditions = [
             'posts.user_id' => Auth::id(),
@@ -63,20 +63,22 @@ class PostsController extends Controller
     }
 
     /**
-     * Назначение: показывает форму создания записи в разделе торговых публикаций аналитика.
+     * Purpose: shows the form for creating a new record.
      *
-     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     * Action: prepares form data and returns the create view.
+     *
      */
-    public function create(): View|Factory|Application
+    public function create(): View
     {
         $data['title'] = __('Create Post');
         return view('backend.posts.create', $data);
     }
 
     /**
-     * Назначение: создает новую запись в разделе торговых публикаций аналитика.
+     * Purpose: creates a new record from request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: passes validated data to the service layer and returns the operation result.
+     *
      */
     public function store(PostRequest $request): RedirectResponse
     {
@@ -99,11 +101,12 @@ class PostsController extends Controller
     }
 
     /**
-     * Назначение: показывает форму редактирования записи в разделе торговых публикаций аналитика.
+     * Purpose: shows the edit form for the selected record.
      *
-     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
+     * Action: loads current data and returns the edit view.
+     *
      */
-    public function edit(int|string $id): View|Factory|Application
+    public function edit(int|string $id): View
     {
         $conditions = [
             'id' => $id,
@@ -118,9 +121,10 @@ class PostsController extends Controller
     }
 
     /**
-     * Назначение: обновляет запись в разделе торговых публикаций аналитика.
+     * Purpose: updates the selected record from request data.
      *
-     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
+     * Action: passes changes to the service layer and returns a result message.
+     *
      */
     public function update(PostRequest $request, int|string $id): RedirectResponse
     {
@@ -155,9 +159,10 @@ class PostsController extends Controller
     }
 
     /**
-     * Назначение: удаляет запись в разделе торговых публикаций аналитика.
+     * Purpose: deletes the selected record.
      *
-     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
+     * Action: performs deletion through a service or repository and redirects back with the result.
+     *
      */
     public function destroy(int|string $id): RedirectResponse
     {
@@ -177,9 +182,10 @@ class PostsController extends Controller
     }
 
     /**
-     * Назначение: переключает активность записи в разделе торговых публикаций аналитика.
+     * Purpose: toggles the active status of the selected record.
      *
-     * Действие: меняет статус активности через сервис или репозиторий и возвращает сообщение о результате.
+     * Action: changes status through a service and redirects with the result message.
+     *
      */
     public function toggleActiveStatus(int|string $id): RedirectResponse
     {

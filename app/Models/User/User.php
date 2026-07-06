@@ -32,21 +32,49 @@ class User extends Authenticatable implements AuditableInterface
         'password', 'remember_token',
     ];
 
+    /**
+     * Purpose: defines a model relation or computed value through user role management.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     * @return BelongsTo
+     */
     public function userRoleManagement(): BelongsTo
     {
         return $this->belongsTo(UserRoleManagement::class);
     }
 
+    /**
+     * Purpose: defines a model relation or computed value through user info.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     * @return HasOne
+     */
     public function userInfo(): HasOne
     {
         return $this->hasOne(UserInfo::class);
     }
 
+    /**
+     * Purpose: defines a model relation or computed value through user setting.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     * @return HasOne
+     */
     public function userSetting(): HasOne
     {
         return $this->hasOne(UserSetting::class);
     }
 
+    /**
+     * Purpose: defines a model relation or computed value through wallets.
+     *
+     * Action: lets Eloquent load related data while keeping model rules close to the model.
+     *
+     * @return HasMany
+     */
     public function wallets(): HasMany
     {
         return $this->hasMany(Wallet::class);

@@ -1,26 +1,33 @@
-<div class="box box-primary">
-    <div class="box-body box-profile">
+<div class="card card-primary card-outline profile-sidebar-card">
+    <div class="card-body text-center">
         <img src="{{ get_avatar($user->avatar) }}" alt="{{ __('Profile Image') }}"
-             class="img-responsive cm-center">
-        <h4 class="cm-mt-10 text-center">{{ $user->userInfo->full_name }}</h4>
+             class="profile-user-img img-fluid rounded-circle shadow-sm">
+        <h4 class="profile-username mt-3 mb-1">{{ $user->userInfo->full_name }}</h4>
+        @if(isset($user->userRoleManagement))
+            <p class="text-body-secondary mb-0">{{ $user->userRoleManagement->role_name }}</p>
+        @endif
     </div>
 
-    <div class="box-footer no-padding">
-        <ul class="nav nav-stacked">
-            @if(has_permission($profileRouteInfo['walletRouteName']))
-                <li><a href="{{ $profileRouteInfo['walletRoute'] }}">{{ __('Wallets') }} <span
-                                class="pull-right badge bg-green">{{ $profileRouteInfo['totalWallets'] }}</span></a></li>
-            @endif
+    <div class="list-group list-group-flush profile-stat-list">
+        @if(has_permission($profileRouteInfo['walletRouteName']))
+            <a href="{{ $profileRouteInfo['walletRoute'] }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <span><i class="fa fa-wallet me-2 text-primary"></i>{{ __('Wallets') }}</span>
+                <span class="badge text-bg-success rounded-pill">{{ $profileRouteInfo['totalWallets'] }}</span>
+            </a>
+        @endif
 
-            @if(has_permission($profileRouteInfo['openOrderRouteName']))
-                <li><a href="{{ $profileRouteInfo['openOrderRoute'] }}">{{ __('Open Orders') }} <span
-                                class="pull-right badge bg-green">{{ $profileRouteInfo['totalOpenOrders'] }}</span></a></li>
-            @endif
+        @if(has_permission($profileRouteInfo['openOrderRouteName']))
+            <a href="{{ $profileRouteInfo['openOrderRoute'] }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <span><i class="fa fa-list-check me-2 text-primary"></i>{{ __('Open Orders') }}</span>
+                <span class="badge text-bg-success rounded-pill">{{ $profileRouteInfo['totalOpenOrders'] }}</span>
+            </a>
+        @endif
 
-            @if(has_permission($profileRouteInfo['tradeHistoryRouteName']))
-                <li><a href="{{ $profileRouteInfo['tradeHistoryRoute'] }}">{{ __('Trade History') }} <span
-                                class="pull-right badge bg-green">{{ $profileRouteInfo['totalTrades'] }}</span></a></li>
-            @endif
-        </ul>
+        @if(has_permission($profileRouteInfo['tradeHistoryRouteName']))
+            <a href="{{ $profileRouteInfo['tradeHistoryRoute'] }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <span><i class="fa fa-chart-line me-2 text-primary"></i>{{ __('Trade History') }}</span>
+                <span class="badge text-bg-success rounded-pill">{{ $profileRouteInfo['totalTrades'] }}</span>
+            </a>
+        @endif
     </div>
 </div>

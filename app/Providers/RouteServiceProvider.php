@@ -17,6 +17,10 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespace = 'App\Http\Controllers';
 
     /**
+     * Purpose: runs boot-time provider configuration.
+     *
+     * Action: connects routes, observers, policies, or other settings after services are registered.
+     *
      * Define your route model bindings, pattern filters, etc.
      *
      * @return void
@@ -33,6 +37,10 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
+     * Purpose: configures the provider through map.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
      * Define the routes for the application.
      *
      * @return void
@@ -68,6 +76,12 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/web.php'));
     }*/
 
+    /**
+     * Purpose: configures the provider through map web routes.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     protected function mapWebRoutes(): void
     {
         $filename = $middleware = 'web';
@@ -75,6 +89,12 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace, 'routes/');
     }
 
+    /**
+     * Purpose: configures the provider through route map.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     protected function routeMap(mixed $filename, mixed $middleware, mixed $prefix = null, mixed $namespace = null, mixed $path = 'routes/groups/'): void
     {
         $locale = strtolower($this->app->request->segment(1));
@@ -97,6 +117,12 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path($path . $filename . '.php'));
     }
 
+    /**
+     * Purpose: configures the provider through map permission routes.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     protected function mapPermissionRoutes(): void
     {
         $filename = 'permission';
@@ -105,6 +131,12 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
+    /**
+     * Purpose: configures the provider through map guest permission routes.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     protected function mapGuestPermissionRoutes(): void
     {
         $filename = 'guest_permission';
@@ -113,6 +145,12 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
+    /**
+     * Purpose: configures the provider through map verification permission routes.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     protected function mapVerificationPermissionRoutes(): void
     {
         $filename = 'verification_permission';
@@ -124,6 +162,10 @@ class RouteServiceProvider extends ServiceProvider
 
 
     /**
+     * Purpose: configures the provider through map api routes.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
      * Define the "api" routes for the application.
      *
      * These routes are typically stateless.
@@ -138,6 +180,12 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/api.php'));
     }
 
+    /**
+     * Purpose: configures the provider through mappermission api routes.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     protected function mappermissionApiRoutes(): void
     {
         $filename = 'permission_api';
@@ -146,6 +194,12 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
+    /**
+     * Purpose: configures the provider through map guestpermission api routes.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     protected function mapGuestpermissionApiRoutes(): void
     {
         $filename = 'guest_permission_api';
@@ -154,6 +208,12 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
+    /**
+     * Purpose: configures the provider through map verificationpermission api routes.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     protected function mapVerificationpermissionApiRoutes(): void
     {
         $filename = 'verification_permission_api';
@@ -162,6 +222,12 @@ class RouteServiceProvider extends ServiceProvider
         $this->routeMap($filename, $middleware, $prefix, $namespace);
     }
 
+    /**
+     * Purpose: configures the provider through exchnage route.
+     *
+     * Action: is used by Laravel during application startup to prepare infrastructure.
+     *
+     */
     private function exchnageRoute(): void
     {
         $filename = 'exchange';

@@ -15,7 +15,7 @@
             <input type="hidden" value="{{base_key()}}" name="base_key">
 
             @if(request()->has('ref') && admin_settings('referral'))
-                <input type="hidden" name="referral_code" value="{{ request()->get('ref') }}">
+                <input type="hidden" name="referral_code" value="{{ request()->query('ref') }}">
             @endif
 
             <div class="form-group has-feedback {{ $errors->has('first_name') ? 'has-error' : '' }}">

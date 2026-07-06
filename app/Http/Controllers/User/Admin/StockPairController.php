@@ -17,9 +17,10 @@ use Illuminate\Http\RedirectResponse;
 class StockPairController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела торговых пар.
+     * Purpose: initializes the StockPairController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly StockPairInterface $stockPair,
@@ -30,9 +31,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела торговых пар.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
     public function index(): View|Factory|Application
     {
@@ -74,9 +76,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: показывает форму создания записи в разделе торговых пар.
+     * Purpose: shows the form for creating a new record.
      *
-     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     * Action: prepares form data and returns the create view.
+     *
      */
     public function create(): View|Factory|Application
     {
@@ -87,9 +90,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: создает новую запись в разделе торговых пар.
+     * Purpose: creates a new record from request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: passes validated data to the service layer and returns the operation result.
+     *
      */
     public function store(StockPairRequest $request): RedirectResponse
     {
@@ -107,9 +111,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: показывает детальную страницу записи в разделе торговых пар.
+     * Purpose: shows the detail page for the selected record.
      *
-     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
+     * Action: loads the record by identifier and passes it to the view.
+     *
      */
     public function show(int|string $id): View|Factory|Application
     {
@@ -120,9 +125,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: показывает форму редактирования записи в разделе торговых пар.
+     * Purpose: shows the edit form for the selected record.
      *
-     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
+     * Action: loads current data and returns the edit view.
+     *
      */
     public function edit(int|string $id): View|Factory|Application
     {
@@ -134,9 +140,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: обновляет запись в разделе торговых пар.
+     * Purpose: updates the selected record from request data.
      *
-     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
+     * Action: passes changes to the service layer and returns a result message.
+     *
      */
     public function update(StockPairRequest $request, int|string $id): RedirectResponse
     {
@@ -148,9 +155,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: удаляет запись в разделе торговых пар.
+     * Purpose: deletes the selected record.
      *
-     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
+     * Action: performs deletion through a service or repository and redirects back with the result.
+     *
      */
     public function destroy(int|string $id): RedirectResponse
     {
@@ -166,9 +174,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: переключает активность записи в разделе торговых пар.
+     * Purpose: toggles the active status of the selected record.
      *
-     * Действие: меняет статус активности через сервис или репозиторий и возвращает сообщение о результате.
+     * Action: changes status through a service and redirects with the result message.
+     *
      */
     public function toggleActiveStatus(int|string $id): RedirectResponse
     {
@@ -178,9 +187,10 @@ class StockPairController extends Controller
     }
 
     /**
-     * Назначение: назначает запись значением по умолчанию в разделе торговых пар.
+     * Purpose: marks the selected record as the default value.
      *
-     * Действие: снимает предыдущий default-статус, устанавливает новый и возвращает результат операции.
+     * Action: updates the default status through the service layer and returns the operation result.
+     *
      */
     public function makeStatusDefault(int|string $id): RedirectResponse
     {

@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 class PasswordResetRequest extends Request
 {
     /**
+     * Purpose: determines whether the current user may submit this request.
+     *
+     * Action: returns the access check result before Laravel runs the validation rules.
+     *
      * Determine if the user is authorized to make this request.
      *
      * @return bool
@@ -18,6 +22,10 @@ class PasswordResetRequest extends Request
     }
 
     /**
+     * Purpose: returns validation rules for incoming request data.
+     *
+     * Action: keeps request validation out of controllers and lets Laravel validate the payload consistently.
+     *
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -38,6 +46,12 @@ class PasswordResetRequest extends Request
         return [];
     }
 
+    /**
+     * Purpose: returns custom validation error messages.
+     *
+     * Action: shows clearer error text for specific form or API validation rules.
+     *
+     */
     public function messages(): array
     {
         return [
@@ -45,6 +59,12 @@ class PasswordResetRequest extends Request
         ];
     }
 
+    /**
+     * Purpose: returns human-readable names for validated fields.
+     *
+     * Action: helps the validator display user-friendly field names in error messages.
+     *
+     */
     public function attributes(): array
     {
         return ['g-recaptcha-response' => 'google captcha'];

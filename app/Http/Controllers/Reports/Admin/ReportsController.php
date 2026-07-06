@@ -2,146 +2,109 @@
 
 namespace App\Http\Controllers\Reports\Admin;
 
-use App\Repositories\User\Trader\Interfaces\WalletInterface;
-use App\Services\User\Admin\ReportsService;
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\View\Factory;
+use App\Services\User\Admin\ReportsService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 
 class ReportsController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела отчетов.
+     * Purpose: initializes the ReportsController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
      */
     public function __construct(
         private readonly ReportsService $reportsService,
-        private readonly WalletInterface $wallets,
     ) {
     }
 
     /**
-     * Назначение: показывает общий отчет по депозитам.
+     * Purpose: displays all user deposit report rows for admins.
      *
-     * Действие: получает список депозитов с учетом типа транзакции и возвращает отчетное представление.
+     * Action: delegates report data preparation to the service and renders the admin deposits view.
      */
-    public function allDeposits(?string $paymentTransactionType = null): View|Factory|Application
+    public function allDeposits(?string $paymentTransactionType = null): View
     {
-        $data['list'] = $this->reportsService->deposits(null, null, $paymentTransactionType);
-        $data['title'] = __('Deposits');
-        $data['status'] = $paymentTransactionType;
-
-        return view('backend.reports.all_deposit', $data);
+        return view('backend.reports.all_deposit', $this->reportsService->adminAllDepositsData($paymentTransactionType));
     }
 
     /**
-     * Назначение: показывает отчет по депозитам конкретного пользователя.
+     * Purpose: displays deposit report rows for a specific wallet.
      *
-     * Действие: фильтрует депозиты по пользователю и типу транзакции, затем возвращает отчет.
+     * Action: delegates wallet lookup and report data preparation to the service.
      */
-    public function deposits(int|string $id, ?string $paymentTransactionType = null): View|Factory|Application
+    public function deposits(int|string $id, ?string $paymentTransactionType = null): View
     {
-        $data['wallet'] = $this->wallets->firstOrFail(['id' => $id], 'stockItem');
-        $data['list'] = $this->reportsService->deposits(null, $id, $paymentTransactionType);
-        $data['title'] = __('Deposits');
-        $data['status'] = $paymentTransactionType;
-
-        return view('backend.reports.deposit', $data);
+        return view('backend.reports.deposit', $this->reportsService->adminDepositsData($id, $paymentTransactionType));
     }
 
     /**
-     * Назначение: показывает общий отчет по выводам средств.
+     * Purpose: displays all user withdrawal report rows for admins.
      *
-     * Действие: получает список выводов с учетом типа транзакции и возвращает отчетное представление.
+     * Action: delegates report data preparation to the service and renders the admin withdrawals view.
      */
-    public function allWithdrawals(?string $paymentTransactionType = null): View|Factory|Application {
-        $data['list'] = $this->reportsService->withdrawals(null, null, $paymentTransactionType);
-        $data['title'] = __('Withdrawals');
-        $data['status'] = $paymentTransactionType;
-
-        return view('backend.reports.all_withdrawal', $data);
-    }
-
-    /**
-     * Назначение: показывает отчет по выводам конкретного пользователя.
-     *
-     * Действие: фильтрует выводы по пользователю и типу транзакции, затем возвращает отчет.
-     */
-    public function withdrawals(int|string $id, ?string $paymentTransactionType = null): View|Factory|Application {
-        $data['wallet'] = $this->wallets->firstOrFail(['id' => $id], 'stockItem');
-        $data['list'] = $this->reportsService->withdrawals(null, $id, $paymentTransactionType);
-        $data['title'] = __('Withdrawals');
-        $data['status'] = $paymentTransactionType;
-
-        return view('backend.reports.withdrawal', $data);
-    }
-
-    /**
-     * Назначение: показывает общий отчет по сделкам.
-     *
-     * Действие: получает торговые операции с учетом категории и возвращает отчетное представление.
-     */
-    public function allTrades(?string $categoryType = null): View|Factory|Application {
-        $data['list'] = $this->reportsService->trades(null, $categoryType);
-        $data['title'] = __('Trades');
-        $data['categoryType'] = $categoryType;
-
-        return view('backend.reports.trades', $data);
-    }
-
-    /**
-     * Назначение: показывает отчет по сделкам.
-     *
-     * Действие: фильтрует торговые операции по пользователю или категории и возвращает отчет.
-     */
-    public function trades(int|string $userId, ?string $categoryType = null): View|Factory|Application {
-        $data['list'] = $this->reportsService->trades($userId, $categoryType);
-        $data['title'] = __('Trades');
-        $data['categoryType'] = $categoryType;
-
-        return view('backend.reports.trades', $data);
-    }
-
-    /**
-     * Назначение: показывает открытые ордера пользователя.
-     *
-     * Действие: запрашивает текущие открытые ордера и возвращает представление списка.
-     */
-    public function openOrders(int|string $userId): View|Factory|Application
+    public function allWithdrawals(?string $paymentTransactionType = null): View
     {
-        $data['list'] = $this->reportsService->openOrders($userId);
-        $data['title'] = __('Open Orders');
-        $data['hideUser'] = $userId;
-
-        return view('backend.reports.open_orders', $data);
+        return view('backend.reports.all_withdrawal', $this->reportsService->adminAllWithdrawalsData($paymentTransactionType));
     }
 
     /**
-     * Назначение: показывает отчет по сделкам торговой пары.
+     * Purpose: displays withdrawal report rows for a specific wallet.
      *
-     * Действие: фильтрует сделки по торговой паре и категории, затем возвращает отчетное представление.
+     * Action: delegates wallet lookup and report data preparation to the service.
      */
-    public function tradesByStockPairId(int|string $id, ?string $categoryType = null): View|Factory|Application {
-        $data['list'] = $this->reportsService->trades(null, $categoryType, $id);
-        $data['title'] = __('Trades');
-        $data['categoryType'] = $categoryType;
-
-        return view('backend.reports.trades', $data);
-    }
-
-    /**
-     * Назначение: показывает открытые ордера торговой пары.
-     *
-     * Действие: фильтрует открытые ордера по торговой паре и возвращает отчетное представление.
-     */
-    public function openOrdersByStockPairId(int|string $id): View|Factory|Application
+    public function withdrawals(int|string $id, ?string $paymentTransactionType = null): View
     {
-        $data['list'] = $this->reportsService->openOrders(null, null, $id);
-        $data['title'] = __('Open Orders');
-        $data['hideUser'] = false;
+        return view('backend.reports.withdrawal', $this->reportsService->adminWithdrawalsData($id, $paymentTransactionType));
+    }
 
-        return view('backend.reports.open_orders', $data);
+    /**
+     * Purpose: displays all executed trade report rows for admins.
+     *
+     * Action: delegates category filtering and list preparation to the report service.
+     */
+    public function allTrades(?string $categoryType = null): View
+    {
+        return view('backend.reports.trades', $this->reportsService->adminAllTradesData($categoryType));
+    }
+
+    /**
+     * Purpose: displays executed trade report rows for a specific user.
+     *
+     * Action: delegates user and category filtering to the report service.
+     */
+    public function trades(int|string $userId, ?string $categoryType = null): View
+    {
+        return view('backend.reports.trades', $this->reportsService->adminTradesData($userId, $categoryType));
+    }
+
+    /**
+     * Purpose: displays open order report rows for a specific user.
+     *
+     * Action: delegates pending-order filtering to the report service.
+     */
+    public function openOrders(int|string $userId): View
+    {
+        return view('backend.reports.open_orders', $this->reportsService->adminOpenOrdersData($userId));
+    }
+
+    /**
+     * Purpose: displays executed trade report rows for a specific stock pair.
+     *
+     * Action: delegates stock-pair and category filtering to the report service.
+     */
+    public function tradesByStockPairId(int|string $id, ?string $categoryType = null): View
+    {
+        return view('backend.reports.trades', $this->reportsService->adminStockPairTradesData($id, $categoryType));
+    }
+
+    /**
+     * Purpose: displays open order report rows for a specific stock pair.
+     *
+     * Action: delegates stock-pair pending-order filtering to the report service.
+     */
+    public function openOrdersByStockPairId(int|string $id): View
+    {
+        return view('backend.reports.open_orders', $this->reportsService->adminStockPairOpenOrdersData($id));
     }
 }

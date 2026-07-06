@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Repositories\User\Trader\Interfaces\StockOrderInterface;
-use App\Services\Api\CoinPaymentApi;
 use App\Services\Exchange\StockExchangeService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
@@ -13,6 +12,10 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
+     * Purpose: runs boot-time provider configuration.
+     *
+     * Action: connects routes, observers, policies, or other settings after services are registered.
+     *
      * Bootstrap any application services.
      *
      * @return void
@@ -69,6 +72,10 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
+     * Purpose: registers application dependencies in the service container.
+     *
+     * Action: prepares bindings used later by Laravel and application layers.
+     *
      * Register any application services.
      *
      * @return void

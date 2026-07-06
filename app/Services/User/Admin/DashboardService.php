@@ -4,6 +4,12 @@ namespace App\Services\User\Admin;
 
 class DashboardService
 {
+    /**
+     * Purpose: executes the get cpu usages service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function getCpuUsages(): float
     {
         $free = shell_exec('free');

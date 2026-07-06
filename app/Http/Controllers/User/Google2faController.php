@@ -17,9 +17,10 @@ use PragmaRX\Google2FALaravel\Support\Authenticator;
 class Google2faController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела двухфакторной аутентификации.
+     * Purpose: initializes the Google2faController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly ProfileService $profileService,
@@ -28,9 +29,10 @@ class Google2faController extends Controller
     }
 
     /**
-     * Назначение: показывает форму создания записи в разделе двухфакторной аутентификации.
+     * Purpose: shows the form for creating a new record.
      *
-     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     * Action: prepares form data and returns the create view.
+     *
      */
     public function create(): View|Factory|Application
     {
@@ -40,17 +42,34 @@ class Google2faController extends Controller
         if (empty(Auth::user()->google2fa_secret)) {
             $google2fa = new Google2FA();
             $data['secretKey'] = $google2fa->generateSecretKey(16);
-            $data['inlineUrl'] = $google2fa->getQRCodeInline(company_name(), Auth::user()->email, $data['secretKey']);
+            $data['inlineUrl'] = $this->toQrCodeDataUri(
+                $google2fa->getQRCodeInline(company_name(), Auth::user()->email, $data['secretKey'])
+            );
         }
 
         return view('backend.google2fa.create', $data);
     }
 
+    /**
+     * Purpose: normalizes a generated QR code into a browser-safe image source.
+     *
+     * Action: keeps existing data URIs unchanged and wraps raw SVG markup returned by the QR backend into a data URI.
+     */
+    private function toQrCodeDataUri(string $qrCode): string
+    {
+        if (str_starts_with(trim($qrCode), 'data:')) {
+            return $qrCode;
+        }
+
+        return 'data:image/svg+xml;base64,' . base64_encode($qrCode);
+    }
+
 
     /**
-     * Назначение: создает новую запись в разделе двухфакторной аутентификации.
+     * Purpose: creates a new record from request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: passes validated data to the service layer and returns the operation result.
+     *
      */
     public function store(Google2faRequest $request, string $googleCode): RedirectResponse
     {
@@ -75,9 +94,10 @@ class Google2faController extends Controller
     }
 
     /**
-     * Назначение: подтверждает действие или код пользователя.
+     * Purpose: handles user or account verification.
      *
-     * Действие: передает данные запроса в сервис проверки и возвращает перенаправление по результату.
+     * Action: checks the provided parameters and redirects with the verification result.
+     *
      */
     public function verify(Google2faRequest $request): RedirectResponse
     {
@@ -99,9 +119,10 @@ class Google2faController extends Controller
 
 
     /**
-     * Назначение: удаляет запись в разделе двухфакторной аутентификации.
+     * Purpose: deletes the selected record.
      *
-     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
+     * Action: performs deletion through a service or repository and redirects back with the result.
+     *
      */
     public function destroy(Google2faRequest $request): RedirectResponse
     {

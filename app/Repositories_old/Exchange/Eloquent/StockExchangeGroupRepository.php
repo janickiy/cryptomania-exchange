@@ -14,6 +14,10 @@ class StockExchangeGroupRepository extends BaseRepository implements StockExchan
      protected $model;
 
     /**
+     * Purpose: initializes the StockExchangeGroupRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockExchangeGroup $stockExchangeGroup
      */
      public function __construct(StockExchangeGroup $stockExchangeGroup)

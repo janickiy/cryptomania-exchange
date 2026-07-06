@@ -15,6 +15,10 @@ class StockExchangeRepository extends BaseRepository implements StockExchangeInt
     protected $model;
 
     /**
+     * Purpose: initializes the StockExchangeRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockExchange $stockExchange
      */
     public function __construct(StockExchange $stockExchange)
@@ -23,6 +27,10 @@ class StockExchangeRepository extends BaseRepository implements StockExchangeInt
     }
 
     /**
+     * Purpose: performs the get latest operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $conditions
      * @param int $limit
      * @return mixed
@@ -39,6 +47,10 @@ class StockExchangeRepository extends BaseRepository implements StockExchangeInt
     }
 
     /**
+     * Purpose: performs the count operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $conditions
      * @return mixed
      */

@@ -16,6 +16,10 @@ class SystemNoticeRepository extends BaseRepository implements SystemNoticeInter
     protected $model;
 
     /**
+     * Purpose: initializes the SystemNoticeRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param SystemNotice $model
      */
     public function __construct(SystemNotice $model)
@@ -23,6 +27,12 @@ class SystemNoticeRepository extends BaseRepository implements SystemNoticeInter
         $this->model = $model;
     }
 
+    /**
+     * Purpose: performs the todays notifications operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
+     */
     public function todaysNotifications(): Collection
     {
         $startDate = Carbon::now();

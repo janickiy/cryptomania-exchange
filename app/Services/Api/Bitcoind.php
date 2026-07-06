@@ -4,6 +4,12 @@ namespace App\Services\Api;
 
 abstract class Bitcoind implements CryptoStockApiInterface
 {
+    /**
+     * Purpose: executes the generate address service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function generateAddress(): array
     {
         try {
@@ -24,16 +30,26 @@ abstract class Bitcoind implements CryptoStockApiInterface
         }
     }
 
-    public function getTxnInfoByAddress(mixed $address): void
+    /**
+     * Purpose: executes the get txn info by address service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
+    public function getTxnInfoByAddress(string $address): void
     {
         //
     }
 
     /**
+     * Purpose: executes the get txn info by txn id service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $txid
      * @return array|string[]
      */
-    public function getTxnInfoByTxnId(mixed $txid): array
+    public function getTxnInfoByTxnId(string $txid): array
     {
         try {
             $response = $this->bitcoind->gettransaction($txid);
@@ -70,17 +86,27 @@ abstract class Bitcoind implements CryptoStockApiInterface
         }
     }
 
-    public function getTxnList(mixed $limit = 25): void
+    /**
+     * Purpose: executes the get txn list service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
+    public function getTxnList(int $limit = 25): void
     {
         //
     }
 
     /**
+     * Purpose: executes the send to address service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $address
      * @param $amount
      * @return array|string[]
      */
-    public function sendToAddress(mixed $address, mixed $amount): array
+    public function sendToAddress(string $address, int|float|string $amount): array
     {
         try {
 
@@ -116,10 +142,14 @@ abstract class Bitcoind implements CryptoStockApiInterface
     }
 
     /**
+     * Purpose: executes the get estimated fee service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param int $block
      * @return false|string
      */
-    public function getEstimatedFee(mixed $block = 6): string|false
+    public function getEstimatedFee(int $block = 6): string|false
     {
         try {
             $response = $this->bitcoind->estimatesmartfee($block);
@@ -134,6 +164,12 @@ abstract class Bitcoind implements CryptoStockApiInterface
         }
     }
 
+    /**
+     * Purpose: executes the get balance service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function getBalance(): string|int
     {
         try {
@@ -150,11 +186,15 @@ abstract class Bitcoind implements CryptoStockApiInterface
     }
 
     /**
+     * Purpose: executes the validate ipn service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $post_data
      * @param $server_data
      * @return array|string[]
      */
-    public function validateIPN(mixed $post_data, mixed $server_data): array
+    public function validateIPN(array $post_data, array $server_data): array
     {
         if (!isset($post_data['txn_id'])) {
             return ['error' => __('Invalid bitcoin ipn request.')];

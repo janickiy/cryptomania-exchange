@@ -14,6 +14,10 @@ class ReferralEarningRepository extends BaseRepository implements ReferralEarnin
     protected $model;
 
     /**
+     * Purpose: initializes the ReferralEarningRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param ReferralEarning $referralEarning
      */
     public function __construct(ReferralEarning $referralEarning)

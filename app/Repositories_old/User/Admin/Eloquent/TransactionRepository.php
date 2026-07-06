@@ -14,6 +14,10 @@ class TransactionRepository extends BaseRepository implements TransactionInterfa
     protected $model;
 
     /**
+     * Purpose: initializes the TransactionRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param Transaction $transaction
      */
     public function __construct(Transaction $transaction)

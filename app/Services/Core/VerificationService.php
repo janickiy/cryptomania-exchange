@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Mail;
 class VerificationService
 {
     /**
+     * Purpose: executes the verify user email service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param Request $request
      * @return array
      */
@@ -45,6 +49,10 @@ class VerificationService
     }
 
     /**
+     * Purpose: executes the send verification link service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param PasswordResetRequest $request
      * @return array
      */
@@ -77,6 +85,10 @@ class VerificationService
     }
 
     /**
+     * Purpose: executes the send email verification link service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $user
      * @return void
      */

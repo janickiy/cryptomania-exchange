@@ -2,79 +2,52 @@
 
 namespace App\Http\Controllers\User\Admin;
 
-use App\DTO\Admin\StockItemData;
-use App\Http\Requests\Admin\StockItemRequest;
-use App\Repositories\User\Admin\Interfaces\StockItemInterface;
 use App\Http\Controllers\Controller;
-use App\Services\Core\DataListService;
+use App\Http\Requests\Admin\StockItemRequest;
 use App\Services\User\Admin\StockItemService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 
 class StockItemController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела валют и торговых активов.
+     * Purpose: initializes the StockItemController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
      */
     public function __construct(
-        private readonly StockItemInterface $stockItem,
         private readonly StockItemService $stockItemService,
-        private readonly DataListService $dataListService,
     ) {
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела валют и торговых активов.
+     * Purpose: displays the stock item list page.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: delegates list filtering and metadata preparation to the stock item service.
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
-        $searchFields = [
-            ['item', __('Stock Item')],
-            ['item_name', __('Stock Item Name')],
-            ['item_type', __('Stock Item Type')],
-            ['is_active', __('Active Status')],
-        ];
-
-        $orderFields = [
-            ['item', __('Stock Item')],
-            ['item_name', __('Stock Item Name')],
-            ['item_type', __('Stock Item Type')],
-            ['stock_items.created_at', __('Created Date')],
-        ];
-
-        $query = $this->stockItem->paginateWithFilters($searchFields, $orderFields);
-        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
-        $data['title'] = __('Stock Items');
-
-        return view('backend.stockItems.index', $data);
+        return view('backend.stockItems.index', $this->stockItemService->indexData());
     }
 
     /**
-     * Назначение: показывает форму создания записи в разделе валют и торговых активов.
+     * Purpose: displays the stock item creation form.
      *
-     * Действие: подготавливает справочные данные для формы и возвращает представление создания.
+     * Action: delegates page metadata preparation to the stock item service.
      */
-    public function create(): View|Factory|Application
+    public function create(): View
     {
-        $data['title'] = __('Create Stock Item');
-
-        return view('backend.stockItems.create', $data);
+        return view('backend.stockItems.create', $this->stockItemService->createData());
     }
 
     /**
-     * Назначение: создает новую запись в разделе валют и торговых активов.
+     * Purpose: creates a stock item from validated request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: delegates DTO creation, upload handling, and persistence to the stock item service.
      */
     public function store(StockItemRequest $request): RedirectResponse
     {
-        if ($created = $this->stockItemService->create(StockItemData::fromArray($request->validated() + ['item_emoji' => $request->file('item_emoji')]))) {
+        if ($created = $this->stockItemService->createFromValidatedData($request->validated(), $request->file('item_emoji'))) {
             return redirect()->route('admin.stock-items.show', $created->id)->with(SERVICE_RESPONSE_SUCCESS, __('The stock item has been created successfully.'));
         }
 
@@ -82,39 +55,33 @@ class StockItemController extends Controller
     }
 
     /**
-     * Назначение: показывает детальную страницу записи в разделе валют и торговых активов.
+     * Purpose: displays details for a selected stock item.
      *
-     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
+     * Action: delegates stock item lookup and page metadata preparation to the service.
      */
-    public function show(int|string $id): View|Factory|Application
+    public function show(int|string $id): View
     {
-        $data['title'] = __('Stock Item');
-        $data['stockItem'] = $this->stockItem->findOrFailById($id);
-
-        return view('backend.stockItems.show', $data);
+        return view('backend.stockItems.show', $this->stockItemService->showData($id));
     }
 
     /**
-     * Назначение: показывает форму редактирования записи в разделе валют и торговых активов.
+     * Purpose: displays the edit form for a selected stock item.
      *
-     * Действие: загружает запись и справочные данные, затем возвращает представление формы редактирования.
+     * Action: delegates stock item lookup and page metadata preparation to the service.
      */
-    public function edit(int|string $id): View|Factory|Application
+    public function edit(int|string $id): View
     {
-        $data['title'] = __('Edit Stock Item');
-        $data['stockItem'] = $this->stockItem->findOrFailById($id);
-
-        return view('backend.stockItems.edit', $data);
+        return view('backend.stockItems.edit', $this->stockItemService->editData($id));
     }
 
     /**
-     * Назначение: обновляет запись в разделе валют и торговых активов.
+     * Purpose: updates a stock item from validated request data.
      *
-     * Действие: принимает валидированный запрос, передает изменения в сервис или репозиторий и возвращает ответ с результатом.
+     * Action: delegates DTO creation, upload handling, and persistence to the stock item service.
      */
     public function update(StockItemRequest $request, int|string $id): RedirectResponse
     {
-        if ($this->stockItemService->update((int) $id, StockItemData::fromArray($request->validated() + ['item_emoji' => $request->file('item_emoji')]))) {
+        if ($this->stockItemService->updateFromValidatedData($id, $request->validated(), $request->file('item_emoji'))) {
             return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The stock item has been updated successfully.'));
         }
 
@@ -122,31 +89,26 @@ class StockItemController extends Controller
     }
 
     /**
-     * Назначение: удаляет запись в разделе валют и торговых активов.
+     * Purpose: deletes a selected stock item.
      *
-     * Действие: проверяет возможность удаления, выполняет операцию через сервис или репозиторий и возвращает результат.
+     * Action: delegates deletion and failure-message selection to the stock item service.
      */
     public function destroy(int|string $id): RedirectResponse
     {
-        try {
-            if ($this->stockItemService->delete((int) $id)) {
-                return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The stock item has been deleted successfully.'));
-            }
+        $response = $this->stockItemService->deleteWithResponse($id);
+        $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
-            return redirect()->back()->withInput()->with(SERVICE_RESPONSE_ERROR, __('Failed to delete.'));
-        } catch (\Exception $exception) {
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to delete as the stock item is being used.'));
-        }
+        return redirect()->back()->with($status, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 
     /**
-     * Назначение: переключает активность записи в разделе валют и торговых активов.
+     * Purpose: toggles the active status of a selected stock item.
      *
-     * Действие: меняет статус активности через сервис или репозиторий и возвращает сообщение о результате.
+     * Action: delegates default-pair checks and status changes to the stock item service.
      */
     public function toggleActiveStatus(int|string $id): RedirectResponse
     {
-        $response = $this->stockItemService->toggleActiveStatus((int) $id);
+        $response = $this->stockItemService->toggleActiveStatus($id);
         $status = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
         return redirect()->back()->with($status, $response[SERVICE_RESPONSE_MESSAGE]);

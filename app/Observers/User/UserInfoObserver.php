@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Mail;
 class UserInfoObserver
 {
     /**
+     * Purpose: performs the created operation in UserInfoObserver.
+     *
+     * Action: encapsulates one logic step so callers can use the result without duplicating details.
+     *
      * Handle to the user "created" event.
      *
      * @param UserInfo $userInfo
@@ -23,8 +27,6 @@ class UserInfoObserver
         } else {
             Mail::to($userInfo->user->email)->send(new Registered($userInfo));
         }
-
     }
-
 
 }

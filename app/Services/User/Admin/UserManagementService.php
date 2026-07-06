@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\DB;
 
 class UserManagementService
 {
+    /**
+     * Purpose: initializes the UserManagementService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
+     */
     public function __construct(
         private readonly UserInterface $user,
         private readonly UserInfoInterface $userInfo,
@@ -27,11 +33,23 @@ class UserManagementService
     ) {
     }
 
+    /**
+     * Purpose: executes the create service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function create(UserAccountData $data): User|false
     {
         return $this->userService->generate($data->toArray());
     }
 
+    /**
+     * Purpose: executes the update service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function update(int $id, UserAccountData $data): bool
     {
         $parameters = $data->toArray();
@@ -55,6 +73,12 @@ class UserManagementService
         return (bool) $updated;
     }
 
+    /**
+     * Purpose: executes the update status service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function updateStatus(int $id, UserStatusData $data): array
     {
         if ($id === Auth::id()) {
@@ -95,6 +119,12 @@ class UserManagementService
         return [SERVICE_RESPONSE_SUCCESS, __('User status has been updated successfully.')];
     }
 
+    /**
+     * Purpose: executes the update wallet balance service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function updateWalletBalance(int $userId, int $walletId, WalletBalanceData $data): bool
     {
         return DB::transaction(function () use ($userId, $walletId, $data) {

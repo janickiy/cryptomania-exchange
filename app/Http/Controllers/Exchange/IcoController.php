@@ -6,46 +6,48 @@ use App\DTO\Exchange\IcoPurchaseData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Trader\IcoStoreRequest;
 use App\Services\Exchange\IcoService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 
 class IcoController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела ICO-покупок.
+     * Purpose: initializes the IcoController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(private readonly IcoService $icoService)
     {
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела ICO-покупок.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
         return view('frontend.ico.index', $this->icoService->indexData());
     }
 
     /**
-     * Назначение: показывает форму покупки ICO-актива.
+     * Purpose: handles the buy action in IcoController.
      *
-     * Действие: загружает данные выбранного ICO-актива и возвращает страницу покупки.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
      */
-    public function buy(int|string $id): View|Factory|Application
+    public function buy(int|string $id): View
     {
         return view('frontend.ico.buy', $this->icoService->buyData($id));
     }
 
     /**
-     * Назначение: создает новую запись в разделе ICO-покупок.
+     * Purpose: creates a new record from request data.
      *
-     * Действие: принимает валидированный запрос, передает данные в сервис или репозиторий и возвращает результат операции.
+     * Action: passes validated data to the service layer and returns the operation result.
+     *
      */
     public function store(IcoStoreRequest $request): RedirectResponse
     {

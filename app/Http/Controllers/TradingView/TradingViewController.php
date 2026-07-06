@@ -4,98 +4,60 @@ namespace App\Http\Controllers\TradingView;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Admin\CommentRequest;
-use App\Models\Backend\Post;
-use App\Repositories\User\Interfaces\CommentInterface;
-use App\Repositories\User\TradeAnalyst\Interfaces\PostInterface;
-use App\Services\Core\DataListService;
-use Illuminate\Contracts\View\Factory;
+use App\Services\TradingView\TradingViewService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class TradingViewController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела торговых обзоров.
+     * Purpose: initializes the TradingViewController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
      */
     public function __construct(
-        private readonly PostInterface $posts,
-        private readonly CommentInterface $comments,
-        private readonly DataListService $dataListService,
+        private readonly TradingViewService $tradingViewService,
     ) {
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела торговых обзоров.
+     * Purpose: displays the public trading view list page.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: delegates published post listing and filter data preparation to the service.
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
-        $searchFields = [
-            ['posts.title', __('Title')],
-            ['first_name', __('First Name')],
-            ['last_name', __('Last Name')],
-        ];
-
-        $orderFields = [
-            ['posts.title', __('Title')],
-            ['posts.created_at', __('Date')],
-        ];
-        $where = ['is_published' => ACTIVE_STATUS_ACTIVE];
-        $groupBy = ['posts.id', 'posts.title', 'posts.content', 'posts.featured_image', 'posts.created_at', 'users.avatar', 'first_name', 'last_name'];
-
-        $select = ['posts.id', 'posts.title', 'posts.content', 'posts.featured_image', 'posts.created_at', 'users.avatar', 'first_name', 'last_name', DB::raw('count(comments.id) as comments')];
-        $joinArray = [
-            ['users', 'users.id', '=', 'posts.user_id'],
-            ['user_infos', 'users.id', '=', 'user_infos.user_id'],
-            ['comments', 'comments.commentable_id', '=', 'posts.id', ['commentable_type' => get_class(new Post())]
-            ],
-        ];
-
-        $query = $this->posts->paginateWithFilters($searchFields, $orderFields, $where, $select, $joinArray, $groupBy, 6);
-        $data['posts'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
-        $data['title'] = __('Trading Views');
-        return view('frontend.trade_analysis.lists', $data);
+        return view('frontend.trade_analysis.lists', $this->tradingViewService->indexData());
     }
 
     /**
-     * Назначение: показывает детальную страницу записи в разделе торговых обзоров.
+     * Purpose: displays a public trading view detail page.
      *
-     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
+     * Action: delegates published post lookup and relation loading to the service.
      */
-    public function show(int|string $id): View|Factory|Application
+    public function show(int|string $id): View
     {
-        $data['post'] = $this->posts->findOrFailByConditions(['id' => $id, 'is_published' => ACTIVE_STATUS_ACTIVE]);
-        $data['title'] = __('Trading View');
-        return view('frontend.trade_analysis.show', $data);
+        return view('frontend.trade_analysis.show', $this->tradingViewService->showData($id));
     }
 
     /**
-     * Назначение: сохраняет комментарий к торговому обзору.
+     * Purpose: submits a comment for a trading view post.
      *
-     * Действие: принимает валидированный текст комментария, связывает его с публикацией и возвращает пользователя назад.
+     * Action: delegates comment creation to the service and redirects with the operation result.
      */
     public function comment(CommentRequest $request, int|string $id): RedirectResponse
     {
-        $post = $this->posts->getFirstById((int) $id);
+        $response = $this->tradingViewService->comment($id, (string) $request->validated('content'));
 
-        if (empty($post)) {
-            return redirect()->back()->withInput()->with(SERVICE_RESPONSE_ERROR, __('Post could not found.'));
+        if ($response[SERVICE_RESPONSE_STATUS]) {
+            return redirect()
+                ->route('trading-views.show', $response['post_id'])
+                ->with(SERVICE_RESPONSE_SUCCESS, $response[SERVICE_RESPONSE_MESSAGE]);
         }
 
-        $attributes = $request->only('content');
-        $attributes['user_id'] = Auth::id();
-
-
-        if ($this->comments->save($attributes, $post)) {
-            return redirect()->route('trading-views.show', $post->id)->with(SERVICE_RESPONSE_SUCCESS, __('Comment has been submitted successfully.'));
-        }
-
-        return redirect()->back()->withInput()->with(SERVICE_RESPONSE_ERROR, __('Failed to place comment.'));
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with(SERVICE_RESPONSE_ERROR, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 }

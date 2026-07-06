@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,13 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 class FakeField
 {
     /**
+     * Purpose: handles an HTTP request in FakeField middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
      */
-    public function handle(mixed $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response
     {
         $allFields = $this->setFakeFields($request);
         $this->setOriginalFieldInRequest($request, $allFields);
@@ -24,13 +29,17 @@ class FakeField
     }
 
     /**
+     * Purpose: handles an HTTP request in FakeField middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
      * @param $request
      * @return array
      */
-    public function setFakeFields(mixed $request): array
+    public function setFakeFields(Request $request): array
     {
         $models = $this->getModels();
-        $base_request_key = $request->get('base_key');
+        $base_request_key = $request->input('base_key');
         if($base_request_key !=null){
             $base_request_key = encode_decode($base_request_key, true);
         }
@@ -67,6 +76,12 @@ class FakeField
         return $allFields;
     }
 
+    /**
+     * Purpose: handles an HTTP request in FakeField middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
+     */
     public function getModels(): array
     {
         $models = [];
@@ -88,12 +103,16 @@ class FakeField
     }
 
     /**
+     * Purpose: handles an HTTP request in FakeField middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
      * @param $obj
      * @param $prop
      * @return array|mixed
      * @throws \ReflectionException
      */
-    public function accessProtected(mixed $obj, mixed $prop): array
+    public function accessProtected(object $obj, string $prop): array
     {
         $reflection = new ReflectionClass($obj);
         if ($reflection->hasProperty($prop)) {
@@ -107,10 +126,14 @@ class FakeField
     }
 
     /**
+     * Purpose: handles an HTTP request in FakeField middleware.
+     *
+     * Action: performs request checks or transformations before passing the request to the next handler.
+     *
      * @param $request
      * @param $allFields
      */
-    private function setOriginalFieldInRequest(mixed $request, mixed $allFields): void
+    private function setOriginalFieldInRequest(Request $request, array $allFields): void
     {
         $fakeFields = array_flip($allFields['table_keys']);
         $inputs = $request->all();

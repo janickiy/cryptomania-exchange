@@ -10,5 +10,11 @@ namespace App\Repositories\Core\Interfaces;
 
 interface NavigationInterface
 {
-    public function getBySlug($slug);
+    /**
+     * Purpose: describes the get by slug contract for NavigationInterface.
+     *
+     * Action: defines the expected signature so implementations use one consistent behavior for this scenario.
+     *
+     */
+    public function getBySlug(string $slug);
 }

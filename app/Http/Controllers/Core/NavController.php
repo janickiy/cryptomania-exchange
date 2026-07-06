@@ -5,28 +5,28 @@ namespace App\Http\Controllers\Core;
 use App\Services\Core\NavService;
 use App\Http\Requests\Admin\NavRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 
 class NavController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела навигационных настроек.
+     * Purpose: initializes the NavController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(private readonly NavService $navService)
     {
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела навигационных настроек.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
-    public function index(?string $slug = null): View|Factory|Application
+    public function index(?string $slug = null): View
     {
         $data = $this->navService->backendMenuBuilder($slug);
         $data['title'] = __('Navigation');
@@ -35,9 +35,13 @@ class NavController extends Controller
     }
 
     /**
-     * Назначение: обрабатывает действие `save` в разделе навигационных настроек.
+     * Purpose: handles the save action in NavController.
      *
-     * Действие: координирует получение данных, вызов сервисного слоя и возврат ответа пользователю.
+     * Action: connects the HTTP request to services or views so the controller remains thin.
+     *
+     * @param NavRequest $request
+     * @param string $slug
+     * @return RedirectResponse
      */
     public function save(NavRequest $request, string $slug): RedirectResponse
     {

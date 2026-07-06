@@ -17,6 +17,10 @@ class Kernel extends ConsoleKernel
     ];
 
     /**
+     * Purpose: registers scheduled console tasks.
+     *
+     * Action: allows Laravel to run recurring commands on the configured schedule.
+     *
      * Define the application's command schedule.
      *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
@@ -29,6 +33,10 @@ class Kernel extends ConsoleKernel
     }
 
     /**
+     * Purpose: loads the application console commands.
+     *
+     * Action: registers command files so Artisan can discover and execute them.
+     *
      * Register the commands for the application.
      *
      * @return void

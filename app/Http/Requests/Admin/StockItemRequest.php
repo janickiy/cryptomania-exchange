@@ -9,6 +9,10 @@ use Illuminate\Validation\Rule;
 class StockItemRequest extends Request
 {
     /**
+     * Purpose: determines whether the current user may submit this request.
+     *
+     * Action: returns the access check result before Laravel runs the validation rules.
+     *
      * Determine if the user is authorized to make this request.
      *
      * @return bool
@@ -19,6 +23,10 @@ class StockItemRequest extends Request
     }
 
     /**
+     * Purpose: returns validation rules for incoming request data.
+     *
+     * Action: keeps request validation out of controllers and lets Laravel validate the payload consistently.
+     *
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -27,9 +35,9 @@ class StockItemRequest extends Request
     {
         $stockApiServices = api_services();
 
-        if ($this->get('item_type') == CURRENCY_CRYPTO) {
+        if ($this->input('item_type') == CURRENCY_CRYPTO) {
             $stockApiServices = crypto_currency_api_services();
-        } elseif ($this->get('item_type') == CURRENCY_REAL) {
+        } elseif ($this->input('item_type') == CURRENCY_REAL) {
             $stockApiServices = real_currency_api_services();
         }
 
@@ -52,7 +60,7 @@ class StockItemRequest extends Request
             'exchange_status' => 'required_if:is_ico,' . ACTIVE_STATUS_INACTIVE . '|in:' . array_to_string(active_status()),
         ];
 
-        if ($this->get('is_ico') == ACTIVE_STATUS_INACTIVE) {
+        if ($this->input('is_ico') == ACTIVE_STATUS_INACTIVE) {
             $request['deposit_status'] = 'required_if:item_type,' . CURRENCY_REAL . ',item_type,' . CURRENCY_CRYPTO . '|in:' . array_to_string(active_status());
             $request['deposit_fee'] = 'required_if:deposit_status,' . ACTIVE_STATUS_ACTIVE . '|numeric|between:0, 99999999999.99';
             $request['withdrawal_status'] = 'required_if:item_type,' . CURRENCY_REAL . ',item_type,' . CURRENCY_CRYPTO . '|in:' . array_to_string(active_status());
@@ -62,8 +70,8 @@ class StockItemRequest extends Request
         }
 
         if (
-            $this->get('deposit_status') == ACTIVE_STATUS_ACTIVE ||
-            $this->get('withdrawal_status') == ACTIVE_STATUS_ACTIVE
+            $this->input('deposit_status') == ACTIVE_STATUS_ACTIVE ||
+            $this->input('withdrawal_status') == ACTIVE_STATUS_ACTIVE
         ) {
             $request['api_service'] = 'required_if:is_ico,' . ACTIVE_STATUS_INACTIVE . '|in:' . array_to_string($stockApiServices);
         }
@@ -72,6 +80,10 @@ class StockItemRequest extends Request
     }
 
     /**
+     * Purpose: returns custom validation error messages.
+     *
+     * Action: shows clearer error text for specific form or API validation rules.
+     *
      * @developer: M.G. Rabbi
      * @date: 2018-10-15 4:57 PM
      * @description: Custom messages
@@ -91,6 +103,12 @@ class StockItemRequest extends Request
         ];
     }
 
+    /**
+     * Purpose: returns human-readable names for validated fields.
+     *
+     * Action: helps the validator display user-friendly field names in error messages.
+     *
+     */
     public function attributes(): array
     {
         return [

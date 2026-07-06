@@ -14,6 +14,10 @@ class StockGraphDataRepository extends BaseRepository implements StockGraphDataI
     protected $model;
 
     /**
+     * Purpose: initializes the StockGraphDataRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockGraphData $stockGraphData
      */
     public function __construct(StockGraphData $stockGraphData)
@@ -22,11 +26,15 @@ class StockGraphDataRepository extends BaseRepository implements StockGraphDataI
     }
 
     /**
+     * Purpose: performs the update or create operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @param $attributes
      * @return mixed
      */
-    public function updateOrCreate(mixed $conditions, mixed $attributes): StockGraphData
+    public function updateOrCreate(array $conditions, array $attributes): StockGraphData
     {
         return $this->model->updateOrCreate($conditions, $attributes);
     }

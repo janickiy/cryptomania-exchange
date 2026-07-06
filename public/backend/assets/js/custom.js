@@ -106,7 +106,7 @@
         $('.flash-message').addClass('flash-message-active');
     });
 
-    $('.sidebar-menu').find('.active').closest('.treeview-menu').show().closest('.treeview').addClass('menu-open');
+    $('.sidebar-menu').find('.active').closest('.nav-treeview').show().closest('.treeview').addClass('menu-open');
 
     $('.sidebar-menu').children('li').each(function () {
         var $this = $(this);
@@ -120,7 +120,9 @@
         var dropdown = $this.children('ul');
         if(dropdown.length>0){
             $this.addClass('treeview');
-            $this.children('a').append('<i class="fa fa-angle-left pull-right"></i>');
+            if ($this.children('a').find('.nav-arrow').length <= 0) {
+                $this.children('a').append('<i class="nav-arrow fa fa-angle-right"></i>');
+            }
             if(dropdown.find('li.active').length > 0){
                 $this.addClass('treeview menu-open');
             }

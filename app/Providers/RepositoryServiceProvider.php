@@ -53,6 +53,10 @@ use Illuminate\Support\ServiceProvider;
 class RepositoryServiceProvider extends ServiceProvider
 {
     /**
+     * Purpose: runs boot-time provider configuration.
+     *
+     * Action: connects routes, observers, policies, or other settings after services are registered.
+     *
      * Bootstrap services.
      *
      * @return void
@@ -85,6 +89,10 @@ class RepositoryServiceProvider extends ServiceProvider
     }
 
     /**
+     * Purpose: registers application dependencies in the service container.
+     *
+     * Action: prepares bindings used later by Laravel and application layers.
+     *
      * Register services.
      *
      * @return void

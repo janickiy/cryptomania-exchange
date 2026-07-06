@@ -2,10 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\Exchange\BroadcastCancelOrder;
 use App\Events\Exchange\BroadcastOrder;
-use App\Events\Exchange\BroadcastPrivateCancelOrder;
-use App\Events\Exchange\BroadcastPrivateOrder;
 use App\Listeners\Exchange\ProcessStockOrderInQueue;
 use App\Listeners\Exchange\ProcessStopLimitStockOrderInQueue;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,6 +22,10 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     /**
+     * Purpose: runs boot-time provider configuration.
+     *
+     * Action: connects routes, observers, policies, or other settings after services are registered.
+     *
      * Register any events for your application.
      *
      * @return void

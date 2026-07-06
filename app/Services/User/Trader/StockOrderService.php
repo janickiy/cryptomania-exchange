@@ -27,6 +27,10 @@ class StockOrderService
     public $stockOrder;
 
     /**
+     * Purpose: initializes the StockOrderService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockOrderInterface $stockOrder
      */
     public function __construct(StockOrderInterface $stockOrder)
@@ -36,6 +40,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the order service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $request
      * @return array
      */
@@ -147,6 +155,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the set properties value service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $request
      * @param $stockPair
      */
@@ -164,6 +176,12 @@ class StockOrderService
 
     }
 
+    /**
+     * Purpose: executes the deduct balance from wallet service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function _deductBalanceFromWallet(): Model|bool
     {
         if ($this->request->exchange_type == EXCHANGE_BUY) {
@@ -184,6 +202,12 @@ class StockOrderService
         return app(WalletInterface::class)->updateByConditions($attributes, $conditions);
     }
 
+    /**
+     * Purpose: executes the increase on order on stock pair service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function _increaseOnOrderOnStockPair(): Model|bool
     {
         if ($this->request->exchange_type == EXCHANGE_BUY) {
@@ -197,6 +221,12 @@ class StockOrderService
         return app(StockPairInterface::class)->update($attributes, $this->stockPair->id);
     }
 
+    /**
+     * Purpose: executes the place order service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function _placeOrder(): Model|false
     {
         $orderInput = [
@@ -206,7 +236,7 @@ class StockOrderService
             'exchange_type' => $this->request->exchange_type,
             'price' => $this->request->price,
             'amount' => $this->request->amount,
-            'stop_limit' => $this->request->get('stop_limit', null),
+            'stop_limit' => $this->request->input('stop_limit'),
             'maker_fee' => $this->makerFee,
             'taker_fee' => $this->takerFee,
             'status' => $this->request->has('stop_limit') ? 0 : 1
@@ -217,6 +247,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the insert transaction histories service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $stockOrder
      * @param $wallet
      * @return bool
@@ -256,6 +290,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the set maker fee service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param int $makerFee
      */
     public function setMakerFee(int $makerFee): void
@@ -264,6 +302,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the set taker fee service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param int $takerFee
      */
     public function setTakerFee(int $takerFee): void
@@ -272,6 +314,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the set minimum transaction fee service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param int $minimumTransactionFee
      */
     public function setMinimumTransactionFee(int $minimumTransactionFee): void
@@ -280,6 +326,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the set stock pair service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param null $stockPair
      */
     public function setStockPair(mixed $stockPair): void
@@ -288,6 +338,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the cancel order service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param $id
      * @return array
      */
@@ -302,6 +356,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the cancel authenticated order service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<string, mixed>
      */
     public function cancelAuthenticatedOrder(int|string $id): array
@@ -333,6 +391,10 @@ class StockOrderService
     }
 
     /**
+     * Purpose: executes the open orders service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @param null $categoryType
      * @param null $stockPairId
      * @return array

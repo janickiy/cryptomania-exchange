@@ -424,8 +424,9 @@ body.frontend-liquid-glass .trade-analysis img {
 }
 
 body.frontend-liquid-glass .marquee-scroll-box {
-    margin: 10px 8px;
+    margin: 12px;
     padding: 14px 16px;
+    box-sizing: border-box;
 }
 
 body.frontend-liquid-glass .marquee-scroll-box h4 {
@@ -433,8 +434,13 @@ body.frontend-liquid-glass .marquee-scroll-box h4 {
 }
 
 body.frontend-liquid-glass .marquee-container {
+    height: 132px;
     max-width: 100%;
     overflow: hidden;
+}
+
+body.frontend-liquid-glass .marquee-inner-container {
+    height: 132px;
 }
 
 body.frontend-liquid-glass .crypto-button,

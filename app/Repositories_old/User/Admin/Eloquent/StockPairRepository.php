@@ -14,6 +14,10 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
     protected $model;
 
     /**
+     * Purpose: initializes the StockPairRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param StockPair $model
      */
     public function __construct(StockPair $model)
@@ -22,6 +26,10 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
     }
 
     /**
+     * Purpose: performs the update rows operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param array $attributes
      * @param array|null $conditions
      * @return bool
@@ -34,10 +42,14 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
     }
 
     /**
+     * Purpose: performs the get first stock pair detail by conditions operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @return mixed
      */
-    public function getFirstStockPairDetailByConditions(mixed $conditions): ?StockPair
+    public function getFirstStockPairDetailByConditions(array $conditions): ?StockPair
     {
         $stockPair = $this->getStockPair($conditions)->first();
         $date = Carbon::now()->subDay()->timestamp;
@@ -48,10 +60,14 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
     }
 
     /**
+     * Purpose: performs the get stock pair operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @return mixed
      */
-    public function getStockPair(mixed $conditions): Builder
+    public function getStockPair(array $conditions): Builder
     {
         return $this->model->where($conditions)
             ->leftJoin('stock_items as base_item', 'base_item.id', '=', 'stock_pairs.base_item_id')
@@ -90,10 +106,14 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
     }
 
     /**
+     * Purpose: performs the generate exchange summary operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $stockPair
      * @param $date
      */
-    private function generateExchangeSummary(mixed & $stockPair, mixed $date): void
+    private function generateExchangeSummary(StockPair &$stockPair, int $date): void
     {
         $exchange24 = json_decode($stockPair->exchange_24, true);
 
@@ -126,10 +146,14 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
     }
 
     /**
+     * Purpose: performs the get all stock pair detail by conditions operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @return mixed
      */
-    public function getAllStockPairDetailByConditions(mixed $conditions): Collection
+    public function getAllStockPairDetailByConditions(array $conditions): Collection
     {
         $stockPairs = $this->getStockPair($conditions)->get();
         $date = Carbon::now()->subDay()->timestamp;
@@ -142,11 +166,15 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
     }
 
     /**
+     * Purpose: performs the get by pair operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $stockItem
      * @param $baseItem
      * @return mixed
      */
-    function getByPair(mixed $stockItem, mixed $baseItem): ?StockPair
+    function getByPair(string $stockItem, string $baseItem): ?StockPair
     {
         $select = ['stock_pairs.*'];
         $where = [
@@ -160,10 +188,14 @@ class StockPairRepository extends BaseRepository implements StockPairInterface
     }
 
     /**
+     * Purpose: performs the get all stock pair for api by conditions operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $conditions
      * @return array
      */
-    function getAllStockPairForApiByConditions(mixed $conditions): array
+    function getAllStockPairForApiByConditions(array $conditions): array
     {
         $stockPairs = $this->getStockPair($conditions)->get();
 

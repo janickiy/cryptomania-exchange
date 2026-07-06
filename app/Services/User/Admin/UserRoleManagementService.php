@@ -8,15 +8,33 @@ use App\Repositories\Core\Interfaces\UserRoleManagementInterface;
 
 class UserRoleManagementService
 {
+    /**
+     * Purpose: initializes the UserRoleManagementService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
+     */
     public function __construct(private readonly UserRoleManagementInterface $roleManagement)
     {
     }
 
+    /**
+     * Purpose: executes the create service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function create(UserRoleManagementData $data): UserRoleManagement|false
     {
         return $this->roleManagement->create($data->toArray());
     }
 
+    /**
+     * Purpose: executes the update service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
+     */
     public function update(int $id, UserRoleManagementData $data): bool
     {
         $roles = $data->roles;

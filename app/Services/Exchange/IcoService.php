@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\DB;
 
 class IcoService
 {
+    /**
+     * Purpose: initializes the IcoService instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
+     */
     public function __construct(
         private readonly StockItemInterface $stockItems,
         private readonly StockPairInterface $stockPairs,
@@ -28,6 +34,10 @@ class IcoService
     }
 
     /**
+     * Purpose: executes the index data service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<string, mixed>
      */
     public function indexData(): array
@@ -60,6 +70,10 @@ class IcoService
     }
 
     /**
+     * Purpose: executes the buy data service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<string, mixed>
      */
     public function buyData(int|string $stockPairId): array
@@ -80,6 +94,10 @@ class IcoService
     }
 
     /**
+     * Purpose: executes the purchase service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<string, mixed>
      */
     public function purchase(IcoPurchaseData $data): array
@@ -159,6 +177,10 @@ class IcoService
     }
 
     /**
+     * Purpose: executes the wallet updates service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<int, array<string, mixed>>
      */
     private function walletUpdates(mixed $stockPair, string $amount, string $totalAmountToCharge): array
@@ -180,6 +202,10 @@ class IcoService
     }
 
     /**
+     * Purpose: executes the transaction attributes service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<int, array<string, mixed>>
      */
     private function transactionAttributes(
@@ -308,6 +334,10 @@ class IcoService
     }
 
     /**
+     * Purpose: executes the stock pair totals service operation.
+     *
+     * Action: contains scenario business logic and keeps controllers free from processing details.
+     *
      * @return array<string, mixed>
      */
     private function stockPairTotals(string $amount, string $feeAmount, string $totalAmountToCharge): array
@@ -320,6 +350,10 @@ class IcoService
     }
 
     /**
+     * Purpose: builds a normalized response for a service operation.
+     *
+     * Action: lets callers handle success and failure responses consistently.
+     *
      * @return array<string, mixed>
      */
     private function response(bool $status, string $message): array

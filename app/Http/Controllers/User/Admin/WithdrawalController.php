@@ -6,17 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Repositories\User\Trader\Interfaces\WithdrawalInterface;
 use App\Services\User\Admin\ReportsService;
 use App\Services\User\Admin\WithdrawalReviewService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 
 class WithdrawalController extends Controller
 {
     /**
-     * Назначение: инициализирует контроллер раздела заявок на вывод средств.
+     * Purpose: initializes the WithdrawalController instance.
      *
-     * Действие: получает зависимости из DI-контейнера Laravel и сохраняет их для обработки запросов.
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      */
     public function __construct(
         private readonly WithdrawalInterface $withdrawalRepository,
@@ -26,11 +25,12 @@ class WithdrawalController extends Controller
     }
 
     /**
-     * Назначение: показывает основную страницу или список раздела заявок на вывод средств.
+     * Purpose: shows the main page or record list for the section.
      *
-     * Действие: запрашивает нужные данные через сервисы или репозитории, формирует данные для view и возвращает представление.
+     * Action: collects data through services or repositories and returns the view.
+     *
      */
-    public function index(): View|Factory|Application
+    public function index(): View
     {
         $data['list'] = $this->reportsService->withdrawals(null, null, 'reviewing');
         $data['title'] = __('Withdrawals for Reviewing');
@@ -39,11 +39,12 @@ class WithdrawalController extends Controller
     }
 
     /**
-     * Назначение: показывает детальную страницу записи в разделе заявок на вывод средств.
+     * Purpose: shows the detail page for the selected record.
      *
-     * Действие: находит запись по идентификатору, подготавливает связанные данные и возвращает представление просмотра.
+     * Action: loads the record by identifier and passes it to the view.
+     *
      */
-    public function show(int|string $id): View|Factory|Application
+    public function show(int|string $id): View
     {
         $data['title'] = __('Review Withdrawal');
         $data['withdrawal'] = $this->withdrawalRepository->findOrfailById($id, ['stockItem', 'wallet', 'user', 'user.userinfo']);
@@ -53,9 +54,10 @@ class WithdrawalController extends Controller
     }
 
     /**
-     * Назначение: подтверждает запись в разделе заявок на вывод средств.
+     * Purpose: approves the selected request or operation.
      *
-     * Действие: передает идентификатор в сервис проверки, меняет статус записи и возвращает результат.
+     * Action: changes status through the service layer and redirects with the result.
+     *
      */
     public function approve(int|string $id): RedirectResponse
     {
@@ -67,9 +69,10 @@ class WithdrawalController extends Controller
     }
 
     /**
-     * Назначение: отклоняет запись в разделе заявок на вывод средств.
+     * Purpose: declines the selected request or operation.
      *
-     * Действие: передает идентификатор в сервис проверки, меняет статус записи и возвращает результат.
+     * Action: changes status through the service layer and redirects with the result.
+     *
      */
     public function decline(int|string $id): RedirectResponse
     {

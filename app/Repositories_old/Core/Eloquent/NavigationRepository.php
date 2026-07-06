@@ -14,6 +14,10 @@ class NavigationRepository extends BaseRepository implements NavigationInterface
     protected $model;
 
     /**
+     * Purpose: initializes the NavigationRepository instance.
+     *
+     * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
+     *
      * @param Navigation $model
      */
     public function __construct(Navigation $model)
@@ -22,10 +26,14 @@ class NavigationRepository extends BaseRepository implements NavigationInterface
     }
 
     /**
+     * Purpose: performs the get by slug operation in the repository layer.
+     *
+     * Action: isolates database access from controllers and services.
+     *
      * @param $slug
      * @return mixed
      */
-    public function getBySlug(mixed $slug): ?Navigation
+    public function getBySlug(string $slug): ?Navigation
     {
         return $this->model->where('slug', $slug)->first();
     }

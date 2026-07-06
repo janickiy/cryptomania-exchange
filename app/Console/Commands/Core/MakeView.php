@@ -30,6 +30,10 @@ class MakeView extends GeneratorCommand
 
 
     /**
+     * Purpose: supports command generation or execution through get stub.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the stub file for the generator.
      *
      * @return string
@@ -40,6 +44,10 @@ class MakeView extends GeneratorCommand
     }
 
     /**
+     * Purpose: executes the console command.
+     *
+     * Action: runs an application action from the CLI and reports the result to the terminal.
+     *
      * Execute the console command.
      *
      * @return bool|null
@@ -73,6 +81,10 @@ class MakeView extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through get path.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Get the destination class path.
      *
      * @param  string  $name
@@ -85,6 +97,10 @@ class MakeView extends GeneratorCommand
     }
 
     /**
+     * Purpose: supports command generation or execution through build class.
+     *
+     * Action: is used by Artisan infrastructure to generate files or handle CLI scenarios.
+     *
      * Build the class with the given name.
      *
      * @param  string $name
