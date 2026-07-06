@@ -22,34 +22,9 @@
 @endsection
 
 @section('after-style')
-    <link rel="stylesheet" href="{{ asset('common/vendors/datetimepicker/css/bootstrap-datetimepicker.min.css') }}">
+    @include('backend.systemNotice._datetime_picker_styles')
 @endsection
 
 @section('script')
-    <!-- for datatable and date picker -->
-    <script src="{{ asset('common/vendors/cvalidator/cvalidator.js') }}"></script>
-    <script src="{{ asset('backend/assets/js/moment.js') }}"></script>
-    <script src="{{ asset('common/vendors/datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-            //Init jquery Date Picker
-            $('#start_time').datetimepicker({
-                format: 'YYYY-MM-DD HH:mm:ss'
-            });
-
-            $('#end_time').datetimepicker({
-                format: 'YYYY-MM-DD HH:mm:ss'
-            });
-
-            $("#start_time").on("dp.change", function (e) {
-                $('#end_time').data("DateTimePicker").minDate(e.date);
-            });
-            $("#end_time").on("dp.change", function (e) {
-                $('#start_time').data("DateTimePicker").maxDate(e.date);
-            });
-
-            $('.system-notice-form').cValidate({});
-        });
-    </script>
+    @include('backend.systemNotice._datetime_picker_scripts')
 @endsection

@@ -32,13 +32,23 @@
     <div class="admin-form-grid">
         <div class="admin-form-field {{ $errors->has('start_at') ? 'has-error' : '' }}">
             <label for="start_time" class="form-label required">{{ __('Start Time') }}</label>
-            {{ Form::text(fake_field('start_at'), old('start_at', isset($systemNotice) ? $systemNotice->start_at : null), ['class'=>'form-control', 'id' => 'start_time', 'data-cval-name' => 'The start time field', 'data-cval-rules' => 'date']) }}
+            <div class="input-group admin-datetime-input-group">
+                {{ Form::text(fake_field('start_at'), old('start_at', isset($systemNotice) ? $systemNotice->start_at : null), ['class'=>'form-control js-system-notice-datetime', 'id' => 'start_time', 'autocomplete' => 'off', 'data-cval-name' => 'The start time field', 'data-cval-rules' => 'date']) }}
+                <button class="input-group-text admin-datetime-trigger" type="button" data-datetime-target="#start_time" aria-label="{{ __('Open start time picker') }}">
+                    <i class="fa fa-calendar"></i>
+                </button>
+            </div>
             <span class="validation-message cval-error" data-cval-error="{{ fake_field('start_at') }}">{{ $errors->first('start_at') }}</span>
         </div>
 
         <div class="admin-form-field {{ $errors->has('end_at') ? 'has-error' : '' }}">
             <label for="end_time" class="form-label required">{{ __('End Time') }}</label>
-            {{ Form::text(fake_field('end_at'), old('end_at', isset($systemNotice) ? $systemNotice->end_at : null), ['class'=>'form-control', 'id' => 'end_time', 'data-cval-name' => 'The end time field', 'data-cval-rules' => 'data']) }}
+            <div class="input-group admin-datetime-input-group">
+                {{ Form::text(fake_field('end_at'), old('end_at', isset($systemNotice) ? $systemNotice->end_at : null), ['class'=>'form-control js-system-notice-datetime', 'id' => 'end_time', 'autocomplete' => 'off', 'data-cval-name' => 'The end time field', 'data-cval-rules' => 'date']) }}
+                <button class="input-group-text admin-datetime-trigger" type="button" data-datetime-target="#end_time" aria-label="{{ __('Open end time picker') }}">
+                    <i class="fa fa-calendar"></i>
+                </button>
+            </div>
             <span class="validation-message cval-error" data-cval-error="{{ fake_field('end_at') }}">{{ $errors->first('end_at') }}</span>
         </div>
 

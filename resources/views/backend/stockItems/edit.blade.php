@@ -1,21 +1,23 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    <div class="box box-success">
-        <div class="box-header with-border">
-            <h3 class="box-title">{{ __('Edit Stock Item') }}</h3>
-            <div class="box-tools pull-right">
-                <a href="{{ route('admin.stock-items.index') }}" class="btn btn-primary back-button">{{ __('Back to list') }}</a>
-            </div>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-sm-8">
-                    {!! Form::open(['route'=>['admin.stock-items.update', $stockItem->id], 'class'=>'form-horizontal validator', 'enctype'=>'multipart/form-data']) !!}
-                    @method('PUT')
-                    @include('backend.stockItems._edit_form')
-                    {!! Form::close() !!}
+    <div class="stock-item-form-page">
+        <div class="card stock-item-form-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="admin-page-heading">
+                    <h3 class="admin-page-title">{{ __('Edit Stock Item') }}</h3>
+                    <p class="admin-page-subtitle">{{ __('Update currency details, transfer rules, and exchange availability.') }}</p>
                 </div>
+                <a href="{{ route('admin.stock-items.index') }}" class="btn btn-outline-secondary">
+                    <i class="fa fa-arrow-left me-1"></i>{{ __('Back to list') }}
+                </a>
+            </div>
+
+            <div class="card-body admin-form-body">
+                {!! Form::open(['route'=>['admin.stock-items.update', $stockItem->id], 'class'=>'validator admin-section-form stock-item-form', 'enctype'=>'multipart/form-data']) !!}
+                        @method('PUT')
+                    @include('backend.stockItems._edit_form')
+                {!! Form::close() !!}
             </div>
         </div>
     </div>
@@ -48,7 +50,7 @@
             el: '#app',
             data: {
                 showOptionalFields : {{ in_array(old('item_type', $stockItem->item_type), config('commonconfig.currency_transferable')) ? 'true' : 'false' }},
-                hideIcoOptionFields: {{ $stockItem->is_ico == ACTIVE_STATUS_ACTIVE ? 1 : 0 }},
+                hideIcoOptionFields: {{ old('is_ico', $stockItem->is_ico) == ACTIVE_STATUS_ACTIVE ? 1 : 0 }},
                 itemTypes: @json(config('commonconfig.currency_transferable')),
                 cryptoApis: @json(crypto_currency_api_services()),
                 realApis: @json(real_currency_api_services()),

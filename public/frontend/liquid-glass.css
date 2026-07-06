@@ -625,6 +625,14 @@ body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table tbody t
     background: rgba(5, 13, 12, .2) !important;
 }
 
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table th,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table td,
+body.frontend-liquid-glass .exchange-dashboard-page .dataTables_scrollHead table.exchange-table th,
+body.frontend-liquid-glass .exchange-dashboard-page .dataTables_scrollBody table.exchange-table td {
+    font-size: 14px !important;
+}
+
 body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table tbody td,
 body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable tbody td,
 body.frontend-liquid-glass .exchange-dashboard-page .dataTables_scrollBody table.exchange-table tbody td {
