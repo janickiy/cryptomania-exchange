@@ -73,7 +73,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="pad-tb-20 text-center">
-                                <img src="{{asset('frontend/images/logo-inverse.png')}}" alt="" class="img-fluid pad-b-10">
+                                <img src="{{ asset('frontend/images/logo-inverse.svg') }}?v={{ filemtime(public_path('frontend/images/logo-inverse.svg')) }}" alt="{{ company_name() }}" width="215" height="56" class="img-fluid pad-b-10 footer-brand-logo">
                                 <ul class="floated-li-inside clearfix centered">
                                     <li><a href="#"><i class="fa fa-facebook-square font-20"></i></a></li>
                                     <li><a href="#"><i class="fa fa-twitter font-20"></i></a></li>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 112" role="img" aria-labelledby="title desc">
+  <title id="title">Cryptomania footer logo</title>
+  <desc id="desc">A monochrome transparent crypto themed Cryptomania wordmark.</desc>
+  <defs>
+    <filter id="soft-shadow" x="-20%" y="-30%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000000" flood-opacity=".22"/>
+    </filter>
+  </defs>
+
+  <g fill="none" stroke="#f1f5f4" stroke-opacity=".78" stroke-linecap="round" stroke-linejoin="round" filter="url(#soft-shadow)">
+    <path d="M91 25a39 39 0 1 0 0 62" stroke-width="17"/>
+
+    <path d="M96 40h27l11-11" stroke-width="6"/>
+    <path d="M96 56h41" stroke-width="6"/>
+    <path d="M96 72h27l11 11" stroke-width="6"/>
+    <circle cx="139" cy="28" r="8" fill="#f1f5f4" fill-opacity=".78" stroke="none"/>
+    <circle cx="144" cy="56" r="8" fill="#f1f5f4" fill-opacity=".78" stroke="none"/>
+    <circle cx="139" cy="84" r="8" fill="#f1f5f4" fill-opacity=".78" stroke="none"/>
+
+    <circle cx="62" cy="56" r="24" stroke-width="5"/>
+    <circle cx="62" cy="56" r="16" stroke-width="2" stroke-opacity=".42"/>
+    <path d="M55 40v32M65 40v32" stroke-width="3" stroke-opacity=".62"/>
+    <path d="M52 46h15c5 0 8 2.7 8 6.5 0 2.5-1.5 4.5-4.4 5.4 3.5.9 5.5 3.1 5.5 6.2 0 4.2-3.4 7-9 7H52" stroke-width="6"/>
+    <path d="M57 46v25M57 57h10M57 68h11" stroke-width="5"/>
+  </g>
+
+  <g fill="#f1f5f4" fill-opacity=".78" filter="url(#soft-shadow)">
+    <text x="164" y="52"
+          font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="800">CRYPTO MANIA</text>
+    <rect x="164" y="61" width="226" height="2" rx="1" opacity=".38"/>
+    <rect x="164" y="61" width="80" height="3" rx="1.5" opacity=".72"/>
+    <text x="166" y="86" fill-opacity=".66"
+          font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600">one stop crypto solution</text>
+  </g>
+</svg>

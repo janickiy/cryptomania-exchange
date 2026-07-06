@@ -4,7 +4,7 @@
             <div class="navbar-header">
                 @if(admin_settings('company_logo'))
                     <a href="{{ route('home') }}" class="navbar-brand">
-                        <img style="display:inline-block;width:30px;height:30px;margin-top:-5px;" src="{{ url('logo.png') }}" alt="{{ company_name() }}">
+                        <img style="display:inline-block;width:36px;height:36px;margin-top:-8px;" src="{{ asset('logo.svg') }}?v={{ filemtime(public_path('logo.svg')) }}" alt="{{ company_name() }}">
                     </a>
                 @else
                     <a class="navbar-brand text-uppercase" href="{{ route('home') }}">{{ env('APP_NAME') }}</a>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Cryptomania crypto icon</title>
+  <desc id="desc">A liquid glass crypto coin icon with a stylized C, bitcoin coin, and circuit nodes.</desc>
+  <defs>
+    <radialGradient id="glass" cx="34%" cy="22%" r="78%">
+      <stop offset="0" stop-color="#6fffe9" stop-opacity=".42"/>
+      <stop offset=".45" stop-color="#0f3d37" stop-opacity=".38"/>
+      <stop offset="1" stop-color="#061512" stop-opacity=".08"/>
+    </radialGradient>
+    <linearGradient id="c-stroke" x1="19" y1="20" x2="105" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff4e3b"/>
+      <stop offset=".42" stop-color="#ff8a18"/>
+      <stop offset=".72" stop-color="#ffd166"/>
+      <stop offset="1" stop-color="#37f5d0"/>
+    </linearGradient>
+    <radialGradient id="coin" cx="33%" cy="25%" r="78%">
+      <stop offset="0" stop-color="#fff0a6"/>
+      <stop offset=".32" stop-color="#ffc84e"/>
+      <stop offset=".72" stop-color="#f08a10"/>
+      <stop offset="1" stop-color="#9f3e09"/>
+    </radialGradient>
+    <linearGradient id="cyan" x1="17" y1="20" x2="111" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#73fff0"/>
+      <stop offset="1" stop-color="#1aa7ff"/>
+    </linearGradient>
+    <filter id="soft-glow" x="-45%" y="-45%" width="190%" height="190%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.10 0 0 0 0 0.95 0 0 0 0 0.80 0 0 0 .75 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="coin-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#000" flood-opacity=".35"/>
+    </filter>
+  </defs>
+
+  <circle cx="64" cy="64" r="54" fill="url(#glass)" opacity=".78"/>
+  <circle cx="64" cy="64" r="53" fill="none" stroke="#ffffff" stroke-opacity=".18" stroke-width="2"/>
+  <path d="M94 34a42 42 0 1 0 0 60" fill="none" stroke="#071311" stroke-opacity=".54" stroke-width="23" stroke-linecap="round"/>
+  <path d="M94 34a42 42 0 1 0 0 60" fill="none" stroke="url(#c-stroke)" stroke-width="18" stroke-linecap="round" filter="url(#soft-glow)"/>
+
+  <path d="M91 42h14l9 9" fill="none" stroke="url(#cyan)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M91 86h13l9-9" fill="none" stroke="url(#cyan)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="115" cy="52" r="6" fill="#56ffe4"/>
+  <circle cx="115" cy="76" r="6" fill="#34c5ff"/>
+  <circle cx="103" cy="42" r="4" fill="#fff1a8"/>
+
+  <g filter="url(#coin-shadow)">
+    <circle cx="63" cy="64" r="25" fill="url(#coin)"/>
+    <circle cx="63" cy="64" r="20" fill="none" stroke="#fff6c7" stroke-opacity=".55" stroke-width="3"/>
+    <circle cx="63" cy="64" r="14" fill="#2a1707" opacity=".22"/>
+    <path d="M57 48v32M67 48v32" fill="none" stroke="#ffe58a" stroke-width="3" stroke-linecap="round"/>
+    <path d="M53 53h15.5c5.1 0 8.5 2.7 8.5 6.7 0 2.5-1.5 4.8-4.5 5.8 3.8.9 5.9 3.4 5.9 6.7 0 4.4-3.5 7.8-9.3 7.8H53" fill="none" stroke="#fff2b0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M58 53v27" fill="none" stroke="#fff2b0" stroke-width="6" stroke-linecap="round"/>
+    <path d="M58 64h10.5M58 75h11.5" fill="none" stroke="#fff2b0" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <circle cx="79" cy="30" r="3" fill="#fff4b6" opacity=".9"/>
+  <circle cx="86" cy="37" r="2" fill="#ffffff" opacity=".72"/>
+  <path d="M34 101c8 5 18 8 29 8" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"/>
+</svg>

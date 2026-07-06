@@ -4,7 +4,7 @@ Cryptomania Exchange is a Laravel-based cryptocurrency exchange project with a p
 
 ## Stack
 
-- PHP 8.4
+- PHP 8.3
 - Laravel 13
 - Apache 2
 - MySQL 8.4

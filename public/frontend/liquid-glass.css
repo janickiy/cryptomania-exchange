@@ -415,6 +415,14 @@ body.frontend-liquid-glass .top-footer img {
     filter: drop-shadow(0 18px 42px rgba(0, 0, 0, .28));
 }
 
+body.frontend-liquid-glass .top-footer .footer-brand-logo {
+    width: min(215px, 58vw) !important;
+    max-width: min(215px, 58vw) !important;
+    height: auto !important;
+    max-height: 56px !important;
+    opacity: .78;
+}
+
 body.frontend-liquid-glass .icon-image,
 body.frontend-liquid-glass .coin-image,
 body.frontend-liquid-glass .profile-box-front img,
@@ -586,6 +594,190 @@ body.frontend-liquid-glass .table > tfoot > tr > td,
 body.frontend-liquid-glass table.dataTable tbody td {
     border-color: rgba(222, 255, 248, .12) !important;
     color: var(--lg-text);
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page .box-header,
+body.frontend-liquid-glass .exchange-dashboard-page .box-header *,
+body.frontend-liquid-glass .exchange-dashboard-page .summary-padding-fixer,
+body.frontend-liquid-glass .exchange-dashboard-page .summary-padding-fixer *,
+body.frontend-liquid-glass .exchange-dashboard-page .box-tools,
+body.frontend-liquid-glass .exchange-dashboard-page .box-tools *,
+body.frontend-liquid-glass .exchange-dashboard-page .pull-right.text-bold,
+body.frontend-liquid-glass .exchange-dashboard-page .pull-right.text-bold * {
+    color: #effffb !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .46);
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page .box-header {
+    border-bottom-color: rgba(151, 255, 236, .2) !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .015)),
+        rgba(9, 18, 17, .38) !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page .summary-padding-fixer .description-text,
+body.frontend-liquid-glass .exchange-dashboard-page .box-header .small,
+body.frontend-liquid-glass .exchange-dashboard-page .box-header small {
+    color: rgba(218, 246, 239, .82) !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table tbody tr {
+    background: rgba(5, 13, 12, .2) !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table tbody td,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable tbody td,
+body.frontend-liquid-glass .exchange-dashboard-page .dataTables_scrollBody table.exchange-table tbody td {
+    border-color: rgba(178, 255, 239, .14) !important;
+    background-color: rgba(9, 18, 17, .34) !important;
+    color: #f2fffb !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .42);
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable tbody td.sorting_1,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable tbody tr.odd td.sorting_1,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable tbody tr.even td.sorting_1 {
+    background-color: rgba(101, 220, 199, .18) !important;
+    color: #ffffff !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.table-striped > tbody > tr:nth-of-type(odd) > td,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable.display tbody tr.odd > td,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable.stripe tbody tr.odd > td {
+    background-color: rgba(255, 255, 255, .055) !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.table-hover > tbody > tr:hover > td,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable.hover tbody tr:hover > td,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable.display tbody tr:hover > td {
+    background-color: rgba(101, 220, 199, .2) !important;
+    color: #ffffff !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table tbody tr.selected td,
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table.dataTable tbody tr.selected td {
+    background-color: rgba(111, 240, 202, .26) !important;
+    color: #ffffff !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table .dataTables_empty {
+    background: rgba(9, 18, 17, .44) !important;
+    color: rgba(242, 255, 251, .86) !important;
+    font-weight: 600;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table .text-green {
+    color: #7cf8c7 !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table .text-red {
+    color: #ff9ba8 !important;
+}
+
+body.frontend-liquid-glass .exchange-dashboard-page table.exchange-table a {
+    color: #8ff4dd !important;
+}
+
+body.frontend-liquid-glass .ico-page {
+    padding: 30px 0 0;
+}
+
+body.frontend-liquid-glass .ico-page .box {
+    border-color: rgba(222, 255, 248, .22) !important;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .035)),
+        rgba(8, 16, 15, .5) !important;
+}
+
+body.frontend-liquid-glass .ico-page .box-header {
+    border-bottom-color: rgba(151, 255, 236, .2) !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, .02)),
+        rgba(9, 18, 17, .42) !important;
+}
+
+body.frontend-liquid-glass .ico-page .box-title {
+    color: #effffb !important;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .46);
+}
+
+body.frontend-liquid-glass .ico-page .dc-table,
+body.frontend-liquid-glass .ico-page .dataTable {
+    overflow: hidden;
+    border: 1px solid rgba(178, 255, 239, .16) !important;
+    border-radius: 8px;
+    background: rgba(7, 16, 14, .28) !important;
+}
+
+body.frontend-liquid-glass .ico-page .dc-table thead tr,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table thead tr {
+    background: rgba(45, 181, 166, .92) !important;
+}
+
+body.frontend-liquid-glass .ico-page .dc-table thead th,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table thead th,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table thead td {
+    border-color: rgba(179, 255, 239, .26) !important;
+    border-bottom-color: rgba(7, 80, 70, .78) !important;
+    background: transparent !important;
+    color: #fbfffd !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .34);
+}
+
+body.frontend-liquid-glass .ico-page .dc-table tbody tr,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table tbody tr {
+    background: rgba(5, 13, 12, .2) !important;
+}
+
+body.frontend-liquid-glass .ico-page .dc-table tbody td,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table tbody td {
+    border-color: rgba(178, 255, 239, .14) !important;
+    background-color: rgba(9, 18, 17, .34) !important;
+    color: #f2fffb !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .42);
+}
+
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table tbody td.sorting_1,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table tbody tr.odd td.sorting_1,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table tbody tr.even td.sorting_1 {
+    background-color: rgba(101, 220, 199, .18) !important;
+    color: #ffffff !important;
+}
+
+body.frontend-liquid-glass .ico-page .dc-table.table-striped > tbody > tr:nth-of-type(odd) > td,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table.display tbody tr.odd > td,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table.stripe tbody tr.odd > td {
+    background-color: rgba(255, 255, 255, .055) !important;
+}
+
+body.frontend-liquid-glass .ico-page .dc-table.table-hover > tbody > tr:hover > td,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table.hover tbody tr:hover > td,
+body.frontend-liquid-glass .ico-page table.dataTable.dc-table.display tbody tr:hover > td {
+    background-color: rgba(101, 220, 199, .2) !important;
+    color: #ffffff !important;
+}
+
+body.frontend-liquid-glass .ico-page .dc-table .strong,
+body.frontend-liquid-glass .ico-page .dc-table strong {
+    color: #f1c36f !important;
+}
+
+body.frontend-liquid-glass .ico-page .dc-table a {
+    color: #8ff4dd !important;
+    font-weight: 800;
+}
+
+body.frontend-liquid-glass .ico-page .dataTables_wrapper .dataTables_info,
+body.frontend-liquid-glass .ico-page .dataTables_wrapper .dataTables_length,
+body.frontend-liquid-glass .ico-page .dataTables_wrapper .dataTables_filter,
+body.frontend-liquid-glass .ico-page .dataTables_wrapper .dataTables_paginate {
+    color: rgba(218, 246, 239, .82) !important;
 }
 
 body.frontend-liquid-glass .table-striped > tbody > tr:nth-of-type(odd),
