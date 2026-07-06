@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\User\Admin;
 
-use App\Repositories\User\Interfaces\NotificationInterface;
-use App\Repositories\User\Interfaces\UserInfoInterface;
 use App\Http\Controllers\Controller;
-use App\Services\Core\DataListService;
+use App\Services\User\Admin\IdManagementService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -17,109 +15,73 @@ class IdManagementController extends Controller
      * Action: receives dependencies and initial data so the remaining methods can work with prepared state.
      *
      */
-    public function __construct(
-        private readonly UserInfoInterface $userInfo,
-        private readonly NotificationInterface $notifications,
-        private readonly DataListService $dataListService,
-    ) {
+    public function __construct(private readonly IdManagementService $idManagementService)
+    {
     }
 
     /**
-     * Purpose: shows the main page or record list for the section.
+     * Purpose: displays ID verification requests for administrator review.
      *
-     * Action: collects data through services or repositories and returns the view.
+     * Action: delegates list preparation to the service layer and returns the ID management index view.
      *
      */
     public function index(): View
     {
-        $searchFields = [
-            ['email', __('Email')],
-        ];
-
-        $orderFields = [
-            ['email', __('Email')],
-        ];
-
-        $joinArray = ['users', 'users.id', '=', 'user_infos.user_id'];
-
-        $select = ['users.id as id', 'email', 'id_type', 'is_id_verified'];
-        $query = $this->userInfo->paginateWithFilters($searchFields, $orderFields, ['is_id_verified', '!=', ID_STATUS_UNVERIFIED], $select, $joinArray);
-        $data['list'] = $this->dataListService->dataList($query, $searchFields, $orderFields);
-        $data['title'] = __('ID Management');
-
-        return view('backend.idManagement.index', $data);
+        return view('backend.idManagement.index', $this->idManagementService->indexData());
     }
 
     /**
-     * Purpose: shows the detail page for the selected record.
+     * Purpose: displays one ID verification request.
      *
-     * Action: loads the record by identifier and passes it to the view.
+     * Action: delegates request loading to the service layer and returns the detail view.
      *
      */
     public function show(int|string $id): View
     {
-        $where = ['user_id'=> $id, ['is_id_verified', '!=', ID_STATUS_UNVERIFIED]];
-        $data['user'] = $this->userInfo->findOrFailByConditions($where, ['user']);
-        $data['title'] = __('View ID Verification Request');
-
-        return view('backend.idManagement.show', $data);
+        return view('backend.idManagement.show', $this->idManagementService->showData($id));
     }
 
     /**
-     * Purpose: approves the selected request or operation.
+     * Purpose: approves a pending ID verification request.
      *
-     * Action: changes status through the service layer and redirects with the result.
+     * Action: delegates the approval workflow to the service layer and redirects back with a flash message.
      *
      */
     public function approve(int|string $id): RedirectResponse
     {
-        try {
-            $conditions = ['user_id'=> $id, 'is_id_verified' => ID_STATUS_PENDING];
-            $attributes = ['is_id_verified' => ID_STATUS_VERIFIED];
-
-            if (!$this->userInfo->updateByConditions($attributes, $conditions)) {
-                throw new \Exception('Failed to approve.');
-            }
-
-            $notification = ['user_id' => $id, 'data' => __("Your ID verification request has been approved.")];
-            $this->notifications->create($notification);
-
-            return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('The ID has been approved successfully.'));
-        }
-        catch (\Exception $exception) {
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to approve.'));
-        }
+        return $this->redirectBackWithResponse($this->idManagementService->approve($id));
     }
 
     /**
-     * Purpose: declines the selected request or operation.
+     * Purpose: declines a pending ID verification request.
      *
-     * Action: changes status through the service layer and redirects with the result.
+     * Action: delegates the decline workflow to the service layer and redirects to the list after success.
      *
      */
     public function decline(int|string $id): RedirectResponse
     {
-        try {
-            $attributes = [
-                'is_id_verified' => ID_STATUS_UNVERIFIED,
-                'id_type' => null,
-                'id_card_front' => null,
-                'id_card_back' => null,
-            ];
+        $response = $this->idManagementService->decline($id);
 
-            $conditions = ['user_id'=> $id, 'is_id_verified' => ID_STATUS_PENDING];
-
-            if (!$this->userInfo->updateByConditions($attributes, $conditions)) {
-                throw new \Exception('Failed to decline.');
-            }
-
-            $notification = ['user_id' => $id, 'data' => __("Your ID verification request has been declined.")];
-            $this->notifications->create($notification);
-
-            return redirect()->route('admin.id-management.index')->with(SERVICE_RESPONSE_SUCCESS, __('The ID has been declined successfully.'));
+        if ($response[SERVICE_RESPONSE_STATUS]) {
+            return redirect()
+                ->route('admin.id-management.index')
+                ->with(SERVICE_RESPONSE_SUCCESS, $response[SERVICE_RESPONSE_MESSAGE]);
         }
-        catch (\Exception $exception) {
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to decline.'));
-        }
+
+        return $this->redirectBackWithResponse($response);
+    }
+
+    /**
+     * Purpose: redirects back with an ID management operation response.
+     *
+     * Action: maps the service response status to the expected flash message key.
+     *
+     * @param array<string, bool|string> $response
+     */
+    private function redirectBackWithResponse(array $response): RedirectResponse
+    {
+        $flashKey = $response[SERVICE_RESPONSE_STATUS] ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
+
+        return redirect()->back()->with($flashKey, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 }

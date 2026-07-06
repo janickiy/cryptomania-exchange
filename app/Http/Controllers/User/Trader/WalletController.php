@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\User\Trader;
 
-use App\DTO\Wallet\WithdrawalData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Trader\DepositRequest;
 use App\Http\Requests\User\Trader\WithdrawalRequest;
-use App\Repositories\User\Trader\Interfaces\WalletInterface;
 use App\Services\User\Trader\WalletService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class WalletController extends Controller
 {
@@ -24,96 +21,71 @@ class WalletController extends Controller
      *
      */
     public function __construct(
-        private readonly WalletInterface $walletRepository,
         private readonly WalletService $walletService,
     ) {
     }
 
     /**
-     * Purpose: shows the main page or record list for the section.
+     * Purpose: displays the authenticated trader wallet list.
      *
-     * Action: collects data through services or repositories and returns the view.
+     * Action: delegates missing-wallet creation and list preparation to the wallet service.
      *
      */
     public function index(): View|Factory|Application
     {
-        $this->walletRepository->createUnavailableWallet(Auth::id());
-
-        return view('frontend.wallets.index', [
-            'list' => $this->walletService->getWallets(Auth::id()),
-            'title' => __('Wallets'),
-        ]);
+        return view('frontend.wallets.index', $this->walletService->indexData());
     }
 
     /**
-     * Purpose: handles the create deposit action in WalletController.
+     * Purpose: displays the deposit screen for a selected wallet.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * Action: delegates wallet lookup, wallet-address generation, and view selection to the wallet service.
      *
      */
     public function createDeposit(int|string $id): View|Factory|Application
     {
-        $data['wallet'] = $this->walletRepository->findOrFailByConditions(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
-        $data['title'] = __('Wallets');
+        $page = $this->walletService->depositPage($id);
 
-        if ($data['wallet']->stockItem->item_type == CURRENCY_CRYPTO) {
-            $data['walletAddress'] = __('Deposit is currently disabled.');
-
-            if ($data['wallet']->stockItem->deposit_status == ACTIVE_STATUS_ACTIVE) {
-                $data['walletAddress'] = !empty($data['wallet']->address)
-                    ? $data['wallet']->address
-                    : $this->walletService->generateWalletAddress($data['wallet']);
-            }
-
-            return view('frontend.wallets.wallet_address', $data);
-        }
-
-        if ($data['wallet']->stockItem->item_type == CURRENCY_REAL) {
-            return view('frontend.wallets.deposit_form', $data);
-        }
-
-        return view('errors.404', $data);
+        return view($page['view'], $page['data']);
     }
 
     /**
-     * Purpose: handles the store deposit action in WalletController.
+     * Purpose: starts a deposit request for a selected wallet.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * Action: delegates deposit processing to the wallet service and returns either a payment redirect or a flash redirect.
      *
      */
     public function storeDeposit(DepositRequest $request, int|string $id): RedirectResponse
     {
         $response = $this->walletService->storeDeposit($request, $id);
 
-        if ($response[SERVICE_RESPONSE_STATUS] == true) {
-            return redirect()->route('trader.wallets.index')->with(SERVICE_RESPONSE_SUCCESS, $response[SERVICE_RESPONSE_MESSAGE]);
+        if ($response instanceof RedirectResponse) {
+            return $response;
         }
 
-        return redirect()->back()->with(SERVICE_RESPONSE_ERROR, $response[SERVICE_RESPONSE_MESSAGE]);
+        return $response[SERVICE_RESPONSE_STATUS] === true
+            ? redirect()->route('trader.wallets.index')->with(SERVICE_RESPONSE_SUCCESS, $response[SERVICE_RESPONSE_MESSAGE])
+            : redirect()->back()->with(SERVICE_RESPONSE_ERROR, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 
     /**
-     * Purpose: handles the complete payment action in WalletController.
+     * Purpose: handles the external payment provider success callback.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * Action: delegates payment completion to the wallet service and redirects to the wallet list with the result.
      *
      */
     public function completePayment(Request $request): RedirectResponse
     {
         $response = $this->walletService->completePayment($request);
-        $return = [SERVICE_RESPONSE_ERROR => $response[SERVICE_RESPONSE_MESSAGE]];
+        $flashKey = $response[SERVICE_RESPONSE_STATUS] === true ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
-        if ($response[SERVICE_RESPONSE_STATUS] == true) {
-            $return = [SERVICE_RESPONSE_SUCCESS => $response[SERVICE_RESPONSE_MESSAGE]];
-        }
-
-        return redirect()->route('trader.wallets.index')->with($return);
+        return redirect()->route('trader.wallets.index')->with($flashKey, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 
     /**
-     * Purpose: handles the cancel payment action in WalletController.
+     * Purpose: handles the external payment provider cancellation callback.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * Action: delegates cancellation cleanup to the wallet service and redirects to the wallet list with a warning.
      *
      */
     public function cancelPayment(): RedirectResponse
@@ -124,28 +96,25 @@ class WalletController extends Controller
     }
 
     /**
-     * Purpose: handles the create withdrawal action in WalletController.
+     * Purpose: displays the withdrawal form for a selected wallet.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * Action: delegates wallet lookup and form data preparation to the wallet service.
      *
      */
     public function createWithdrawal(int|string $id): View|Factory|Application
     {
-        return view('frontend.wallets.withdrawal_form', [
-            'wallet' => $this->walletRepository->findOrFailByConditions(['id' => $id, 'user_id' => Auth::id()], 'stockItem'),
-            'title' => __('Wallets'),
-        ]);
+        return view('frontend.wallets.withdrawal_form', $this->walletService->withdrawalPageData($id));
     }
 
     /**
-     * Purpose: handles the store withdrawal action in WalletController.
+     * Purpose: submits a withdrawal request for a selected wallet.
      *
-     * Action: connects the HTTP request to services or views so the controller remains thin.
+     * Action: delegates DTO creation and withdrawal processing to the wallet service before redirecting with the result.
      *
      */
     public function storeWithdrawal(WithdrawalRequest $request, int|string $id): RedirectResponse
     {
-        $response = $this->walletService->storeWithdrawal(WithdrawalData::fromArray($request->validated()), $id);
+        $response = $this->walletService->storeWithdrawalFromValidatedData($request->validated(), $id);
 
         if ($response[SERVICE_RESPONSE_STATUS] === true) {
             return redirect()

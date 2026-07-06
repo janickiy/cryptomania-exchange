@@ -322,42 +322,44 @@
     </style>
 @endsection
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-borderless full-in-small">
-                <div class="box-header" style="padding-bottom: 5px;border-bottom:1px solid #efefef">
-                    @include('frontend.exchange.stock_pair_summary')
-                </div>
+    <div class="exchange-dashboard-page">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-borderless full-in-small">
+                    <div class="box-header" style="padding-bottom: 5px;border-bottom:1px solid #efefef">
+                        @include('frontend.exchange.stock_pair_summary')
+                    </div>
 
-                <div class="box-body" style="padding-top: 10px">
-                    @include('frontend.exchange.chart')
+                    <div class="box-body" style="padding-top: 10px">
+                        @include('frontend.exchange.chart')
+                    </div>
                 </div>
             </div>
         </div>
+
+        @include('frontend.exchange.stock_market')
+
+        <div class="row">
+            <div class="col-md-4">
+                @include('frontend.exchange.buy_form')
+            </div>
+
+            <div class="col-md-4">
+                @include('frontend.exchange.stop_limit_form')
+            </div>
+
+            <div class="col-md-4">
+                @include('frontend.exchange.sell_form')
+            </div>
+        </div>
+
+        @include('frontend.exchange.order_book')
+        @auth
+            @include('frontend.exchange.my_order')
+        @endauth
+
+        @include('frontend.exchange.trade_history')
     </div>
-
-    @include('frontend.exchange.stock_market')
-
-    <div class="row">
-        <div class="col-md-4">
-            @include('frontend.exchange.buy_form')
-        </div>
-
-        <div class="col-md-4">
-            @include('frontend.exchange.stop_limit_form')
-        </div>
-
-        <div class="col-md-4">
-            @include('frontend.exchange.sell_form')
-        </div>
-    </div>
-
-    @include('frontend.exchange.order_book')
-    @auth
-        @include('frontend.exchange.my_order')
-    @endauth
-
-    @include('frontend.exchange.trade_history')
 
 @endsection
 

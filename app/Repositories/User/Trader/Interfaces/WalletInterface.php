@@ -25,6 +25,13 @@ interface WalletInterface
     public function insert(array $parameters): bool;
 
     /**
+     * Purpose: describes the missing wallet creation contract.
+     *
+     * Action: creates wallet rows for active stock items that the user does not have yet.
+     */
+    public function createUnavailableWallet(int|string $userID): bool;
+
+    /**
      * Purpose: describes the wallet lookup by conditions contract.
      *
      * Action: returns the first matching wallet with optional relations or null when it is missing.

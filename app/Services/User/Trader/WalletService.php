@@ -14,11 +14,12 @@ use App\Repositories\User\Trader\Interfaces\WalletInterface;
 use App\Repositories\User\Trader\Interfaces\WithdrawalInterface;
 use App\Services\Api\PaypalRestApi;
 use App\Services\Core\DataListService;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Response;
 
 class WalletService
 {
@@ -37,14 +38,31 @@ class WalletService
     }
 
     /**
+     * Purpose: prepares the authenticated trader wallet index page data.
+     *
+     * Action: ensures missing wallets exist for active currencies and returns the list view payload.
+     *
+     * @return array<string, mixed>
+     */
+    public function indexData(): array
+    {
+        $userId = $this->currentUserId();
+        $this->walletRepository->createUnavailableWallet($userId);
+
+        return [
+            'list' => $this->getWallets($userId),
+            'title' => __('Wallets'),
+        ];
+    }
+
+    /**
      * Purpose: executes the get wallets service operation.
      *
      * Action: contains scenario business logic and keeps controllers free from processing details.
      *
-     * @param $userId
-     * @return array
+     * @return array<string, mixed>
      */
-    public function getWallets(mixed $userId): array
+    public function getWallets(int|string $userId): array
     {
         $searchFields = [
             ['stock_items.item_name', __('Wallet Name')],
@@ -63,14 +81,77 @@ class WalletService
     }
 
     /**
+     * Purpose: prepares the deposit page view name and data.
+     *
+     * Action: chooses the correct deposit screen for crypto and fiat wallets while hiding lookup details from controllers.
+     *
+     * @return array{view: string, data: array<string, mixed>}
+     */
+    public function depositPage(int|string $id): array
+    {
+        $wallet = $this->walletRepository->firstOrFail(['id' => $id, 'user_id' => $this->currentUserId()], 'stockItem');
+        $data = [
+            'wallet' => $wallet,
+            'title' => __('Wallets'),
+        ];
+
+        if ($wallet->stockItem->item_type == CURRENCY_CRYPTO) {
+            $data['walletAddress'] = $this->depositWalletAddress($wallet);
+
+            return [
+                'view' => 'frontend.wallets.wallet_address',
+                'data' => $data,
+            ];
+        }
+
+        if ($wallet->stockItem->item_type == CURRENCY_REAL) {
+            return [
+                'view' => 'frontend.wallets.deposit_form',
+                'data' => $data,
+            ];
+        }
+
+        return [
+            'view' => 'errors.404',
+            'data' => $data,
+        ];
+    }
+
+    /**
+     * Purpose: prepares the withdrawal form page data.
+     *
+     * Action: loads the current trader wallet with its stock item relation for the withdrawal form.
+     *
+     * @return array<string, mixed>
+     */
+    public function withdrawalPageData(int|string $id): array
+    {
+        return [
+            'wallet' => $this->walletRepository->firstOrFail(['id' => $id, 'user_id' => $this->currentUserId()], 'stockItem'),
+            'title' => __('Wallets'),
+        ];
+    }
+
+    /**
+     * Purpose: stores a withdrawal from validated request data.
+     *
+     * Action: converts raw validated input into a DTO before running the withdrawal workflow.
+     *
+     * @param array<string, mixed> $validated
+     * @return array<string, mixed>
+     */
+    public function storeWithdrawalFromValidatedData(array $validated, int|string $id): array
+    {
+        return $this->storeWithdrawal(WithdrawalData::fromArray($validated), $id);
+    }
+
+    /**
      * Purpose: executes the generate wallet address service operation.
      *
      * Action: contains scenario business logic and keeps controllers free from processing details.
      *
-     * @param $wallet
-     * @return string
      */
-    public function generateWalletAddress(mixed $wallet): string
+    public function generateWalletAddress(Model $wallet): string
     {
         $stockApiService = null;
 
@@ -95,15 +176,29 @@ class WalletService
     }
 
     /**
+     * Purpose: resolves the crypto deposit wallet address display value.
+     *
+     * Action: returns a disabled message, existing address, or generated address depending on stock-item settings.
+     */
+    private function depositWalletAddress(Model $wallet): string
+    {
+        if ($wallet->stockItem->deposit_status != ACTIVE_STATUS_ACTIVE) {
+            return __('Deposit is currently disabled.');
+        }
+
+        return !empty($wallet->address) ? $wallet->address : $this->generateWalletAddress($wallet);
+    }
+
+    /**
      * Purpose: executes the store deposit service operation.
      *
      * Action: contains scenario business logic and keeps controllers free from processing details.
      *
      * @param DepositRequest $request
      * @param $id
-     * @return array|Response
+     * @return array<string, mixed>|RedirectResponse
      */
-    public function storeDeposit(DepositRequest $request, mixed $id): array|Response
+    public function storeDeposit(DepositRequest $request, int|string $id): array|RedirectResponse
     {
         $wallet = $this->walletRepository->getFirstByConditions(['id' => $id, 'user_id' => Auth::id()], 'stockItem');
 
@@ -163,7 +258,7 @@ class WalletService
                 ]
             );
 
-            return redirect()->away($paymentResponse['return_url'])->send();
+            return redirect()->away($paymentResponse['return_url']);
         }
 
         return [
@@ -415,6 +510,16 @@ class WalletService
             SERVICE_RESPONSE_STATUS => $status,
             SERVICE_RESPONSE_MESSAGE => $message,
         ];
+    }
+
+    /**
+     * Purpose: returns the authenticated user id for wallet operations.
+     *
+     * Action: keeps Auth access centralized inside the wallet service.
+     */
+    private function currentUserId(): int
+    {
+        return (int) Auth::id();
     }
 
     /**

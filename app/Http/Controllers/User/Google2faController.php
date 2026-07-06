@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Requests\User\Google2faRequest;
-use App\Repositories\User\Interfaces\UserInterface;
-use App\Services\User\ProfileService;
 use App\Http\Controllers\Controller;
+use App\Services\User\Google2faService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use PragmaRX\Google2FAQRCode\Google2FA;
-use PragmaRX\Google2FALaravel\Support\Authenticator;
 
 class Google2faController extends Controller
 {
@@ -23,121 +19,67 @@ class Google2faController extends Controller
      *
      */
     public function __construct(
-        private readonly ProfileService $profileService,
-        private readonly UserInterface $users,
+        private readonly Google2faService $google2faService,
     ) {
     }
 
     /**
-     * Purpose: shows the form for creating a new record.
+     * Purpose: displays the Google 2FA management page.
      *
-     * Action: prepares form data and returns the create view.
+     * Action: delegates profile, secret, and QR-code data preparation to the Google 2FA service.
      *
      */
     public function create(): View|Factory|Application
     {
-        $data = $this->profileService->profile();
-        $data['title'] = __('Google Two Factor Authentication');
-
-        if (empty(Auth::user()->google2fa_secret)) {
-            $google2fa = new Google2FA();
-            $data['secretKey'] = $google2fa->generateSecretKey(16);
-            $data['inlineUrl'] = $this->toQrCodeDataUri(
-                $google2fa->getQRCodeInline(company_name(), Auth::user()->email, $data['secretKey'])
-            );
-        }
-
-        return view('backend.google2fa.create', $data);
-    }
-
-    /**
-     * Purpose: normalizes a generated QR code into a browser-safe image source.
-     *
-     * Action: keeps existing data URIs unchanged and wraps raw SVG markup returned by the QR backend into a data URI.
-     */
-    private function toQrCodeDataUri(string $qrCode): string
-    {
-        if (str_starts_with(trim($qrCode), 'data:')) {
-            return $qrCode;
-        }
-
-        return 'data:image/svg+xml;base64,' . base64_encode($qrCode);
+        return view('backend.google2fa.create', $this->google2faService->createData());
     }
 
 
     /**
-     * Purpose: creates a new record from request data.
+     * Purpose: enables Google 2FA for the authenticated user.
      *
-     * Action: passes validated data to the service layer and returns the operation result.
+     * Action: delegates OTP verification and secret persistence to the Google 2FA service.
      *
      */
     public function store(Google2faRequest $request, string $googleCode): RedirectResponse
     {
-        $google2fa = new Google2FA();
-
-        try {
-            if ($google2fa->verifyKey($googleCode, $request->google_app_code)) {
-                if ($this->users->update(['google2fa_secret' => $googleCode], Auth::id())) {
-
-                    $authenticator = app(Authenticator::class)->boot($request);
-                    $authenticator->login();
-
-                    return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('Google Authentication has been enabled successfully.'));
-                }
-            }
-
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to enable google authentication.'));
-        } catch (\Exception $exception) {
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to enable google authentication.'));
-        }
-
+        return $this->redirectWithServiceResponse($this->google2faService->enable($request, $googleCode));
     }
 
     /**
-     * Purpose: handles user or account verification.
+     * Purpose: verifies a Google 2FA challenge for the authenticated user.
      *
-     * Action: checks the provided parameters and redirects with the verification result.
+     * Action: delegates OTP verification and authenticator state updates to the Google 2FA service.
      *
      */
     public function verify(Google2faRequest $request): RedirectResponse
     {
-        $google2fa = new Google2FA();
-
-        try {
-            if ($google2fa->verifyKey(Auth::user()->google2fa_secret, $request->google_app_code)) {
-                $authenticator = app(Authenticator::class)->boot($request);
-                $authenticator->login();
-
-                return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __("The One Time Password was correct."));
-            }
-
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to verify google authentication.'));
-        } catch (\Exception $exception) {
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to verify google authentication.'));
-        }
+        return $this->redirectWithServiceResponse($this->google2faService->verify($request));
     }
 
 
     /**
-     * Purpose: deletes the selected record.
+     * Purpose: disables Google 2FA for the authenticated user.
      *
-     * Action: performs deletion through a service or repository and redirects back with the result.
+     * Action: delegates OTP verification and secret removal to the Google 2FA service.
      *
      */
     public function destroy(Google2faRequest $request): RedirectResponse
     {
-        $google2fa = new Google2FA();
+        return $this->redirectWithServiceResponse($this->google2faService->disable($request));
+    }
 
-        try {
-            if ($google2fa->verifyKey(Auth::user()->google2fa_secret, $request->google_app_code)) {
-                if ($this->users->update(['google2fa_secret' => null], Auth::id())) {
-                    return redirect()->back()->with(SERVICE_RESPONSE_SUCCESS, __('Google Authentication has been disabled successfully.'));
-                }
-            }
+    /**
+     * Purpose: redirects back with the flash message returned by a Google 2FA service operation.
+     *
+     * Action: keeps controller methods short while preserving the current redirect behavior.
+     *
+     * @param array<string, mixed> $response
+     */
+    private function redirectWithServiceResponse(array $response): RedirectResponse
+    {
+        $flashKey = $response[SERVICE_RESPONSE_STATUS] === true ? SERVICE_RESPONSE_SUCCESS : SERVICE_RESPONSE_ERROR;
 
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to disabled google authentication.'));
-        } catch (\Exception $exception) {
-            return redirect()->back()->with(SERVICE_RESPONSE_ERROR, __('Failed to disabled google authentication.'));
-        }
+        return redirect()->back()->with($flashKey, $response[SERVICE_RESPONSE_MESSAGE]);
     }
 }
