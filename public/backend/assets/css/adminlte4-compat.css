@@ -1913,6 +1913,7 @@
     z-index: 1070;
 }
 
+.admin-list-table-card .cm-action .admin-list-action-button,
 .admin-list-action-button {
     display: inline-flex;
     align-items: center;
@@ -1927,6 +1928,9 @@
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
+.admin-list-table-card .cm-action .admin-list-action-button:hover,
+.admin-list-table-card .cm-action .admin-list-action-button:focus,
+.admin-list-table-card .cm-action .admin-list-action-button.show,
 .admin-list-action-button:hover,
 .admin-list-action-button:focus,
 .admin-list-action-button.show {
