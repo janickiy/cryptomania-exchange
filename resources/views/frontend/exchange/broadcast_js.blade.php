@@ -1,4 +1,6 @@
 <script>
+    let activeBroadcastStockPairId = null;
+    let isStockPairSummaryBroadcastBound = false;
 
     function broadcast() {
         const echo = window.Echo;
@@ -8,14 +10,32 @@
         }
 
         let channelPrefix = '{{ channel_prefix() }}';
-        echo.channel(channelPrefix + 'orders.' + defaultStockPairId).listen('Exchange.BroadcastOrder', (data) => {
+        let stockPairId = defaultStockPairId;
+
+        if (activeBroadcastStockPairId && activeBroadcastStockPairId !== stockPairId && typeof echo.leave === 'function') {
+            echo.leave(channelPrefix + 'orders.' + activeBroadcastStockPairId);
+            echo.leave(channelPrefix + 'exchange.' + activeBroadcastStockPairId);
+
+            if (user) {
+                echo.leave(channelPrefix + 'orders.' + activeBroadcastStockPairId + '.' + user.id);
+                echo.leave(channelPrefix + 'exchange.' + activeBroadcastStockPairId + '.' + user.id);
+            }
+        }
+
+        if (activeBroadcastStockPairId === stockPairId) {
+            return;
+        }
+
+        activeBroadcastStockPairId = stockPairId;
+
+        echo.channel(channelPrefix + 'orders.' + stockPairId).listen('Exchange.BroadcastOrder', (data) => {
             processOrderTable(data);
         }).listen('Exchange.BroadcastCancelOrder', (data) => {
             processOrderTable(data);
         });
 
         if (user && typeof echo.private === 'function') {
-            echo.private(channelPrefix + 'orders.' + defaultStockPairId + '.' + user.id).listen('Exchange.BroadcastPrivateOrder', (data) => {
+            echo.private(channelPrefix + 'orders.' + stockPairId + '.' + user.id).listen('Exchange.BroadcastPrivateOrder', (data) => {
                 updateMyOpenOrderTable(data);
                 updateOrderFormOnOrderPlace(data);
             }).listen('Exchange.BroadcastPrivateCancelOrder', (data) => {
@@ -25,7 +45,7 @@
         }
 
 
-        echo.channel(channelPrefix + 'exchange.' + defaultStockPairId).listen('Exchange.BroadcastStockExchange', (data) => {
+        echo.channel(channelPrefix + 'exchange.' + stockPairId).listen('Exchange.BroadcastStockExchange', (data) => {
 
             $.each(data.exchangedOrders[exchangeTypeBuy], function (_, buy) {
                 if (buy) {
@@ -66,12 +86,15 @@
             updateOrderBookTotal($('#total_sell_order_in_item'), removeAmount);
         });
 
-        echo.channel(channelPrefix + 'exchange').listen('Exchange.BroadcastStockPairSummary', (data) => {
-            updateStockMarketTable(data);
-        });
+        if (!isStockPairSummaryBroadcastBound) {
+            echo.channel(channelPrefix + 'exchange').listen('Exchange.BroadcastStockPairSummary', (data) => {
+                updateStockMarketTable(data);
+            });
+            isStockPairSummaryBroadcastBound = true;
+        }
 
         if (user && typeof echo.private === 'function') {
-            echo.private(channelPrefix + 'exchange.' + defaultStockPairId + '.' + user.id).listen('Exchange.BroadcastPrivateStockExchange', (data) => {
+            echo.private(channelPrefix + 'exchange.' + stockPairId + '.' + user.id).listen('Exchange.BroadcastPrivateStockExchange', (data) => {
                 $.each(data, function (_, order) {
                     if (order) {
                         updateMyOpenOrderTable(order);

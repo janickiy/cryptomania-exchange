@@ -1,18 +1,22 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-primary box-borderless">
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-sm-8 col-sm-offset-2">
-                            {{ Form::open(['route'=>'trade-analyst.posts.store', 'method' => 'post', 'class'=>'form-horizontal validator','files'=> true]) }}
-                            @include('backend.posts._form',['buttonText' => __('Create')])
-                            {{ Form::close() }}
-                        </div>
-                    </div>
+    <div class="trade-analysis-form-page">
+        <div class="card trade-analysis-form-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="admin-page-heading">
+                    <h3 class="admin-page-title">{{ __('Create Trade Analysis') }}</h3>
+                    <p class="admin-page-subtitle">{{ __('Prepare a market insight, featured image, and publication state.') }}</p>
                 </div>
+                <a href="{{ route('trade-analyst.posts.index') }}" class="btn btn-outline-secondary back-button">
+                    <i class="fa fa-arrow-left me-1"></i>{{ __('Back') }}
+                </a>
+            </div>
+
+            <div class="card-body admin-form-body">
+                {{ Form::open(['route'=>'trade-analyst.posts.store', 'method' => 'post', 'class'=>'trade-analysis-form admin-section-form validator','files'=> true]) }}
+                @include('backend.posts._form',['buttonText' => __('Create')])
+                {{ Form::close() }}
             </div>
         </div>
     </div>
@@ -20,15 +24,6 @@
 
 @section('before-style')
     <link rel="stylesheet" href="{{ asset('common/vendors/bootstrap-fileinput/css/jasny-bootstrap.css') }}">
-    <style>
-        .thumbnail {
-            width: 100px; height: 100px; line-height:100px;
-        }
-
-        .thumbnail i{
-            font-size: 50px;
-        }
-    </style>
 @endsection
 
 @section('script')
@@ -76,4 +71,3 @@
         });
     </script>
 @endsection
-

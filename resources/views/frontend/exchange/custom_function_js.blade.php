@@ -2,6 +2,10 @@
     function updateChartZoom() {
         let zoom = calculateZoom();
 
+        if (!eChart) {
+            return;
+        }
+
         eChart.setOption({
             dataZoom: [
                 {
@@ -242,8 +246,9 @@
     }
 
     function number_format(number, decimalPoint = 8) {
-        number = parseFloat(number);
-        return number.toFixed(decimalPoint);
+        let parsedNumber = parseFloat(number);
+
+        return (isNaN(parsedNumber) ? 0 : parsedNumber).toFixed(decimalPoint);
     }
 
     function initStockChart(stockPairId, interval) {
@@ -254,44 +259,36 @@
             success: function (data) {
                 chartData = data;
                 makeChart(document.getElementById('echart'), chartData);
-                $(window).resize(function () {
-                    eChart.resize();
-                })
+                $(window)
+                    .off('resize.exchangeChart')
+                    .on('resize.exchangeChart', function () {
+                        if (eChart) {
+                            eChart.resize();
+                        }
+                    });
             }
         });
     }
 
     function hash(number) {
+        let hashMap = {
+            '0': 'z',
+            '1': 'o',
+            '2': 't',
+            '3': 'r',
+            '4': 'f',
+            '5': 'i',
+            '6': 's',
+            '7': 'e',
+            '8': 'g',
+            '9': 'n',
+            '.': 'x'
+        };
+
         number = number_format(number);
-        let res = number.replace(/[0-9]|\./gi, function myFunction(x) {
-            if (x == 0) {
-                return 'z';
-            } else if (x == 1) {
-                return 'o';
-            } else if (x == 2) {
-                return 't';
-            } else if (x == 3) {
-                return 'r';
-            } else if (x == 4) {
-                return 'f';
-            } else if (x == 5) {
-                return 'i';
-            } else if (x == 6) {
-                return 's';
-            } else if (x == 7) {
-                return 'e';
-            } else if (x == 8) {
-                return 'g';
-            } else if (x == 9) {
-                return 'n';
-            } else {
-                return 'x';
-            }
-
-
+        return number.replace(/[0-9.]/g, function (value) {
+            return hashMap[value] || 'x';
         });
-
-        return res;
     }
 
     function initBuyStockOrderTable() {
@@ -336,6 +333,7 @@
 
                     totalStockItem = bcadd(totalStockItem, data.amount);
                     totalBaseItem = bcmul(totalStockItem, data.price);
+                    buyOrderLastPrice = data.price;
 
                     data.total_stock_item = number_format(totalStockItem);
                     data.total_base_item = number_format(totalBaseItem);
@@ -717,11 +715,9 @@
 
         let lastPrice = sellOrderLastPrice;
         let table = sellOrderTable;
-        let loadMore = sellOrderTableLoadMore;
         if (exchangeType == exchangeTypeBuy) {
             lastPrice = buyOrderLastPrice;
             table = buyOrderTable;
-            loadMore = buyOrderTableLoadMore;
         }
 
         $.ajax({
@@ -738,7 +734,11 @@
                 if (length) {
 
                     if (length < orderBookRowPerPage) {
-                        loadMore = false;
+                        if (exchangeType == exchangeTypeBuy) {
+                            buyOrderTableLoadMore = false;
+                        } else {
+                            sellOrderTableLoadMore = false;
+                        }
                     }
 
                     table.rows.add(data.stockOrders);

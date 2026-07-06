@@ -1,21 +1,48 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    {!! $list['filters'] !!}
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-primary box-borderless">
-                <div class="box-body">
-                    <table class="table datatable dt-responsive display nowrap dc-table" style="width: 100% !important;">
+    <div class="stock-items-page">
+        @php
+            $filters = str_replace(
+                ['box box-primary box-borderless', 'box-body'],
+                ['card stock-filter-card', 'card-body'],
+                $list['filters']
+            );
+            $pagination = str_replace(
+                ['box box-primary box-borderless', 'box-body'],
+                ['card stock-pagination-card', 'card-body'],
+                $list['pagination']
+            );
+        @endphp
+
+        {!! $filters !!}
+
+        <div class="card stock-items-table-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="admin-page-heading">
+                    <h3 class="admin-page-title">{{ __('Coin Management') }}</h3>
+                    <p class="admin-page-subtitle">{{ __('Manage currencies, icons, transfer type, and availability status.') }}</p>
+                </div>
+
+                @if(has_permission('admin.stock-items.create'))
+                    <a href="{{ route('admin.stock-items.create') }}" class="btn btn-primary">
+                        <i class="fa fa-plus me-1"></i>{{ __('Create Coin') }}
+                    </a>
+                @endif
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 datatable dt-responsive display nowrap dc-table" style="width: 100% !important;">
                         <thead>
                         <tr>
-                            <th class="text-center">{{ __('Emoji') }}</th>
-                            <th class="all text-center">{{ __('Stock Item') }}</th>
-                            <th class="text-center">{{ __('Stock Item Name') }}</th>
-                            <th class="text-center">{{ __('Stock Item Type') }}</th>
-                            <th class="text-center">{{ __('Active Status') }}</th>
-                            <th class="text-center">{{ __('Created Date') }}</th>
-                            <th class="text-center all no-sort">{{ __('Action') }}</th>
+                            <th class="min-phone-l text-center">{{ __('Emoji') }}</th>
+                            <th class="all">{{ __('Stock Item') }}</th>
+                            <th class="min-phone-l">{{ __('Stock Item Name') }}</th>
+                            <th class="min-phone-l text-center">{{ __('Stock Item Type') }}</th>
+                            <th class="min-phone-l text-center">{{ __('Active Status') }}</th>
+                            <th class="min-phone-l">{{ __('Created Date') }}</th>
+                            <th class="text-end all no-sort">{{ __('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -23,53 +50,80 @@
                             <tr>
                                 <td class="text-center">
                                     @if(!is_null(get_item_emoji($stockItem->item_emoji)))
-                                        <img src="{{ get_item_emoji($stockItem->item_emoji) }}" alt="Item Emoji" class="img-sm cm-center">
+                                        <img src="{{ get_item_emoji($stockItem->item_emoji) }}" alt="{{ __('Item Emoji') }}" class="stock-item-table-emoji">
                                     @else
-                                        <i class="fa fa-money fa-lg text-green"></i>
+                                        <span class="stock-item-table-placeholder">
+                                            <i class="fa fa-money"></i>
+                                        </span>
                                     @endif
                                 </td>
-                                <td class="text-center">{{ $stockItem->item }}</td>
-                                <td class="text-center">{{ $stockItem->item_name }}</td>
-                                <td class="text-center">{{ stock_item_types($stockItem->item_type) }}</td>
-                                <td class="text-center">{!!   $stockItem->is_active ? '<i class="fa fa-check text-green"></i>' :  '<i class="fa fa-close text-red"></i>' !!}</td>
-                                <td class="text-center">{{ $stockItem->created_at->toFormattedDateString() }}</td>
+                                <td><span class="fw-semibold">{{ $stockItem->item }}</span></td>
+                                <td>{{ $stockItem->item_name }}</td>
+                                <td class="text-center">
+                                    <span class="badge text-bg-info stock-status-badge">
+                                        {{ stock_item_types($stockItem->item_type) }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    @if($stockItem->is_active == ACTIVE_STATUS_ACTIVE)
+                                        <span class="badge text-bg-success stock-status-badge">
+                                            <i class="fa fa-check me-1"></i>{{ __('Active') }}
+                                        </span>
+                                    @else
+                                        <span class="badge text-bg-secondary stock-status-badge">
+                                            <i class="fa fa-ban me-1"></i>{{ __('Inactive') }}
+                                        </span>
+                                    @endif
+                                </td>
+                                <td><span class="text-secondary">{{ $stockItem->created_at->toFormattedDateString() }}</span></td>
 
-                                <td class="cm-action">
-                                    <div class="btn-group pull-right">
-                                        <button class="btn green btn-xs btn-outline dropdown-toggle"
-                                                data-toggle="dropdown">
-                                            <i class="fa fa-gear"></i>
+                                <td class="cm-action text-end">
+                                    <div class="dropdown d-inline-block">
+                                        <button class="btn btn-sm btn-outline-secondary table-action-button"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                                aria-label="{{ __('Action') }}">
+                                            <i class="fa fa-ellipsis-v"></i>
                                         </button>
-                                        <ul class="dropdown-menu pull-right">
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                             @if(has_permission('admin.stock-items.show'))
                                                 <li>
-                                                    <a href="{{ route('admin.stock-items.show', $stockItem->id) }}"><i
-                                                                class="fa fa-eye"></i> {{ __('Show') }}</a>
+                                                    <a class="dropdown-item" href="{{ route('admin.stock-items.show', $stockItem->id) }}">
+                                                        <i class="fa fa-eye me-2 text-primary"></i>{{ __('Show') }}
+                                                    </a>
                                                 </li>
                                             @endif
 
                                             @if(has_permission('admin.stock-items.edit'))
                                                 <li>
-                                                    <a href="{{ route('admin.stock-items.edit', $stockItem->id) }}"><i
-                                                                class="fa fa-pencil"></i> {{ __('Edit') }}</a>
+                                                    <a class="dropdown-item" href="{{ route('admin.stock-items.edit', $stockItem->id) }}">
+                                                        <i class="fa fa-pencil me-2 text-primary"></i>{{ __('Edit') }}
+                                                    </a>
                                                 </li>
                                             @endif
 
                                             @if(has_permission('admin.stock-items.toggle-status'))
                                                 <li>
-                                                    <a data-form-id="update-{{ $stockItem->id }}" data-form-method="PUT"
-                                                       href="{{ route('admin.stock-items.toggle-status', $stockItem->id) }}" class="confirmation"
-                                                       data-alert="{{__('Do you want to change this stock item\'s status?')}}"><i
-                                                                class="fa fa-edit"></i> {{ __('Change Status') }}</a>
+                                                    <a class="dropdown-item confirmation"
+                                                       data-form-id="update-{{ $stockItem->id }}"
+                                                       data-form-method="PUT"
+                                                       href="{{ route('admin.stock-items.toggle-status', $stockItem->id) }}"
+                                                       data-alert="{{ __("Do you want to change this stock item's status?") }}">
+                                                        <i class="fa fa-sliders me-2 text-warning"></i>{{ __('Change Status') }}
+                                                    </a>
                                                 </li>
                                             @endif
 
                                             @if(has_permission('admin.stock-items.destroy'))
                                                 <li>
-                                                    <a data-form-id="delete-{{ $stockItem->id }}" data-form-method="DELETE"
-                                                       href="{{ route('admin.stock-items.destroy', $stockItem->id) }}" class="confirmation"
-                                                       data-alert="{{__('Do you want to delete this stock item?')}}"><i
-                                                                class="fa fa-trash-o"></i> {{ __('Delete') }}</a>
+                                                    <a class="dropdown-item text-danger confirmation"
+                                                       data-form-id="delete-{{ $stockItem->id }}"
+                                                       data-form-method="DELETE"
+                                                       href="{{ route('admin.stock-items.destroy', $stockItem->id) }}"
+                                                       data-alert="{{ __('Do you want to delete this stock item?') }}">
+                                                        <i class="fa fa-trash-o me-2"></i>{{ __('Delete') }}
+                                                    </a>
                                                 </li>
                                             @endif
                                         </ul>
@@ -82,8 +136,9 @@
                 </div>
             </div>
         </div>
+
+        {!! $pagination !!}
     </div>
-    {!! $list['pagination'] !!}
 @endsection
 
 @section('script')

@@ -392,17 +392,26 @@
 @section('script')
     <script>
         (function ($) {
+            const channelPrefix = '{{ channel_prefix() }}';
+
+            function formatNumber(value, precision = 8) {
+                const number = parseFloat(value);
+
+                return (Number.isNaN(number) ? 0 : number).toFixed(precision);
+            }
+
             $(document).on('click', '.dropdown-item', function () {
                 $(this).parent().siblings('.dropdown-toggle').find('.text-dropdown').text($(this).data('val'));
             });
 
             $('.marquee').each(function () {
-                var $this = $(this);
-                var parentWidth = $this.parent().outerWidth();
-                var scrollTime = +$this.data('time');
-                var childWidth = $this.children().eq(0).outerWidth(true);
-                var sublength = $this.children().length;
-                var thisWidth = childWidth * (sublength - 1);
+                const $this = $(this);
+                const parentWidth = $this.parent().outerWidth();
+                const scrollTime = Number($this.data('time')) || 0;
+                const childWidth = $this.children().eq(0).outerWidth(true);
+                const itemCount = $this.children().length;
+                let thisWidth = childWidth * (itemCount - 1);
+
                 if (parentWidth < thisWidth) {
                     $this.css({
                         'margin-left': (parentWidth - thisWidth) + 'px'
@@ -410,19 +419,18 @@
                 } else {
                     thisWidth = parentWidth;
                 }
+
                 $this.width(thisWidth);
-                var unitDelay = Math.round(scrollTime * childWidth / (thisWidth + childWidth));
-                for (var i = 0; i < sublength; i++) {
-                    var thisItemDelay = unitDelay * i;
-                    // if(thisItemDelay != 0){
-                    thisItemDelay = thisItemDelay + 'ms';
-                    // }
+                const unitDelay = Math.round(scrollTime * childWidth / (thisWidth + childWidth));
+
+                for (let i = 0; i < itemCount; i++) {
+                    const itemDelay = (unitDelay * i) + 'ms';
                     $this.children().eq(i).css({
-                        'animation': 'scroll-now ' + scrollTime + 'ms linear ' + thisItemDelay + ' infinite',
-                        '-moz-animation': 'scroll-now ' + scrollTime + 'ms linear ' + thisItemDelay + ' infinite',
-                        '-webkit-animation': 'scroll-now ' + scrollTime + 'ms linear ' + thisItemDelay + ' infinite',
-                        '-o-animation': 'scroll-now ' + scrollTime + 'ms linear ' + thisItemDelay + ' infinite',
-                        '-ms-animation': 'scroll-now ' + scrollTime + 'ms linear ' + thisItemDelay + ' infinite'
+                        'animation': 'scroll-now ' + scrollTime + 'ms linear ' + itemDelay + ' infinite',
+                        '-moz-animation': 'scroll-now ' + scrollTime + 'ms linear ' + itemDelay + ' infinite',
+                        '-webkit-animation': 'scroll-now ' + scrollTime + 'ms linear ' + itemDelay + ' infinite',
+                        '-o-animation': 'scroll-now ' + scrollTime + 'ms linear ' + itemDelay + ' infinite',
+                        '-ms-animation': 'scroll-now ' + scrollTime + 'ms linear ' + itemDelay + ' infinite'
                     });
                 }
             });
@@ -435,13 +443,17 @@
                 });
             }
 
-        })(jQuery);
+            function updateMarque(data) {
+                const marque = $('#stock_pair' + data.stock_pair_id);
 
-        function updateMarque(data) {
-            let marque = $('#stock_pair' + data.stock_pair_id);
-            marque.find('.last_price').text(number_format(data.last_price));
-            marque.find('.change_24').text(number_format(data.change_24));
-            marque.find('.volume').text(number_format(data.exchanged_base_item_volume_24));
-        }
+                if (!marque.length) {
+                    return;
+                }
+
+                marque.find('.last_price').text(formatNumber(data.last_price));
+                marque.find('.change_24').text(formatNumber(data.change_24, 2));
+                marque.find('.volume').text(formatNumber(data.exchanged_base_item_volume_24, 3));
+            }
+        })(jQuery);
     </script>
 @endsection

@@ -1,78 +1,53 @@
-/*
-<a href="posts/2" data-method="delete"> <---- We want to send an HTTP DELETE request
+(function ($, window, document) {
+    'use strict';
 
-- Or, request confirmation in the process -
+    var SUPPORTED_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
-<a href="posts/2" data-method="delete" data-confirm="Are you sure?">
-*/
+    function getCsrfToken($link) {
+        return $link.data('token') || $('meta[name="csrf-token"]').attr('content') || '';
+    }
 
-(function() {
+    function getHttpMethod($link) {
+        return String($link.data('method') || '').toUpperCase();
+    }
 
-    var laravel = {
-        initialize: function() {
-            this.methodLinks = $('a[data-method]');
+    function isSupportedMethod(method) {
+        return SUPPORTED_METHODS.indexOf(method) !== -1;
+    }
 
-            this.registerEvents();
-        },
+    function shouldContinue($link) {
+        var confirmation = $link.data('confirm');
 
-        registerEvents: function() {
-            this.methodLinks.on('click', this.handleMethod);
-        },
+        return !confirmation || window.confirm(confirmation);
+    }
 
-        handleMethod: function(e) {
-            var link = $(this);
-            var httpMethod = link.data('method').toUpperCase();
-            var form;
+    function createForm($link, method) {
+        return $('<form>', {
+            method: 'POST',
+            action: $link.attr('href')
+        })
+            .append($('<input>', {
+                type: 'hidden',
+                name: '_token',
+                value: getCsrfToken($link)
+            }))
+            .append($('<input>', {
+                type: 'hidden',
+                name: '_method',
+                value: method
+            }))
+            .appendTo('body');
+    }
 
-            // If the data-method attribute is not PUT or DELETE,
-            // then we don't know what to do. Just ignore.
-            if ( $.inArray(httpMethod, ['PUT', 'DELETE','POST']) === - 1 ) {
-                return;
-            }
+    $(document).on('click', 'a[data-method]', function (event) {
+        var $link = $(this);
+        var method = getHttpMethod($link);
 
-            // Allow user to optionally provide data-confirm="Are you sure?"
-            if ( link.data('confirm') ) {
-                if ( ! laravel.verifyConfirm(link) ) {
-                    return false;
-                }
-            }
-
-            form = laravel.createForm(link);
-            form.submit();
-
-            e.preventDefault();
-        },
-
-        verifyConfirm: function(link) {
-            return confirm(link.data('confirm'));
-        },
-
-        createForm: function(link) {
-            var form =
-                $('<form>', {
-                    'method': 'POST',
-                    'action': link.attr('href')
-                });
-
-            var token =
-                $('<input>', {
-                    'type': 'hidden',
-                    'name': '_token',
-                    'value': link.data('token')
-                });
-
-            var hiddenInput =
-                $('<input>', {
-                    'name': '_method',
-                    'type': 'hidden',
-                    'value': link.data('method')
-                });
-
-            return form.append(token, hiddenInput)
-                .appendTo('body');
+        if (!isSupportedMethod(method) || !shouldContinue($link)) {
+            return;
         }
-    };
 
-    laravel.initialize();
-
-})();
+        event.preventDefault();
+        createForm($link, method).trigger('submit');
+    });
+})(jQuery, window, document);

@@ -1717,6 +1717,69 @@
     padding-top: .25rem;
 }
 
+.trade-analysis-form-page .card {
+    border: 0;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.trade-analysis-form-card {
+    overflow: hidden;
+}
+
+.trade-analysis-form-card .card-header {
+    border-bottom-color: var(--bs-border-color-translucent);
+    background: var(--bs-card-bg);
+}
+
+.trade-analysis-form .trade-analysis-switch {
+    width: auto;
+}
+
+.trade-analysis-form .trade-analysis-switch .cm-switch-label {
+    width: auto;
+    min-width: 5.25rem;
+    padding-right: .75rem;
+    padding-left: .75rem;
+}
+
+.trade-analysis-fileinput {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: .75rem;
+}
+
+.trade-analysis-thumbnail {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 7rem;
+    height: 7rem;
+    margin: 0;
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-secondary-color);
+    overflow: hidden;
+}
+
+.trade-analysis-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trade-analysis-thumbnail i {
+    font-size: 2.5rem;
+}
+
+.trade-analysis-file-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
 .admin-list-page .card {
     border: 0;
     box-shadow: var(--bs-box-shadow-sm);
@@ -1913,21 +1976,34 @@
     z-index: 1070;
 }
 
+.trade-analysis-page .admin-list-table-card .cm-action .admin-list-action-button,
+.system-notices-page .admin-list-table-card .cm-action .admin-list-action-button,
 .admin-list-table-card .cm-action .admin-list-action-button,
 .admin-list-action-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    vertical-align: middle;
     width: 2.25rem;
+    min-width: 2.25rem;
     height: 2.25rem;
     padding: 0;
     border-color: var(--bs-border-color) !important;
+    border-radius: var(--bs-border-radius) !important;
     background: var(--bs-body-bg) !important;
     color: var(--bs-secondary-color) !important;
+    font-size: 1rem;
+    line-height: 1;
     box-shadow: none;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
+.trade-analysis-page .admin-list-table-card .cm-action .admin-list-action-button:hover,
+.trade-analysis-page .admin-list-table-card .cm-action .admin-list-action-button:focus,
+.trade-analysis-page .admin-list-table-card .cm-action .admin-list-action-button.show,
+.system-notices-page .admin-list-table-card .cm-action .admin-list-action-button:hover,
+.system-notices-page .admin-list-table-card .cm-action .admin-list-action-button:focus,
+.system-notices-page .admin-list-table-card .cm-action .admin-list-action-button.show,
 .admin-list-table-card .cm-action .admin-list-action-button:hover,
 .admin-list-table-card .cm-action .admin-list-action-button:focus,
 .admin-list-table-card .cm-action .admin-list-action-button.show,
@@ -1940,6 +2016,8 @@
     box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), .14);
 }
 
+.trade-analysis-page .admin-list-table-card .cm-action .admin-list-action-button i,
+.system-notices-page .admin-list-table-card .cm-action .admin-list-action-button i,
 .admin-list-action-button i {
     font-size: 1rem;
     line-height: 1;
@@ -1968,6 +2046,57 @@
     display: inline-block;
     max-width: min(44rem, 100%);
     white-space: normal;
+}
+
+.review-withdrawal-ref-code,
+.review-withdrawal-address-code {
+    display: inline-block;
+    max-width: min(32rem, 100%);
+    white-space: normal;
+    word-break: break-all;
+}
+
+.review-withdrawal-show-page .card {
+    border: 0;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.review-withdrawal-show-card {
+    overflow: visible;
+}
+
+.review-withdrawal-show-card .card-header {
+    border-bottom-color: var(--bs-border-color-translucent);
+    background: var(--bs-card-bg);
+}
+
+.review-withdrawal-detail-table th,
+.review-withdrawal-detail-table td {
+    padding: .9rem 1rem;
+    border-bottom-color: var(--bs-border-color-translucent);
+    vertical-align: middle;
+}
+
+.review-withdrawal-detail-table th {
+    width: 36%;
+    color: var(--bs-secondary-color);
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.review-withdrawal-detail-table td {
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+.review-withdrawal-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .5rem;
 }
 
 .notice-row-unread .admin-list-message,
@@ -2021,6 +2150,7 @@
 
 .stock-item-form-page .card,
 .stock-pair-form-page .card,
+.stock-items-page .card,
 .stock-pairs-page .card,
 .stock-pair-show-page .card {
     border: 0;
@@ -2032,6 +2162,7 @@
 .stock-pair-show-card,
 .stock-pair-detail-card,
 .stock-filter-card,
+.stock-items-table-card,
 .stock-pairs-table-card,
 .stock-pagination-card {
     overflow: visible;
@@ -2041,6 +2172,7 @@
 .stock-pair-form-card .card-header,
 .stock-pair-show-card .card-header,
 .stock-pair-detail-card .card-header,
+.stock-items-table-card .card-header,
 .stock-pairs-table-card .card-header {
     border-bottom-color: var(--bs-border-color-translucent);
     background: var(--bs-card-bg);
@@ -2152,6 +2284,7 @@
     padding: .85rem 1rem;
 }
 
+.stock-items-page .cm-filter,
 .stock-pairs-page .cm-filter {
     display: flex;
     align-items: center;
@@ -2159,11 +2292,17 @@
     gap: .75rem 1.5rem;
 }
 
+.stock-items-page .cm-filter::before,
+.stock-items-page .cm-filter::after,
 .stock-pairs-page .cm-filter::before,
 .stock-pairs-page .cm-filter::after {
     display: none;
 }
 
+.stock-items-page .cm-filter > div,
+.stock-items-page .cm-filter > .cm-order-filter,
+.stock-items-page .cm-filter > .cm-date-filter,
+.stock-items-page .cm-filter > .cm-search-filter,
 .stock-pairs-page .cm-filter > div,
 .stock-pairs-page .cm-filter > .cm-order-filter,
 .stock-pairs-page .cm-filter > .cm-date-filter,
@@ -2180,6 +2319,7 @@
     margin: 0;
 }
 
+.stock-items-page .cm-filter .form-control,
 .stock-pairs-page .cm-filter .form-control {
     min-height: 2.375rem;
     margin: 0;
@@ -2190,28 +2330,38 @@
     font-size: .9rem;
 }
 
+.stock-items-page .cm-filter select.form-control,
 .stock-pairs-page .cm-filter select.form-control {
     width: 8rem;
 }
 
+.stock-items-page .cm-filter > .cm-order-filter select:last-of-type,
+.stock-items-page .cm-filter .select-compact,
 .stock-pairs-page .cm-filter > .cm-order-filter select:last-of-type,
 .stock-pairs-page .cm-filter .select-compact {
     width: 5.75rem !important;
 }
 
+.stock-items-page .cm-filter > .cm-date-filter input,
 .stock-pairs-page .cm-filter > .cm-date-filter input {
     width: 9rem !important;
 }
 
+.stock-items-page .cm-filter > .cm-search-filter input,
 .stock-pairs-page .cm-filter > .cm-search-filter input {
     width: 12rem !important;
 }
 
+.stock-items-page .cm-filter > .cm-date-filter span,
 .stock-pairs-page .cm-filter > .cm-date-filter span {
     color: var(--bs-secondary-color);
     font-weight: 600;
 }
 
+.stock-items-page .cm-filter button,
+.stock-items-page .cm-filter > .cm-order-filter button,
+.stock-items-page .cm-filter > .cm-date-filter button,
+.stock-items-page .cm-filter > .cm-search-filter button,
 .stock-pairs-page .cm-filter button,
 .stock-pairs-page .cm-filter > .cm-order-filter button,
 .stock-pairs-page .cm-filter > .cm-date-filter button,
@@ -2231,6 +2381,8 @@
     line-height: 1;
 }
 
+.stock-items-page .cm-filter button:hover,
+.stock-items-page .cm-filter button:focus,
 .stock-pairs-page .cm-filter button:hover,
 .stock-pairs-page .cm-filter button:focus {
     background: var(--bs-primary);
@@ -2238,20 +2390,26 @@
     filter: brightness(.92);
 }
 
+.stock-items-table-card .table-responsive,
 .stock-pairs-table-card .table-responsive {
     overflow: visible;
 }
 
+.stock-items-table-card .table > :not(caption) > * > *,
 .stock-pairs-table-card .table > :not(caption) > * > * {
     padding: .9rem 1rem;
 }
 
+.stock-items-table-card table.dataTable thead,
+.stock-items-table-card .table thead,
 .stock-pairs-table-card table.dataTable thead,
 .stock-pairs-table-card .table thead {
     background: transparent !important;
     color: inherit !important;
 }
 
+.stock-items-table-card table.dataTable thead tr th,
+.stock-items-table-card .table thead tr th,
 .stock-pairs-table-card table.dataTable thead tr th,
 .stock-pairs-table-card .table thead tr th {
     padding: .85rem 1rem !important;
@@ -2267,6 +2425,9 @@
     vertical-align: middle;
 }
 
+.stock-items-table-card table.dataTable thead tr th.sorting,
+.stock-items-table-card table.dataTable thead tr th.sorting_asc,
+.stock-items-table-card table.dataTable thead tr th.sorting_desc,
 .stock-pairs-table-card table.dataTable thead tr th.sorting,
 .stock-pairs-table-card table.dataTable thead tr th.sorting_asc,
 .stock-pairs-table-card table.dataTable thead tr th.sorting_desc {
@@ -2274,6 +2435,11 @@
     background-image: none !important;
 }
 
+.stock-items-table-card table.dataTable thead .sorting::after,
+.stock-items-table-card table.dataTable thead .sorting_asc::after,
+.stock-items-table-card table.dataTable thead .sorting_desc::after,
+.stock-items-table-card table.dataTable thead .sorting_asc_disabled::after,
+.stock-items-table-card table.dataTable thead .sorting_desc_disabled::after,
 .stock-pairs-table-card table.dataTable thead .sorting::after,
 .stock-pairs-table-card table.dataTable thead .sorting_asc::after,
 .stock-pairs-table-card table.dataTable thead .sorting_desc::after,
@@ -2293,48 +2459,72 @@
     transform: translateY(-50%);
 }
 
+.stock-items-table-card table.dataTable thead .sorting::after,
 .stock-pairs-table-card table.dataTable thead .sorting::after {
     content: "\f0dc";
     opacity: .35;
 }
 
+.stock-items-table-card table.dataTable thead .sorting_asc::after,
 .stock-pairs-table-card table.dataTable thead .sorting_asc::after {
     content: "\f0de";
     opacity: .75;
 }
 
+.stock-items-table-card table.dataTable thead .sorting_desc::after,
 .stock-pairs-table-card table.dataTable thead .sorting_desc::after {
     content: "\f0dd";
     opacity: .75;
 }
 
+.stock-items-table-card table.dataTable thead .no-sort::after,
+.stock-items-table-card table.dataTable thead .sorting_disabled::after,
 .stock-pairs-table-card table.dataTable thead .no-sort::after,
 .stock-pairs-table-card table.dataTable thead .sorting_disabled::after {
     display: none !important;
     content: "";
 }
 
+.stock-items-table-card table.dataTable.no-footer,
 .stock-pairs-table-card table.dataTable.no-footer {
     border-bottom-color: var(--bs-border-color-translucent) !important;
 }
 
+.stock-items-table-card .dropdown-menu,
 .stock-pairs-table-card .dropdown-menu {
     z-index: 1070;
 }
 
+.stock-items-page .stock-items-table-card .cm-action .table-action-button,
+.stock-items-table-card .cm-action .table-action-button,
+.stock-pairs-page .stock-pairs-table-card .cm-action .table-action-button,
 .stock-pairs-table-card .cm-action .table-action-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    vertical-align: middle;
     width: 2.25rem;
+    min-width: 2.25rem;
     height: 2.25rem;
     padding: 0;
     border-color: var(--bs-border-color) !important;
+    border-radius: var(--bs-border-radius) !important;
     background: var(--bs-body-bg) !important;
     color: var(--bs-secondary-color) !important;
+    font-size: 1rem;
+    line-height: 1;
     box-shadow: none;
 }
 
+.stock-items-page .stock-items-table-card .cm-action .table-action-button:hover,
+.stock-items-page .stock-items-table-card .cm-action .table-action-button:focus,
+.stock-items-page .stock-items-table-card .cm-action .table-action-button.show,
+.stock-items-table-card .cm-action .table-action-button:hover,
+.stock-items-table-card .cm-action .table-action-button:focus,
+.stock-items-table-card .cm-action .table-action-button.show,
+.stock-pairs-page .stock-pairs-table-card .cm-action .table-action-button:hover,
+.stock-pairs-page .stock-pairs-table-card .cm-action .table-action-button:focus,
+.stock-pairs-page .stock-pairs-table-card .cm-action .table-action-button.show,
 .stock-pairs-table-card .cm-action .table-action-button:hover,
 .stock-pairs-table-card .cm-action .table-action-button:focus,
 .stock-pairs-table-card .cm-action .table-action-button.show {
@@ -2344,15 +2534,18 @@
     box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), .14);
 }
 
+.stock-items-table-card .cm-action .table-action-button i,
 .stock-pairs-table-card .cm-action .table-action-button i {
     font-size: 1rem;
     line-height: 1;
 }
 
+.stock-items-table-card .cm-action .table-action-button::after,
 .stock-pairs-table-card .cm-action .table-action-button::after {
     display: none;
 }
 
+.stock-items-table-card .cm-action .dropdown-item,
 .stock-pairs-table-card .cm-action .dropdown-item {
     display: flex;
     align-items: center;
@@ -2365,6 +2558,25 @@
 .stock-status-badge {
     min-width: 5.75rem;
     padding: .5rem .65rem;
+}
+
+.stock-item-table-emoji,
+.stock-item-table-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+}
+
+.stock-item-table-emoji {
+    object-fit: contain;
+}
+
+.stock-item-table-placeholder {
+    background: var(--bs-success-bg-subtle);
+    color: var(--bs-success);
 }
 
 .stock-pagination-card .pagination {
@@ -2959,8 +3171,11 @@
     .admin-settings-card .card-header,
     .logs-toolbar-card .card-header,
     .menu-builder-card .card-header,
+    .trade-analysis-form-card .card-header,
+    .review-withdrawal-show-card .card-header,
     .admin-list-table-card .card-header,
     .stock-item-form-card .card-header,
+    .stock-items-table-card .card-header,
     .stock-pair-form-card .card-header,
     .stock-pair-show-card .card-header,
     .stock-pair-detail-card .card-header,
@@ -2972,8 +3187,11 @@
     .admin-settings-card .card-header .btn,
     .logs-toolbar-card .card-header .btn,
     .menu-builder-card .card-header .btn,
+    .trade-analysis-form-card .card-header .btn,
+    .review-withdrawal-show-card .card-header .btn,
     .admin-list-table-card .card-header .btn,
     .stock-item-form-card .card-header .btn,
+    .stock-items-table-card .card-header .btn,
     .stock-pair-form-card .card-header .btn,
     .stock-pair-show-card .card-header .btn,
     .stock-pair-detail-card .card-header .btn,
@@ -3002,11 +3220,36 @@
         padding-top: 0;
     }
 
+    .review-withdrawal-detail-table th,
+    .review-withdrawal-detail-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .review-withdrawal-detail-table th {
+        padding-bottom: .25rem;
+    }
+
+    .review-withdrawal-detail-table td {
+        padding-top: 0;
+    }
+
+    .review-withdrawal-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
     .admin-form-grid {
         grid-template-columns: 1fr;
     }
 
     .admin-form-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .trade-analysis-fileinput,
+    .trade-analysis-file-actions {
         display: grid;
         grid-template-columns: 1fr;
     }
@@ -3038,6 +3281,10 @@
     }
 
     .admin-list-table-card .table-responsive {
+        overflow-x: auto;
+    }
+
+    .stock-items-table-card .table-responsive {
         overflow-x: auto;
     }
 
