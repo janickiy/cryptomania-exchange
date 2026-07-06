@@ -1,55 +1,107 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    {!! $list['filters'] !!}
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-primary box-borderless">
-                <div class="box-body">
-                    <table class="table datatable dt-responsive display nowrap dc-table" style="width: 100% !important;">
+    <div class="stock-pairs-page">
+        @php
+            $filters = str_replace(
+                ['box box-primary box-borderless', 'box-body'],
+                ['card stock-filter-card', 'card-body'],
+                $list['filters']
+            );
+            $pagination = str_replace(
+                ['box box-primary box-borderless', 'box-body'],
+                ['card stock-pagination-card', 'card-body'],
+                $list['pagination']
+            );
+        @endphp
+
+        {!! $filters !!}
+
+        <div class="card stock-pairs-table-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="admin-page-heading">
+                    <h3 class="admin-page-title">{{ __('Coin Pair Management') }}</h3>
+                    <p class="admin-page-subtitle">{{ __('Manage exchange pairs, prices, availability, and default markets.') }}</p>
+                </div>
+                @if(has_permission('admin.stock-pairs.create'))
+                    <a href="{{ route('admin.stock-pairs.create') }}" class="btn btn-primary">
+                        <i class="fa fa-plus me-1"></i>{{ __('Create Pair') }}
+                    </a>
+                @endif
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 datatable dt-responsive display nowrap dc-table" style="width: 100% !important;">
                         <thead>
                         <tr>
-                            <th class="all text-center">{{ __('Stock Pair') }}</th>
-                            <th class="text-center">{{ __('Exchangeable Item') }}</th>
-                            <th class="text-center">{{ __('Base Item') }}</th>
-                            <th class="text-center">{{ __('Last Price') }}</th>
-                            <th class="text-center">{{ __('Active Status') }}</th>
-                            <th class="text-center">{{ __('Default Status') }}</th>
-                            <th class="text-center">{{ __('Created Date') }}</th>
-                            <th class="text-center all no-sort">{{ __('Action') }}</th>
+                            <th class="all">{{ __('Stock Pair') }}</th>
+                            <th class="min-phone-l">{{ __('Exchangeable Item') }}</th>
+                            <th class="min-phone-l">{{ __('Base Item') }}</th>
+                            <th class="min-phone-l text-end">{{ __('Last Price') }}</th>
+                            <th class="min-phone-l text-center">{{ __('Active Status') }}</th>
+                            <th class="min-phone-l text-center">{{ __('Default Status') }}</th>
+                            <th class="min-phone-l">{{ __('Created Date') }}</th>
+                            <th class="text-end all no-sort">{{ __('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($list['query'] as $stockPair)
                             <tr>
-                                <td class="text-center">{{ $stockPair->stock_item }}/{{ $stockPair->base_stock_item }}</td>
-                                <td class="text-center">{{ $stockPair->stock_item }} ({{ $stockPair->stock_name }})</td>
-                                <td class="text-center">{{ $stockPair->base_stock_item }} ({{ $stockPair->base_stock_name }})</td>
-                                <td class="text-center">{{ $stockPair->last_price }}</td>
+                                <td>
+                                    <span class="fw-semibold">{{ $stockPair->stock_item }}/{{ $stockPair->base_stock_item }}</span>
+                                </td>
+                                <td>{{ $stockPair->stock_item }} ({{ $stockPair->stock_name }})</td>
+                                <td>{{ $stockPair->base_stock_item }} ({{ $stockPair->base_stock_name }})</td>
+                                <td class="text-end">{{ $stockPair->last_price }}</td>
                                 <td class="text-center">
-                                    {!! $stockPair->is_active == ACTIVE_STATUS_ACTIVE ? '<i class="fa fa-check text-green"></i>' : '<i class="fa fa-close text-red"></i>' !!}
+                                    @if($stockPair->is_active == ACTIVE_STATUS_ACTIVE)
+                                        <span class="badge text-bg-success stock-status-badge">
+                                            <i class="fa fa-check me-1"></i>{{ __('Active') }}
+                                        </span>
+                                    @else
+                                        <span class="badge text-bg-secondary stock-status-badge">
+                                            <i class="fa fa-ban me-1"></i>{{ __('Inactive') }}
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="text-center">
-                                    {!! $stockPair->is_default == ACTIVE_STATUS_ACTIVE ? '<i class="fa fa-check text-green"></i>' : '<i class="fa fa-close text-red"></i>' !!}
+                                    @if($stockPair->is_default == ACTIVE_STATUS_ACTIVE)
+                                        <span class="badge text-bg-primary stock-status-badge">
+                                            <i class="fa fa-star me-1"></i>{{ __('Default') }}
+                                        </span>
+                                    @else
+                                        <span class="badge text-bg-light stock-status-badge">
+                                            <i class="fa fa-minus me-1"></i>{{ __('No') }}
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="text-center">{{ $stockPair->created_at->toFormattedDateString() }}</td>
-                                <td class="cm-action">
-                                    <div class="btn-group pull-right">
-                                        <button class="btn green btn-xs btn-outline dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa fa-gear"></i>
+                                <td>
+                                    <span class="text-secondary">{{ $stockPair->created_at->toFormattedDateString() }}</span>
+                                </td>
+                                <td class="cm-action text-end">
+                                    <div class="dropdown d-inline-block">
+                                        <button class="btn btn-sm btn-outline-secondary table-action-button dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                                aria-label="{{ __('Action') }}">
+                                            <i class="fa fa-ellipsis-vertical"></i>
                                         </button>
-                                        <ul class="dropdown-menu pull-right">
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                             @if(has_permission('admin.stock-pairs.show'))
                                                 <li>
-                                                    <a href="{{ route('admin.stock-pairs.show', $stockPair->id) }}"><i
-                                                                class="fa fa-eye"></i> {{ __('Show') }}</a>
+                                                    <a class="dropdown-item" href="{{ route('admin.stock-pairs.show', $stockPair->id) }}">
+                                                        <i class="fa fa-eye me-2 text-primary"></i>{{ __('Show') }}
+                                                    </a>
                                                 </li>
                                             @endif
 
                                             @if(has_permission('admin.stock-pairs.edit'))
                                                 <li>
-                                                    <a href="{{ route('admin.stock-pairs.edit', $stockPair->id) }}"><i
-                                                                class="fa fa-pencil"></i> {{ __('Edit') }}</a>
+                                                    <a class="dropdown-item" href="{{ route('admin.stock-pairs.edit', $stockPair->id) }}">
+                                                        <i class="fa fa-pen-to-square me-2 text-primary"></i>{{ __('Edit') }}
+                                                    </a>
                                                 </li>
                                             @endif
 
@@ -58,10 +110,13 @@
                                                 $stockPair->is_default != ACTIVE_STATUS_ACTIVE
                                             )
                                                 <li>
-                                                    <a data-form-id="update-{{ $stockPair->id }}" data-form-method="PUT"
-                                                       href={{ route('admin.stock-pairs.toggle-status', $stockPair->id) }} class="confirmation"
-                                                       data-alert="{{__("Do you want to change this stock pair's status?")}}"><i
-                                                                class="fa fa-edit"></i> {{ __('Change Status') }}</a>
+                                                    <a class="dropdown-item confirmation"
+                                                       data-form-id="update-{{ $stockPair->id }}"
+                                                       data-form-method="PUT"
+                                                       href="{{ route('admin.stock-pairs.toggle-status', $stockPair->id) }}"
+                                                       data-alert="{{ __("Do you want to change this stock pair's status?") }}">
+                                                        <i class="fa fa-sliders me-2 text-warning"></i>{{ __('Change Status') }}
+                                                    </a>
                                                 </li>
                                             @endif
 
@@ -71,10 +126,12 @@
                                                 $stockPair->is_active == ACTIVE_STATUS_ACTIVE
                                             )
                                                 <li>
-                                                    <a data-form-id="update-default-{{ $stockPair->id }}" data-form-method="PUT"
-                                                       href={{ route('admin.stock-pairs.make-status-default', $stockPair->id) }} class="confirmation"
-                                                       data-alert="{{__("Do you want to make this stock pair  default?")}}">
-                                                        <i class="fa fa-edit"></i> {{ __('Make Default Pair') }}
+                                                    <a class="dropdown-item confirmation"
+                                                       data-form-id="update-default-{{ $stockPair->id }}"
+                                                       data-form-method="PUT"
+                                                       href="{{ route('admin.stock-pairs.make-status-default', $stockPair->id) }}"
+                                                       data-alert="{{ __('Do you want to make this stock pair  default?') }}">
+                                                        <i class="fa fa-star me-2 text-warning"></i>{{ __('Make Default Pair') }}
                                                     </a>
                                                 </li>
                                             @endif
@@ -84,10 +141,13 @@
                                                 $stockPair->is_default != ACTIVE_STATUS_ACTIVE
                                             )
                                                 <li>
-                                                    <a data-form-id="delete-{{ $stockPair->id }}" data-form-method="DELETE"
-                                                       href={{ route('admin.stock-pairs.destroy', $stockPair->id) }} class="confirmation"
-                                                       data-alert="{{__('Do you want to delete this stock item?')}}"><i
-                                                                class="fa fa-trash-o"></i> {{ __('Delete') }}</a>
+                                                    <a class="dropdown-item text-danger confirmation"
+                                                       data-form-id="delete-{{ $stockPair->id }}"
+                                                       data-form-method="DELETE"
+                                                       href="{{ route('admin.stock-pairs.destroy', $stockPair->id) }}"
+                                                       data-alert="{{ __('Do you want to delete this stock item?') }}">
+                                                        <i class="fa fa-trash-can me-2"></i>{{ __('Delete') }}
+                                                    </a>
                                                 </li>
                                             @endif
                                         </ul>
@@ -100,8 +160,9 @@
                 </div>
             </div>
         </div>
+
+        {!! $pagination !!}
     </div>
-    {!! $list['pagination'] !!}
 @endsection
 
 @section('script')

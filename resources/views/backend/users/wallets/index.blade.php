@@ -1,56 +1,90 @@
 @extends('backend.layouts.main_layout')
 @section('title', $title)
 @section('content')
-    {!! $list['filters'] !!}
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="box box-primary box-borderless">
-                <div class="box-body">
-                    <table class="table datatable dt-responsive display nowrap dc-table" style="width: 100% !important;">
+    <div class="user-management-page user-wallets-page">
+        @php
+            $filters = str_replace(
+                ['box box-primary box-borderless', 'box-body'],
+                ['card user-filter-card', 'card-body'],
+                $list['filters']
+            );
+            $pagination = str_replace(
+                ['box box-primary box-borderless', 'box-body'],
+                ['card user-pagination-card', 'card-body'],
+                $list['pagination']
+            );
+        @endphp
+
+        {!! $filters !!}
+
+        <div class="card user-table-card user-wallets-table-card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-3">
+                <div class="user-table-heading">
+                    <h3 class="user-table-title">{{ __('Wallets') }}</h3>
+                    <p class="user-table-subtitle">{{ __('Review balances, reserved funds, and wallet history for this user.') }}</p>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 datatable dt-responsive display nowrap dc-table" style="width: 100% !important;">
                         <thead>
                             <tr>
-                                <th class="all text-center">{{ __('Wallet') }}</th>
-                                <th class="text-center">{{ __('Wallet Name') }}</th>
-                                <th class="text-center">{{ __('Total Balance') }}</th>
-                                <th class="text-center">{{ __('On Order') }}</th>
-                                <th class="text-center all no-sort">{{ __('Action') }}</th>
+                                <th class="all">{{ __('Wallet') }}</th>
+                                <th class="min-phone-l">{{ __('Wallet Name') }}</th>
+                                <th class="min-phone-l text-end">{{ __('Total Balance') }}</th>
+                                <th class="min-phone-l text-end">{{ __('On Order') }}</th>
+                                <th class="text-end all no-sort">{{ __('Action') }}</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @foreach($list['query'] as $wallet)
                                 <tr>
-                                    <td class="text-center">{{ $wallet->item }}</td>
-                                    <td class="text-center">{{ $wallet->item_name }}</td>
-                                    <td class="text-center">{{ $wallet->primary_balance }}</td>
-                                    <td class="text-center">{{ $wallet->on_order_balance }}</td>
-                                    <td class="cm-action">
-                                        @if( in_array($wallet->item_type, config('commonconfig.currency_transferable')) )
-                                            <div class="btn-group pull-right">
-                                                <button class="btn green btn-xs btn-outline dropdown-toggle"
-                                                        data-toggle="dropdown">
-                                                    <i class="fa fa-gear"></i>
+                                    <td>
+                                        <span class="fw-semibold">{{ $wallet->item }}</span>
+                                    </td>
+                                    <td>{{ $wallet->item_name }}</td>
+                                    <td class="text-end">{{ $wallet->primary_balance }}</td>
+                                    <td class="text-end">{{ $wallet->on_order_balance }}</td>
+                                    <td class="cm-action text-end">
+                                        @if(in_array($wallet->item_type, config('commonconfig.currency_transferable')))
+                                            <div class="dropdown d-inline-block">
+                                                <button class="btn btn-sm btn-outline-secondary table-action-button dropdown-toggle"
+                                                        type="button"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false"
+                                                        aria-label="{{ __('Action') }}">
+                                                    <i class="fa fa-ellipsis-vertical"></i>
                                                 </button>
-                                                <ul class="dropdown-menu pull-right">
-                                                    @if( has_permission('reports.admin.wallets.deposits'))
+                                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                                    @if(has_permission('reports.admin.wallets.deposits'))
                                                         <li>
-                                                            <a href="{{ route('reports.admin.wallets.deposits', ['id' => $wallet->id]) }}"><i class="fa fa-magic"></i> {{ __('Deposit History') }}</a>
+                                                            <a class="dropdown-item" href="{{ route('reports.admin.wallets.deposits', ['id' => $wallet->id]) }}">
+                                                                <i class="fa fa-arrow-down me-2 text-success"></i>{{ __('Deposit History') }}
+                                                            </a>
                                                         </li>
                                                     @endif
 
-                                                    @if( has_permission('reports.admin.wallets.withdrawals'))
+                                                    @if(has_permission('reports.admin.wallets.withdrawals'))
                                                         <li>
-                                                            <a href="{{ route('reports.admin.wallets.withdrawals', ['id' => $wallet->id]) }}"><i class="fa fa-magic"></i> {{ __('Withdrawal History') }}</a>
+                                                            <a class="dropdown-item" href="{{ route('reports.admin.wallets.withdrawals', ['id' => $wallet->id]) }}">
+                                                                <i class="fa fa-arrow-up me-2 text-warning"></i>{{ __('Withdrawal History') }}
+                                                            </a>
                                                         </li>
                                                     @endif
 
-                                                    @if( has_permission('admin.users.wallets.edit'))
+                                                    @if(has_permission('admin.users.wallets.edit'))
                                                         <li>
-                                                            <a href="{{ route('admin.users.wallets.edit', ['id' => $wallet->user_id, 'walletId' => $wallet->id]) }}"><i class="fa fa-magic"></i> {{ __('Give Amount') }}</a>
+                                                            <a class="dropdown-item" href="{{ route('admin.users.wallets.edit', ['id' => $wallet->user_id, 'walletId' => $wallet->id]) }}">
+                                                                <i class="fa fa-wallet me-2 text-primary"></i>{{ __('Give Amount') }}
+                                                            </a>
                                                         </li>
                                                     @endif
                                                 </ul>
                                             </div>
+                                        @else
+                                            <span class="text-body-secondary">-</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -60,8 +94,9 @@
                 </div>
             </div>
         </div>
+
+        {!! $pagination !!}
     </div>
-    {!! $list['pagination'] !!}
 @endsection
 
 @section('script')

@@ -1286,6 +1286,115 @@
     padding-top: .25rem;
 }
 
+.user-readonly-value {
+    display: flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: .375rem .75rem;
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+.user-edit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .65rem;
+    border-top-color: var(--bs-border-color-translucent);
+    background: var(--bs-card-bg);
+}
+
+.user-filter-card,
+.user-pagination-card {
+    margin-bottom: 1rem;
+    border: 0;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.user-filter-card .card-body,
+.user-pagination-card .card-body {
+    padding: .85rem 1rem;
+}
+
+.user-pagination-card .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    margin: 0;
+}
+
+.user-pagination-card .pagination > li > a,
+.user-pagination-card .pagination > li > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: .35rem .65rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+.user-pagination-card .pagination > .active > span,
+.user-pagination-card .pagination > li > a:hover {
+    border-color: var(--bs-primary);
+    background: var(--bs-primary);
+    color: #fff;
+}
+
+.user-pagination-card .pagination > .disabled > span {
+    color: var(--bs-secondary-color);
+    opacity: .6;
+}
+
+.user-pagination-card .pagination-text {
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+}
+
+.user-pagination-card .pagination-text span {
+    color: var(--bs-body-color);
+    font-weight: 700;
+}
+
+.user-wallets-table-card,
+.report-trades-table-card {
+    overflow: visible;
+}
+
+.report-page-heading {
+    margin-bottom: 1rem;
+}
+
+.report-category-tabs {
+    gap: .5rem;
+}
+
+.report-category-tabs .nav-link {
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+.report-category-tabs .nav-link:hover,
+.report-category-tabs .nav-link:focus {
+    border-color: rgba(var(--bs-primary-rgb), .35);
+    background: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary);
+}
+
+.report-category-tabs .nav-link.active {
+    border-color: var(--bs-primary);
+    background: var(--bs-primary);
+    color: #fff;
+}
+
 .role-form-body {
     padding: 1.25rem;
 }
@@ -1583,6 +1692,304 @@
     justify-content: flex-end;
     gap: .65rem;
     padding-top: .25rem;
+}
+
+.stock-item-form-page .card,
+.stock-pair-form-page .card,
+.stock-pairs-page .card {
+    border: 0;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.stock-item-form-card,
+.stock-pair-form-card,
+.stock-filter-card,
+.stock-pairs-table-card,
+.stock-pagination-card {
+    overflow: visible;
+}
+
+.stock-item-form-card .card-header,
+.stock-pair-form-card .card-header,
+.stock-pairs-table-card .card-header {
+    border-bottom-color: var(--bs-border-color-translucent);
+    background: var(--bs-card-bg);
+}
+
+.stock-item-form .stock-switch,
+.stock-pair-form .stock-switch {
+    width: auto;
+}
+
+.stock-item-form .stock-switch .cm-switch-label,
+.stock-pair-form .stock-switch .cm-switch-label {
+    width: auto;
+    min-width: 4.75rem;
+    padding-right: .75rem;
+    padding-left: .75rem;
+}
+
+.stock-emoji-input .thumbnail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: .75rem;
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-tertiary-bg);
+}
+
+.stock-file-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.stock-filter-card,
+.stock-pagination-card {
+    margin-bottom: 1rem;
+}
+
+.stock-filter-card .card-body,
+.stock-pagination-card .card-body {
+    padding: .85rem 1rem;
+}
+
+.stock-pairs-page .cm-filter {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem 1.5rem;
+}
+
+.stock-pairs-page .cm-filter::before,
+.stock-pairs-page .cm-filter::after {
+    display: none;
+}
+
+.stock-pairs-page .cm-filter > div,
+.stock-pairs-page .cm-filter > .cm-order-filter,
+.stock-pairs-page .cm-filter > .cm-date-filter,
+.stock-pairs-page .cm-filter > .cm-search-filter {
+    position: static;
+    display: flex;
+    align-items: center;
+    flex: 0 1 auto;
+    gap: .45rem;
+    float: none;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+}
+
+.stock-pairs-page .cm-filter .form-control {
+    min-height: 2.375rem;
+    margin: 0;
+    padding: .375rem .75rem;
+    border-color: var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    box-shadow: none;
+    font-size: .9rem;
+}
+
+.stock-pairs-page .cm-filter select.form-control {
+    width: 8rem;
+}
+
+.stock-pairs-page .cm-filter > .cm-order-filter select:last-of-type,
+.stock-pairs-page .cm-filter .select-compact {
+    width: 5.75rem !important;
+}
+
+.stock-pairs-page .cm-filter > .cm-date-filter input {
+    width: 9rem !important;
+}
+
+.stock-pairs-page .cm-filter > .cm-search-filter input {
+    width: 12rem !important;
+}
+
+.stock-pairs-page .cm-filter > .cm-date-filter span {
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+}
+
+.stock-pairs-page .cm-filter button,
+.stock-pairs-page .cm-filter > .cm-order-filter button,
+.stock-pairs-page .cm-filter > .cm-date-filter button,
+.stock-pairs-page .cm-filter > .cm-search-filter button {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.375rem;
+    height: 2.375rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-primary);
+    color: #fff;
+    line-height: 1;
+}
+
+.stock-pairs-page .cm-filter button:hover,
+.stock-pairs-page .cm-filter button:focus {
+    background: var(--bs-primary);
+    color: #fff;
+    filter: brightness(.92);
+}
+
+.stock-pairs-table-card .table-responsive {
+    overflow: visible;
+}
+
+.stock-pairs-table-card .table > :not(caption) > * > * {
+    padding: .9rem 1rem;
+}
+
+.stock-pairs-table-card table.dataTable thead,
+.stock-pairs-table-card .table thead {
+    background: transparent !important;
+    color: inherit !important;
+}
+
+.stock-pairs-table-card table.dataTable thead tr th,
+.stock-pairs-table-card .table thead tr th {
+    padding: .85rem 1rem !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--bs-border-color-translucent) !important;
+    background: var(--bs-tertiary-bg) !important;
+    color: var(--bs-secondary-color) !important;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.25;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+.stock-pairs-table-card table.dataTable thead tr th.sorting,
+.stock-pairs-table-card table.dataTable thead tr th.sorting_asc,
+.stock-pairs-table-card table.dataTable thead tr th.sorting_desc {
+    padding-right: 2.25rem !important;
+    background-image: none !important;
+}
+
+.stock-pairs-table-card table.dataTable thead .sorting::after,
+.stock-pairs-table-card table.dataTable thead .sorting_asc::after,
+.stock-pairs-table-card table.dataTable thead .sorting_desc::after,
+.stock-pairs-table-card table.dataTable thead .sorting_asc_disabled::after,
+.stock-pairs-table-card table.dataTable thead .sorting_desc_disabled::after {
+    top: 50%;
+    right: .9rem;
+    bottom: auto;
+    display: block;
+    width: 1rem;
+    color: var(--bs-secondary-color);
+    font-family: "Font Awesome 6 Free";
+    font-size: .75rem;
+    font-weight: 900;
+    line-height: 1;
+    opacity: .55;
+    transform: translateY(-50%);
+}
+
+.stock-pairs-table-card table.dataTable thead .sorting::after {
+    content: "\f0dc";
+    opacity: .35;
+}
+
+.stock-pairs-table-card table.dataTable thead .sorting_asc::after {
+    content: "\f0de";
+    opacity: .75;
+}
+
+.stock-pairs-table-card table.dataTable thead .sorting_desc::after {
+    content: "\f0dd";
+    opacity: .75;
+}
+
+.stock-pairs-table-card table.dataTable thead .no-sort::after,
+.stock-pairs-table-card table.dataTable thead .sorting_disabled::after {
+    display: none !important;
+    content: "";
+}
+
+.stock-pairs-table-card table.dataTable.no-footer {
+    border-bottom-color: var(--bs-border-color-translucent) !important;
+}
+
+.stock-pairs-table-card .dropdown-menu {
+    z-index: 1070;
+}
+
+.stock-pairs-table-card .cm-action .table-action-button:hover,
+.stock-pairs-table-card .cm-action .table-action-button:focus,
+.stock-pairs-table-card .cm-action .table-action-button.show {
+    border-color: var(--bs-primary) !important;
+    background: var(--bs-primary-bg-subtle) !important;
+    color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), .14);
+}
+
+.stock-pairs-table-card .cm-action .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: .5rem .85rem !important;
+    color: var(--bs-dropdown-link-color);
+    font-size: .9rem;
+    gap: .25rem;
+}
+
+.stock-status-badge {
+    min-width: 5.75rem;
+    padding: .5rem .65rem;
+}
+
+.stock-pagination-card .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    margin: 0;
+}
+
+.stock-pagination-card .pagination > li > a,
+.stock-pagination-card .pagination > li > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: .35rem .65rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+.stock-pagination-card .pagination > .active > span,
+.stock-pagination-card .pagination > li > a:hover {
+    border-color: var(--bs-primary);
+    background: var(--bs-primary);
+    color: #fff;
+}
+
+.stock-pagination-card .pagination > .disabled > span {
+    color: var(--bs-secondary-color);
+    opacity: .6;
+}
+
+.stock-pagination-card .pagination-text {
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+}
+
+.stock-pagination-card .pagination-text span {
+    color: var(--bs-body-color);
+    font-weight: 700;
 }
 
 .admin-settings-nav {
@@ -2110,17 +2517,42 @@
         grid-template-columns: 1fr;
     }
 
+    .user-edit-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .user-pagination-card .row > [class*="col-"] {
+        width: 100%;
+        text-align: left !important;
+    }
+
+    .user-pagination-card .pagination-text {
+        margin-top: .75rem;
+    }
+
+    .report-category-tabs {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
     .system-notice-form-card .card-header,
     .admin-settings-card .card-header,
     .logs-toolbar-card .card-header,
-    .menu-builder-card .card-header {
+    .menu-builder-card .card-header,
+    .stock-item-form-card .card-header,
+    .stock-pair-form-card .card-header,
+    .stock-pairs-table-card .card-header {
         display: block !important;
     }
 
     .system-notice-form-card .card-header .btn,
     .admin-settings-card .card-header .btn,
     .logs-toolbar-card .card-header .btn,
-    .menu-builder-card .card-header .btn {
+    .menu-builder-card .card-header .btn,
+    .stock-item-form-card .card-header .btn,
+    .stock-pair-form-card .card-header .btn,
+    .stock-pairs-table-card .card-header .btn {
         width: 100%;
         margin-top: .75rem;
     }
@@ -2158,6 +2590,36 @@
     .logs-actions .btn,
     .logs-file-list .btn {
         width: 100%;
+    }
+
+    .stock-pairs-page .cm-filter,
+    .stock-pairs-page .cm-filter > div,
+    .stock-pairs-page .cm-filter > .cm-order-filter,
+    .stock-pairs-page .cm-filter > .cm-date-filter,
+    .stock-pairs-page .cm-filter > .cm-search-filter {
+        width: 100%;
+    }
+
+    .stock-pairs-page .cm-filter > div,
+    .stock-pairs-page .cm-filter > .cm-order-filter,
+    .stock-pairs-page .cm-filter > .cm-date-filter,
+    .stock-pairs-page .cm-filter > .cm-search-filter {
+        flex-wrap: wrap;
+    }
+
+    .stock-pairs-page .cm-filter select.form-control,
+    .stock-pairs-page .cm-filter > .cm-date-filter input,
+    .stock-pairs-page .cm-filter > .cm-search-filter input {
+        flex: 1 1 9rem;
+        width: auto !important;
+    }
+
+    .stock-pairs-page .cm-filter .select-compact {
+        flex: 1 1 7rem;
+    }
+
+    .stock-pairs-table-card .table-responsive {
+        overflow-x: auto;
     }
 
     .menu-builder-body {
