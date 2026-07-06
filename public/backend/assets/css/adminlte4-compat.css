@@ -627,8 +627,115 @@
 
 .role-table-card .card-title,
 .role-form-card .card-title {
+    display: block;
+    float: none !important;
+    margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
+    line-height: 1.25;
+}
+
+.role-table-card .card-header p,
+.role-form-card .card-header p {
+    display: block;
+    clear: both;
+    margin-top: .2rem;
+}
+
+.role-management-page > .row:first-child .box {
+    border: 0;
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-card-bg);
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.role-management-page > .row:first-child .box-body {
+    padding: .85rem 1rem;
+}
+
+.role-management-page .cm-filter {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem 1.5rem;
+}
+
+.role-management-page .cm-filter::before,
+.role-management-page .cm-filter::after {
+    display: none;
+}
+
+.role-management-page .cm-filter > div,
+.role-management-page .cm-filter > .cm-order-filter,
+.role-management-page .cm-filter > .cm-date-filter,
+.role-management-page .cm-filter > .cm-search-filter {
+    position: static;
+    display: flex;
+    align-items: center;
+    flex: 0 1 auto;
+    gap: .45rem;
+    float: none;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+}
+
+.role-management-page .cm-filter .form-control {
+    min-height: 2.375rem;
+    margin: 0;
+    padding: .375rem .75rem;
+    border-color: var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    box-shadow: none;
+    font-size: .9rem;
+}
+
+.role-management-page .cm-filter select.form-control {
+    width: 8rem;
+}
+
+.role-management-page .cm-filter > .cm-order-filter select:last-of-type,
+.role-management-page .cm-filter .select-compact {
+    width: 5.75rem !important;
+}
+
+.role-management-page .cm-filter > .cm-date-filter input {
+    width: 9rem !important;
+}
+
+.role-management-page .cm-filter > .cm-search-filter input {
+    width: 12rem !important;
+}
+
+.role-management-page .cm-filter > .cm-date-filter span {
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+}
+
+.role-management-page .cm-filter button,
+.role-management-page .cm-filter > .cm-order-filter button,
+.role-management-page .cm-filter > .cm-date-filter button,
+.role-management-page .cm-filter > .cm-search-filter button {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.375rem;
+    height: 2.375rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bs-border-radius);
+    background: #26a69a;
+    color: #fff;
+    line-height: 1;
+}
+
+.role-management-page .cm-filter button:hover,
+.role-management-page .cm-filter button:focus {
+    background: #15847a;
+    color: #fff;
 }
 
 .role-table-card .table-responsive {
@@ -842,6 +949,32 @@
     .role-form-card .card-header .btn {
         width: 100%;
         margin-top: .75rem;
+    }
+
+    .role-management-page .cm-filter,
+    .role-management-page .cm-filter > div,
+    .role-management-page .cm-filter > .cm-order-filter,
+    .role-management-page .cm-filter > .cm-date-filter,
+    .role-management-page .cm-filter > .cm-search-filter {
+        width: 100%;
+    }
+
+    .role-management-page .cm-filter > div,
+    .role-management-page .cm-filter > .cm-order-filter,
+    .role-management-page .cm-filter > .cm-date-filter,
+    .role-management-page .cm-filter > .cm-search-filter {
+        flex-wrap: wrap;
+    }
+
+    .role-management-page .cm-filter select.form-control,
+    .role-management-page .cm-filter > .cm-date-filter input,
+    .role-management-page .cm-filter > .cm-search-filter input {
+        flex: 1 1 9rem;
+        width: auto !important;
+    }
+
+    .role-management-page .cm-filter .select-compact {
+        flex: 1 1 7rem;
     }
 
     .role-table-card .table-responsive {
